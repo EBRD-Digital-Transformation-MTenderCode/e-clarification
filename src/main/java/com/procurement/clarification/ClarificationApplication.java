@@ -1,6 +1,6 @@
-package com.procuremen.clarification;
+package com.procurement.clarification;
 
-import com.procuremen.clarification.config.ApplicationConfig;
+import com.procurement.clarification.config.ApplicationConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;

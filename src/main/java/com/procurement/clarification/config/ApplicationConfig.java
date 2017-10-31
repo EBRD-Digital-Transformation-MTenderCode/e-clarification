@@ -1,4 +1,4 @@
-package com.procuremen.clarification.config;
+package com.procurement.clarification.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

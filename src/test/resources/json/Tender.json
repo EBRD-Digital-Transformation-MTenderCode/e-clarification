@@ -1,5 +1,5 @@
 {
-
+  "tender": {
     "enquiries": [
       {
         "id": "Q1",
@@ -10,15 +10,12 @@
         },
         "title": "Variations of timeline accepted?",
         "description": "The tender specifies delivery of Item 1 by end of March 2017. Will alternative proposals for the timeline be considered?",
-        "answer": {
-          "answer": "answer",
-          "date": "2017-01-22T14:55:00Z"
-        },
+        "answer": "answer",
+        "dateAnswered": "2017-01-22T14:55:00Z",
         "relatedItem": "1",
-        "relatedLot":"1",
+        "relatedLot": "1",
         "threadID": "1"
-
       }
     ]
-
+  }
 }

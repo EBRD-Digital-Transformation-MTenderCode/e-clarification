@@ -5,28 +5,31 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
-public class JsonLocalDateDeserializer extends StdDeserializer<LocalDateTime> {
+public class JsonDateDeserializer extends StdDeserializer<Date> {
 
-    private  DateTimeFormatter formatter
-        = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private SimpleDateFormat formatter
+        = new SimpleDateFormat("yyyy-MM-dd");
 
-    public JsonLocalDateDeserializer() {
+    public JsonDateDeserializer() {
         this(null);
     }
 
-    public JsonLocalDateDeserializer(Class<?> vc) {
+    public JsonDateDeserializer(Class<?> vc) {
         super(vc);
     }
 
     @Override
-    public LocalDateTime deserialize(JsonParser jsonParser,
-                                     DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public Date deserialize(JsonParser jsonParser,
+                                     DeserializationContext deserializationContext) throws IOException,
+        JsonProcessingException {
         String date = jsonParser.getText();
         try {
-            return LocalDateTime.parse(date,formatter);
+            return formatter.parse(date);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

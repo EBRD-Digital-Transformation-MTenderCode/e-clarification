@@ -6,9 +6,12 @@ import com.procurement.clarification.repository.EnquiryPeriodRepository;
 import com.procurement.clarification.service.EnquiryPeriodService;
 import com.procurement.clarification.service.EnquiryPeriodServiceImpl;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 public class EnquiryPeriodServiceImplTest {
@@ -23,14 +26,15 @@ public class EnquiryPeriodServiceImplTest {
     public void convertDtoToEntity() {
         EnquiryPeriodDto enquiryPeriodDto = new EnquiryPeriodDto(enquiryPeriodDtoId,enquiryPeriodDtoStartDate,enquiryPeriodDtoEndDate);
 
-        EnquiryPeriodEntity enquiryPeriodEntity = new EnquiryPeriodEntity();
+        EnquiryPeriodEntity enquiryPeriodEntity = new <Optional>EnquiryPeriodEntity();
         enquiryPeriodEntity.setTenderId(enquiryPeriodDtoId);
         enquiryPeriodEntity.setStartDate(enquiryPeriodDtoStartDate);
         enquiryPeriodEntity.setEndDate(enquiryPeriodDtoEndDate);
 
-        EnquiryPeriodService enquiryPeriodService =new EnquiryPeriodServiceImpl(mock(EnquiryPeriodRepository.class));
+        EnquiryPeriodServiceImpl enquiryPeriodService =new EnquiryPeriodServiceImpl(mock(EnquiryPeriodRepository.class));
 
-        assertEquals(1,1);//todo дописать тест
+
+        assertEquals(enquiryPeriodEntity,enquiryPeriodService.convertDtoToEntity(enquiryPeriodDto).get());
 
 
 

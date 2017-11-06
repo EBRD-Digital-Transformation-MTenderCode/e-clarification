@@ -6,11 +6,21 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
 
 public class JsonLocalDateSerializer extends StdSerializer<LocalDateTime> {
 
     private  DateTimeFormatter formatter
-        = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        = new DateTimeFormatterBuilder()
+        .parseCaseInsensitive()
+        .append(ISO_LOCAL_DATE)
+        .appendLiteral('T')
+        .append(ISO_LOCAL_TIME)
+        .appendLiteral('Z')
+        .toFormatter();
 
     public JsonLocalDateSerializer() {
         this(null);

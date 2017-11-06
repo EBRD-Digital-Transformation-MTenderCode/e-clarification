@@ -7,11 +7,16 @@ import lombok.Getter;
 
 @Getter
 public class Tender {
+    @JsonProperty("osId")
+    private final String osId;
     @JsonProperty("enquiries")
     private final List<Enquiry> enquiries;
 
+
     @JsonCreator
-    public Tender(@JsonProperty("enquiries") final List<Enquiry> enquiries) {
+    public Tender(@JsonProperty("osId") final String osId,
+                  @JsonProperty("enquiries") final List<Enquiry> enquiries) {
         this.enquiries = enquiries;
+        this.osId = osId;
     }
 }

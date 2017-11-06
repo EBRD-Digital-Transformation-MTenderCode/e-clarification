@@ -1,35 +1,30 @@
 package com.procurement.clarification.controller;
 
-import com.procurement.clarification.model.dto.DataDto;
-import com.procurement.clarification.model.dto.EnquiryPeriodDto;
-import com.procurement.clarification.model.dto.Tender;
-import java.util.Date;
-import javax.xml.crypto.Data;
+import com.procurement.clarification.service.EnquiryPeriodService;
+import com.procurement.clarification.service.EnquiryService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-public class TenderControllerTest extends AbstractDomainObjectTest {
+import static org.mockito.Mockito.mock;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-    @Test
-    public void tenderRqJsonToObjToJson() {
-        compare(
-            DataDto.class,
-            "json/Tender.json");
-    }
-
-    @Test
-    public void tenderWithoutDefaultsRqJsonToObjToJson(){
-        compare(
-            DataDto.class,
-            "json/TenderWithoutDefaults.json");
-    }
+public class TenderControllerTest {
 
     @Test
-    public void enquiryPeriodRqJsonToObjToJson(){
-        compare(EnquiryPeriodDto.class,
-                "json/EnquiryPeriod.json");
+    @DisplayName("Test TenderController status: 201 - Created")
+    void testEnquiryCreated() throws Exception {
+        final EnquiryService enquiryService = mock(EnquiryService.class);
+        final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new TenderController(enquiryPeriodService, enquiryService))
+                                         .build();
+        mockMvc.perform(post("/tenders")
+                            .content(new JsonUtil().getResource("json/Tender.json"))
+                            .contentType(MediaType.APPLICATION_JSON))
+               .andExpect(status().isCreated());
     }
-
-
-
 
 }

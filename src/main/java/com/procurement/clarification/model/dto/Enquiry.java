@@ -38,7 +38,6 @@ public class Enquiry {
 
     @JsonCreator
     public Enquiry(@JsonProperty("id") final String id,
-
                    @JsonProperty("date")
                    @JsonDeserialize(using = JsonLocalDateDeserializer.class) final LocalDateTime date,
                    @JsonProperty("author") final Author author,
@@ -46,7 +45,7 @@ public class Enquiry {
                    @JsonProperty("description") final String description,
                    @JsonProperty("answer") final String answer,
                    @JsonProperty("dateAnswered")
-                   @JsonSerialize(using = JsonLocalDateSerializer.class)
+                   @JsonDeserialize(using = JsonLocalDateDeserializer.class)
                        final LocalDateTime dateAnswered,
                    @JsonProperty("relatedItem") final String relatedItem,
                    @JsonProperty("relatedLot") final String relatedLot,

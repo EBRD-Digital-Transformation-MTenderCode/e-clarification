@@ -1,7 +1,6 @@
 package com.procurement.clarification.model.entity;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
@@ -9,16 +8,16 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-@Table("enquiry_period")
+@Table("enquiry")
 @Getter
 @Setter
-public class EnquiryPeriodEntity {
-    @PrimaryKeyColumn(name = "tender_id", type = PrimaryKeyType.PARTITIONED)
-    private String tenderId;
+public class EnquiryEntity {
+    @PrimaryKeyColumn(name = "oc_id", type = PrimaryKeyType.PARTITIONED)
+    private String ocId;
 
-    @Column(value = "start_date")
-    private LocalDateTime startDate;
+    @Column(value = "enquiry_id")
+    private UUID enquiryId;
 
-    @Column(value = "end_date")
-    private LocalDateTime endDate;
+    @Column(value = "json_data")
+    private String jsonData;
 }

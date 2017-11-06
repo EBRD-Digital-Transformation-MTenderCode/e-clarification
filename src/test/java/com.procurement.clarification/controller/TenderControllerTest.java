@@ -19,7 +19,7 @@ public class TenderControllerTest {
     void testEnquiryCreated() throws Exception {
         final EnquiryService enquiryService = mock(EnquiryService.class);
         final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new TenderController(enquiryPeriodService, enquiryService))
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new EnquiryController(enquiryPeriodService, enquiryService))
                                          .build();
         mockMvc.perform(post("/tenders")
                             .content(new JsonUtil().getResource("json/Tender.json"))

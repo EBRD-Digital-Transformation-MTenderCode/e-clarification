@@ -1,6 +1,6 @@
 package com.procurement.clarification.Service;
 
-import com.procurement.clarification.model.dto.Tender;
+//import com.procurement.clarification.model.dto.Tender;
 
 public class EnquiryServiceImplTest {
 

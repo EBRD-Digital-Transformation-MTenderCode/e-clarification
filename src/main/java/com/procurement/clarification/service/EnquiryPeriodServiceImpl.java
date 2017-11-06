@@ -25,7 +25,7 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
 
     public Optional<EnquiryPeriodEntity> convertDtoToEntity(EnquiryPeriodDto dataDto) {
         EnquiryPeriodEntity enquiryPeriodEntity = new EnquiryPeriodEntity();
-        enquiryPeriodEntity.setTenderId(dataDto.getTenderId());
+        enquiryPeriodEntity.setOcId(dataDto.getOcId());
         enquiryPeriodEntity.setStartDate(dataDto.getStartDate());
         enquiryPeriodEntity.setEndDate(dataDto.getEndDate());
         return Optional.of(enquiryPeriodEntity);

@@ -1,55 +1,71 @@
 package com.procurement.clarification.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.procurement.clarification.databind.deserialization.JsonLocalDateDeserializer;
 import com.procurement.clarification.databind.serialization.JsonLocalDateSerializer;
 import java.time.LocalDateTime;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
-public class Enquiry {
+public class EnquiryDto {
+
     @JsonProperty("id")
     private final String id;
+
     @JsonProperty("date")
     @JsonSerialize(using = JsonLocalDateSerializer.class)
+    @JsonDeserialize(using = JsonLocalDateDeserializer.class)
     private final LocalDateTime date;
+
     @JsonProperty("author")
-    private final Author author;
+    @NotEmpty
+    private final AuthorDto author;
+
     @JsonProperty("title")
+    @NotNull
+    @Size(min=1, max=100)
     private final String title;
+
     @JsonProperty("description")
+    @NotNull
+    @Size(min=1, max=2500)
     private final String description;
+
     @JsonProperty("answer")
+    @Max(2500)
     private final String answer;
+
     @JsonProperty("dateAnswered")
     @JsonSerialize(using = JsonLocalDateSerializer.class)
+    @JsonDeserialize(using = JsonLocalDateDeserializer.class)
     private final LocalDateTime dateAnswered;
+
     @JsonProperty("relatedItem")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final String relatedItem;//-
+    private final String relatedItem;
+
     @JsonProperty("relatedLot")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final String relatedLot;//-
+    private final String relatedLot;
+
     @JsonProperty("threadID")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final String threadID;//-
+    private final String threadID;
 
     @JsonCreator
-    public Enquiry(@JsonProperty("id") final String id,
-                   @JsonProperty("date")
-                   @JsonDeserialize(using = JsonLocalDateDeserializer.class) final LocalDateTime date,
-                   @JsonProperty("author") final Author author,
-                   @JsonProperty("title") final String title,
-                   @JsonProperty("description") final String description,
-                   @JsonProperty("answer") final String answer,
-                   @JsonProperty("dateAnswered")
-                   @JsonDeserialize(using = JsonLocalDateDeserializer.class)
-                       final LocalDateTime dateAnswered,
-                   @JsonProperty("relatedItem") final String relatedItem,
-                   @JsonProperty("relatedLot") final String relatedLot,
-                   @JsonProperty("threadID") final String threadID) {
+    public EnquiryDto(@JsonProperty("id") final String id,
+                      @JsonProperty("date") final LocalDateTime date,
+                      @JsonProperty("author") final AuthorDto author,
+                      @JsonProperty("title") final String title,
+                      @JsonProperty("description") final String description,
+                      @JsonProperty("answer") final String answer,
+                      @JsonProperty("dateAnswered") final LocalDateTime dateAnswered,
+                      @JsonProperty("relatedItem") final String relatedItem,
+                      @JsonProperty("relatedLot") final String relatedLot,
+                      @JsonProperty("threadID") final String threadID) {
 
         this.id = id;
         this.date = date;
@@ -57,7 +73,7 @@ public class Enquiry {
         this.title = title;
         this.description = description;
         this.answer = answer;
-        this.dateAnswered=dateAnswered;
+        this.dateAnswered = dateAnswered;
         this.relatedItem = relatedItem;
         this.relatedLot = relatedLot;
         this.threadID = threadID;

@@ -1,8 +1,6 @@
 package com.procurement.clarification.model.entity;
 
-import com.procurement.clarification.model.dto.EnquiryPeriodDto;
 import java.time.LocalDateTime;
-import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
@@ -14,8 +12,8 @@ import org.springframework.data.cassandra.core.mapping.Table;
 @Getter
 @Setter
 public class EnquiryPeriodEntity {
-    @PrimaryKeyColumn(name = "tender_id", type = PrimaryKeyType.PARTITIONED)
-    private String tenderId;
+    @PrimaryKeyColumn(name = "oc_id", type = PrimaryKeyType.PARTITIONED)
+    private String ocId;
 
     @Column(value = "start_date")
     private LocalDateTime startDate;
@@ -38,7 +36,7 @@ public class EnquiryPeriodEntity {
             return false;
         else {
             EnquiryPeriodEntity tmp = (EnquiryPeriodEntity) obj;
-            if (tmp.tenderId == this.tenderId &&
+            if (tmp.ocId == this.ocId &&
                 tmp.endDate == this.endDate &&
                 tmp.startDate == this.startDate)
                 return true;

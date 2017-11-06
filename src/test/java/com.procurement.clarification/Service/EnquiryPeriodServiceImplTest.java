@@ -30,7 +30,7 @@ public class EnquiryPeriodServiceImplTest {
 
         EnquiryPeriodService enquiryPeriodService =new EnquiryPeriodServiceImpl(mock(EnquiryPeriodRepository.class));
 
-        assertEquals(1,1);
+        assertEquals(1,1);//todo дописать тест
 
 
 

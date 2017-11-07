@@ -24,8 +24,7 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
     @Override
     public void saveEnquiryPeriod(EnquiryPeriodDto dataDto) {
         Objects.requireNonNull(dataDto);
-        convertDtoToEntity(dataDto)
-            .ifPresent(period -> enquiryPeriodRepository.save(period));
+        convertDtoToEntity(dataDto).ifPresent(s -> enquiryPeriodRepository.save(s));
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.procurement.clarification.model.dto.DataDto;
 import com.procurement.clarification.model.dto.EnquiryPeriodDto;
 import com.procurement.clarification.service.EnquiryPeriodService;
 import com.procurement.clarification.service.EnquiryService;
+import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -30,9 +31,7 @@ public class EnquiryController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addEnquiry(@RequestBody final DataDto dataDto,
                            final BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException(bindingResult);
-        }
+        Optional.of(bindingResult.hasErrors()).ifPresent(b -> new ValidationException(bindingResult));
         enquiryService.insertData(dataDto);
     }
 }

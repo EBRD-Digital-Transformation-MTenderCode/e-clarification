@@ -2,58 +2,73 @@ package com.procurement.clarification.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.procurement.clarification.databind.deserialization.JsonLocalDateDeserializer;
-import com.procurement.clarification.databind.serialization.JsonLocalDateSerializer;
+import com.procurement.clarification.databind.LocalDateTimeDeserializer;
+import com.procurement.clarification.databind.LocalDateTimeSerializer;
 import java.time.LocalDateTime;
 import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+@JsonPropertyOrder({
+    "id",
+    "date",
+    "author",
+    "title",
+    "description",
+    "answer",
+    "dateAnswered",
+    "relatedItem",
+    "relatedLot",
+    "threadID"
+})
 public class EnquiryDto {
-
     @JsonProperty("id")
-    private final String id;
+    private String id;
 
     @JsonProperty("date")
-    @JsonSerialize(using = JsonLocalDateSerializer.class)
-    @JsonDeserialize(using = JsonLocalDateDeserializer.class)
-    private final LocalDateTime date;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime date;
 
     @JsonProperty("author")
     @NotEmpty
-    private final AuthorDto author;
+    private AuthorDto author;
 
     @JsonProperty("title")
     @NotNull
-    @Size(min=1, max=100)
-    private final String title;
+    @Size(min = 1, max = 100)
+    private String title;
 
     @JsonProperty("description")
     @NotNull
-    @Size(min=1, max=2500)
-    private final String description;
+    @Size(min = 1, max = 2500)
+    private String description;
 
     @JsonProperty("answer")
     @Max(2500)
-    private final String answer;
+    private String answer;
 
     @JsonProperty("dateAnswered")
-    @JsonSerialize(using = JsonLocalDateSerializer.class)
-    @JsonDeserialize(using = JsonLocalDateDeserializer.class)
-    private final LocalDateTime dateAnswered;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime dateAnswered;
 
     @JsonProperty("relatedItem")
-    private final String relatedItem;
+    private String relatedItem;
 
     @JsonProperty("relatedLot")
-    private final String relatedLot;
+    private String relatedLot;
 
     @JsonProperty("threadID")
-    private final String threadID;
+    private String threadID;
 
     @JsonCreator
     public EnquiryDto(@JsonProperty("id") final String id,

@@ -48,6 +48,9 @@ public class EnquiryServiceImpl implements EnquiryService {
     }
 
     private Optional<EnquiryEntity> convertDtoToEntity(String ocId, LocalDateTime localDateTime, EnquiryDto enquiryDto) {
+        Objects.requireNonNull(ocId);
+        Objects.requireNonNull(enquiryDto);
+        Objects.requireNonNull(localDateTime);
         EnquiryEntity enquiryEntity = new EnquiryEntity();
         enquiryEntity.setOcId(ocId);
         UUID enquiryId;

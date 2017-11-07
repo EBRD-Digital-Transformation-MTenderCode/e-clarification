@@ -21,10 +21,12 @@ public class EnquiryPeriodDto {
     @NotNull
     @JsonProperty("ocid")
     private String ocId;
+
     @JsonProperty("startDate")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private final LocalDateTime startDate;
+
     @JsonProperty("endDate")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

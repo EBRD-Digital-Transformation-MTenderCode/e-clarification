@@ -15,6 +15,7 @@ public class DataDto {
     @NotNull
     @JsonProperty("ocid")
     private String ocid;
+
     @NotNull
     @JsonProperty("enquiry")
     private EnquiryDto enquiry;

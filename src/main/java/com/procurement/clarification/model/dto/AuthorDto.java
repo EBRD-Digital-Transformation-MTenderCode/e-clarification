@@ -10,6 +10,7 @@ public class AuthorDto {
     @JsonProperty("name")
     @NotNull
     private final String name;
+
     @JsonProperty("id")
     @NotNull
     private final String id;

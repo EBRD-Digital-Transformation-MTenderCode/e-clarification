@@ -6,6 +6,7 @@ import com.procurement.clarification.model.dto.EnquiryPeriodDto;
 import com.procurement.clarification.service.EnquiryPeriodService;
 import com.procurement.clarification.service.EnquiryService;
 import java.util.Optional;
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/tenders")
+@RequestMapping("/enquiry")
 public class EnquiryController {
 
     private EnquiryService enquiryService;
@@ -27,9 +28,9 @@ public class EnquiryController {
         this.enquiryService = enquiryService;
     }
 
-    @PostMapping(value = "/enquire")
+    @PostMapping(value = "/save")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addEnquiry(@RequestBody final DataDto dataDto,
+    public void saveEnquiry(@Valid @RequestBody final DataDto dataDto,
                            final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);

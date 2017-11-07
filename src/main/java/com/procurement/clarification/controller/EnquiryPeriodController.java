@@ -28,16 +28,20 @@ public class EnquiryPeriodController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public void saveEnquiryPeriod(@Valid @RequestBody final EnquiryPeriodDto dataDto,
                                   final BindingResult bindingResult) {
-        Optional.of(bindingResult.hasErrors()).ifPresent(b -> new ValidationException(bindingResult));
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
         enquiryPeriodService.saveEnquiryPeriod(dataDto);
     }
 
     @PostMapping("/calculateAndSave")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public void calculateAndSaveEnquiryPeriod(@Valid @RequestBody final EnquiryPeriodDto dataDto,
-                                              @RequestParam final String iso,
+    public void calculateAndSaveEnquiryPeriod(@RequestParam final String iso,
+                                              @Valid @RequestBody final EnquiryPeriodDto dataDto,
                                               final BindingResult bindingResult) {
-        Optional.of(bindingResult.hasErrors()).ifPresent(b -> new ValidationException(bindingResult));
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
         enquiryPeriodService.calculateAndSaveEnquiryPeriod(dataDto, iso);
     }
 }

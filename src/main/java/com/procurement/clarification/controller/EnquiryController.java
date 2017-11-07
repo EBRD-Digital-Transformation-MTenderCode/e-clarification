@@ -31,7 +31,9 @@ public class EnquiryController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addEnquiry(@RequestBody final DataDto dataDto,
                            final BindingResult bindingResult) {
-        Optional.of(bindingResult.hasErrors()).ifPresent(b -> new ValidationException(bindingResult));
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
         enquiryService.insertData(dataDto);
     }
 }

@@ -27,7 +27,7 @@ public class EnquiryPeriodServiceImplTest {
         EnquiryPeriodDto enquiryPeriodDto = new EnquiryPeriodDto(enquiryPeriodDtoId,enquiryPeriodDtoStartDate,enquiryPeriodDtoEndDate);
 
         EnquiryPeriodEntity enquiryPeriodEntity = new <Optional>EnquiryPeriodEntity();
-        enquiryPeriodEntity.setTenderId(enquiryPeriodDtoId);
+        enquiryPeriodEntity.setOcId(enquiryPeriodDtoId);
         enquiryPeriodEntity.setStartDate(enquiryPeriodDtoStartDate);
         enquiryPeriodEntity.setEndDate(enquiryPeriodDtoEndDate);
 

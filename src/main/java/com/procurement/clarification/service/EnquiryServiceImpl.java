@@ -28,8 +28,7 @@ public class EnquiryServiceImpl implements EnquiryService {
     public Optional<EnquiryEntity> convertDtoToEntity(DataDto dataDto) {
 
         EnquiryEntity enquiryEntity = new EnquiryEntity();
-        enquiryEntity.setOcId(dataDto.getTender()
-                                     .getOsId());
+        enquiryEntity.setOcId(dataDto.getOcid());
         enquiryEntity.setEnquiryId(UUIDs.timeBased());
         enquiryEntity.setJsonData(writeJsonToString(dataDto));
         return Optional.of(enquiryEntity);
@@ -40,7 +39,7 @@ public class EnquiryServiceImpl implements EnquiryService {
         String jsonData = null;
 
         try {
-            jsonData = objectMapper.writeValueAsString(dataDto.getTender());
+            jsonData = objectMapper.writeValueAsString(dataDto);
         } catch (JsonProcessingException e) {
 
         }

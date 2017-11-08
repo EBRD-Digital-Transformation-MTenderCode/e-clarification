@@ -15,7 +15,7 @@ public class EnquiryEntity {
     @PrimaryKeyColumn(name = "oc_id", type = PrimaryKeyType.PARTITIONED)
     private String ocId;
 
-    @Column(value = "enquiry_id")
+    @PrimaryKeyColumn(value = "enquiry_id", type = PrimaryKeyType.CLUSTERED)
     private UUID enquiryId;
 
     @Column(value = "json_data")

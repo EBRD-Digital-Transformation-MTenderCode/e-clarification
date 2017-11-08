@@ -20,5 +20,5 @@ CREATE TABLE IF NOT EXISTS  ocds.enquiry (
     enquiry_id UUID,
     json_data text,
     is_answered boolean,
-    primary key(oc_id)
-);
+    primary key(oc_id, enquiry_id)
+)WITH CLUSTERING ORDER BY (enquiry_id DESC);

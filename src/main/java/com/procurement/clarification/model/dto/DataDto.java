@@ -15,13 +15,14 @@ public class DataDto {
     @NotNull
     @JsonProperty("ocid")
     private String ocid;
+
     @NotNull
     @JsonProperty("enquiry")
     private EnquiryDto enquiry;
 
     @JsonCreator
     public DataDto(@JsonProperty("ocid") final String ocid,
-                                 @JsonProperty("enquiry") final EnquiryDto enquiry) {
+                   @JsonProperty("enquiry") final EnquiryDto enquiry) {
         this.ocid = ocid;
         this.enquiry = enquiry;
     }

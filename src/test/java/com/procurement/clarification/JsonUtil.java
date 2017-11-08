@@ -1,4 +1,4 @@
-package com.procurement.clarification.controller;
+package com.procurement.clarification;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;

@@ -6,5 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface EnquiryPeriodService {
 
-    void insertData(EnquiryPeriodDto data);
+    void saveEnquiryPeriod(EnquiryPeriodDto data);
+
+    void calculateAndSaveEnquiryPeriod(EnquiryPeriodDto data, String iso);
 }

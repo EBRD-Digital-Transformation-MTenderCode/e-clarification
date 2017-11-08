@@ -1,4 +1,4 @@
-package com.procurement.clarification.controller;
+package com.procurement.clarification;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

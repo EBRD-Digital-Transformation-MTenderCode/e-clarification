@@ -35,7 +35,7 @@ public class ControllerExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(JsonMappingException.class)
-    public MappingErrorResponse handleJsonMappingExceptionException(final JsonMappingException e) {
+    public MappingErrorResponse handleJsonMappingException(final JsonMappingException e) {
         String message = "Houston we have a problem";
         return new MappingErrorResponse(message, e);
     }

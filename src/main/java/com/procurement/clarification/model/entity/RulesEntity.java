@@ -11,9 +11,15 @@ import org.springframework.data.cassandra.core.mapping.Table;
 @Getter
 @Setter
 public class RulesEntity {
-    @PrimaryKeyColumn(name = "iso", type = PrimaryKeyType.PARTITIONED)
-    private String iso;
+    @PrimaryKeyColumn(name = "country", type = PrimaryKeyType.PARTITIONED)
+    private String country;
 
-    @Column(value = "offset")
-    private int offset;
+    @PrimaryKeyColumn(name = "method", type = PrimaryKeyType.CLUSTERED)
+    private String method;
+
+    @PrimaryKeyColumn(name = "parameter", type = PrimaryKeyType.CLUSTERED)
+    private String parameter;
+
+    @Column("value")
+    private String value;
 }

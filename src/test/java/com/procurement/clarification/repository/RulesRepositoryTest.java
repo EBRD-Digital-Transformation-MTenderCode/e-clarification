@@ -16,15 +16,28 @@ class RulesRepositoryTest {
     @BeforeAll
     static void setUp() {
         rulesEntity = new RulesEntity();
-        rulesEntity.setIso("UA");
-        rulesEntity.setOffset(7);
+        rulesEntity.setCountry("UA");
+        rulesEntity.setMethod("micro");
+        rulesEntity.setParameter("offset");
+        rulesEntity.setValue("3");
         rulesRepository = mock(RulesRepository.class);
-        given(rulesRepository.getByIso(rulesEntity.getIso())).willReturn(rulesEntity);
+        given(rulesRepository.getRule(rulesEntity.getCountry(), rulesEntity.getMethod(), rulesEntity.getParameter()))
+            .willReturn(rulesEntity);
+        given(rulesRepository.getValue(rulesEntity.getCountry(), rulesEntity.getMethod(), rulesEntity.getParameter())
+        ).willReturn(rulesEntity.getValue());
     }
 
     @Test
-    public void getByIso() {
-        RulesEntity result = rulesRepository.getByIso(rulesEntity.getIso());
-        assertEquals(result.getOffset(), rulesEntity.getOffset());
+    public void getRuleTest() {
+        RulesEntity result = rulesRepository.getRule(rulesEntity.getCountry(), rulesEntity.getMethod(), rulesEntity
+            .getParameter());
+        assertEquals(result.getValue(), rulesEntity.getValue());
+    }
+
+    @Test
+    public void getValueTest() {
+        String value = rulesRepository.getValue(rulesEntity.getCountry(), rulesEntity.getMethod(), rulesEntity
+            .getParameter());
+        assertEquals(value, rulesEntity.getValue());
     }
 }

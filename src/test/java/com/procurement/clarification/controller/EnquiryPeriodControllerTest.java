@@ -19,7 +19,7 @@ class EnquiryPeriodControllerTest {
     @DisplayName("Test /enquiryPeriod/save status: 201 - Created")
     void saveEnquiryPeriodStatusCreated() throws Exception {
         final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new EnquiryPeriodController(enquiryPeriodService))
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .build();
         mockMvc.perform(post("/enquiryPeriod/save")
                             .content(new JsonUtil().getResource("json/enquiry-period.json"))
@@ -32,7 +32,7 @@ class EnquiryPeriodControllerTest {
     void saveEnquiryPeriodStatusBadRequest() throws Exception {
         final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
         ControllerExceptionHandler handler = new ControllerExceptionHandler();
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new EnquiryPeriodController(enquiryPeriodService))
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .setControllerAdvice(handler)
                                          .build();
         mockMvc.perform(post("/enquiryPeriod/save")
@@ -46,7 +46,7 @@ class EnquiryPeriodControllerTest {
     @DisplayName("Test /enquiryPeriod/calculateAndSave status: 201 - Created")
     void calculateAndSaveEnquiryPeriodStatusCreated() throws Exception {
         final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new EnquiryPeriodController(enquiryPeriodService))
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .build();
         mockMvc.perform(post("/enquiryPeriod/calculateAndSave")
                             .content(new JsonUtil().getResource("json/enquiry-period.json"))
@@ -60,7 +60,7 @@ class EnquiryPeriodControllerTest {
     void calculateAndSaveEnquiryPeriodBadRequest() throws Exception {
         final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
         ControllerExceptionHandler handler = new ControllerExceptionHandler();
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new EnquiryPeriodController(enquiryPeriodService))
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .setControllerAdvice(handler)
                                          .build();
         mockMvc.perform(post("/enquiryPeriod/calculateAndSave")

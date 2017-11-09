@@ -50,8 +50,7 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
         LocalDateTime enquiryPeriodEndDate = tenderPeriod.getEndDate()
                                                    .minusDays(offset);
 
-        Boolean isValid = checkInterval(tenderPeriod.getStartDate(), enquiryPeriodEndDate, interval);
-        if (isValid) {
+        if (checkInterval(tenderPeriod.getStartDate(), enquiryPeriodEndDate, interval)) {
             createEntity(dataDto.getOcId(), tenderPeriod.getStartDate(), enquiryPeriodEndDate)
                 .ifPresent(s -> enquiryPeriodRepository.save(s));
         }

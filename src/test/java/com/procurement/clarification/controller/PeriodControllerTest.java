@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class EnquiryPeriodControllerTest {
+class PeriodControllerTest {
 
     @Test
     @DisplayName("Test /enquiryPeriod/save status: 201 - Created")
@@ -21,7 +21,7 @@ class EnquiryPeriodControllerTest {
         final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .build();
-        mockMvc.perform(post("/enquiryPeriod/save")
+        mockMvc.perform(post("/period/save")
                             .content(new JsonUtil().getResource("json/enquiry-period.json"))
                             .contentType(MediaType.APPLICATION_JSON))
                .andExpect(status().isCreated());
@@ -35,7 +35,7 @@ class EnquiryPeriodControllerTest {
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .setControllerAdvice(handler)
                                          .build();
-        mockMvc.perform(post("/enquiryPeriod/save")
+        mockMvc.perform(post("/period/save")
                             .content("{ }")
                             .contentType(MediaType.APPLICATION_JSON))
                .andExpect(status().isBadRequest())
@@ -48,8 +48,8 @@ class EnquiryPeriodControllerTest {
         final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .build();
-        mockMvc.perform(post("/enquiryPeriod/calculateAndSave")
-                            .content(new JsonUtil().getResource("json/enquiry-period.json"))
+        mockMvc.perform(post("/period/calculateAndSave")
+                            .content(new JsonUtil().getResource("json/period-data.json"))
                             .param("iso", "UA")
                             .contentType(MediaType.APPLICATION_JSON))
                .andExpect(status().isCreated());
@@ -63,7 +63,7 @@ class EnquiryPeriodControllerTest {
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .setControllerAdvice(handler)
                                          .build();
-        mockMvc.perform(post("/enquiryPeriod/calculateAndSave")
+        mockMvc.perform(post("/period/calculateAndSave")
                             .content("{ }")
                             .param("iso", "UA")
                             .contentType(MediaType.APPLICATION_JSON))

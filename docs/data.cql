@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS  ocds.enquiry_period (
 
 CREATE TABLE IF NOT EXISTS  ocds.enquiry (
     oc_id text,
-    enquiry_id UUID,
+    enquiry_id uuid,
     json_data text,
     is_answered boolean,
-    primary key(oc_id)
-);
+    primary key(oc_id,enquiry_id))
+    WITH CLUSTERING ORDER BY (enquiry_id DESC);

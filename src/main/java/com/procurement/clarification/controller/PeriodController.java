@@ -2,6 +2,7 @@ package com.procurement.clarification.controller;
 
 import com.procurement.clarification.exception.ValidationException;
 import com.procurement.clarification.model.dto.EnquiryPeriodDto;
+import com.procurement.clarification.model.dto.PeriodDataDto;
 import com.procurement.clarification.service.EnquiryPeriodService;
 import java.util.Optional;
 import javax.validation.Valid;
@@ -15,18 +16,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/enquiryPeriod")
-public class EnquiryPeriodController {
+@RequestMapping(path = "/period")
+public class PeriodController {
 
     private EnquiryPeriodService enquiryPeriodService;
 
-    public EnquiryPeriodController(EnquiryPeriodService enquiryPeriodService) {
+    public PeriodController(EnquiryPeriodService enquiryPeriodService) {
         this.enquiryPeriodService = enquiryPeriodService;
     }
 
     @PostMapping("/save")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public void saveEnquiryPeriod(@Valid @RequestBody final EnquiryPeriodDto dataDto,
+    public void savePeriod(@Valid @RequestBody final EnquiryPeriodDto dataDto,
                                   final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
@@ -36,12 +37,11 @@ public class EnquiryPeriodController {
 
     @PostMapping("/calculateAndSave")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public void calculateAndSaveEnquiryPeriod(@RequestParam final String iso,
-                                              @Valid @RequestBody final EnquiryPeriodDto dataDto,
+    public void calculateAndSavePeriod(@Valid @RequestBody final PeriodDataDto dataDto,
                                               final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
-        enquiryPeriodService.calculateAndSaveEnquiryPeriod(dataDto, iso);
+        enquiryPeriodService.calculateAndSaveEnquiryPeriod(dataDto);
     }
 }

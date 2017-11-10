@@ -13,15 +13,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class EnquiryPeriodControllerTest {
+class PeriodControllerTest {
 
     @Test
     @DisplayName("Test /enquiryPeriod/save status: 201 - Created")
     void saveEnquiryPeriodStatusCreated() throws Exception {
         final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new EnquiryPeriodController(enquiryPeriodService))
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .build();
-        mockMvc.perform(post("/enquiryPeriod/save")
+        mockMvc.perform(post("/period/save")
                             .content(new JsonUtil().getResource("json/enquiry-period.json"))
                             .contentType(MediaType.APPLICATION_JSON))
                .andExpect(status().isCreated());
@@ -32,10 +32,10 @@ class EnquiryPeriodControllerTest {
     void saveEnquiryPeriodStatusBadRequest() throws Exception {
         final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
         ControllerExceptionHandler handler = new ControllerExceptionHandler();
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new EnquiryPeriodController(enquiryPeriodService))
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .setControllerAdvice(handler)
                                          .build();
-        mockMvc.perform(post("/enquiryPeriod/save")
+        mockMvc.perform(post("/period/save")
                             .content("{ }")
                             .contentType(MediaType.APPLICATION_JSON))
                .andExpect(status().isBadRequest())
@@ -46,10 +46,10 @@ class EnquiryPeriodControllerTest {
     @DisplayName("Test /enquiryPeriod/calculateAndSave status: 201 - Created")
     void calculateAndSaveEnquiryPeriodStatusCreated() throws Exception {
         final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new EnquiryPeriodController(enquiryPeriodService))
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .build();
-        mockMvc.perform(post("/enquiryPeriod/calculateAndSave")
-                            .content(new JsonUtil().getResource("json/enquiry-period.json"))
+        mockMvc.perform(post("/period/calculateAndSave")
+                            .content(new JsonUtil().getResource("json/period-data.json"))
                             .param("iso", "UA")
                             .contentType(MediaType.APPLICATION_JSON))
                .andExpect(status().isCreated());
@@ -60,10 +60,10 @@ class EnquiryPeriodControllerTest {
     void calculateAndSaveEnquiryPeriodBadRequest() throws Exception {
         final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
         ControllerExceptionHandler handler = new ControllerExceptionHandler();
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new EnquiryPeriodController(enquiryPeriodService))
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .setControllerAdvice(handler)
                                          .build();
-        mockMvc.perform(post("/enquiryPeriod/calculateAndSave")
+        mockMvc.perform(post("/period/calculateAndSave")
                             .content("{ }")
                             .param("iso", "UA")
                             .contentType(MediaType.APPLICATION_JSON))

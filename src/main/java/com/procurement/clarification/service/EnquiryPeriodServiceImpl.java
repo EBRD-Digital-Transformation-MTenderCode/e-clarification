@@ -1,13 +1,17 @@
 package com.procurement.clarification.service;
 
 import com.procurement.clarification.model.dto.EnquiryPeriodDto;
+import com.procurement.clarification.model.dto.PeriodDataDto;
+import com.procurement.clarification.model.dto.TenderPeriodDto;
 import com.procurement.clarification.model.entity.EnquiryPeriodEntity;
-import com.procurement.clarification.model.entity.RulesEntity;
 import com.procurement.clarification.repository.EnquiryPeriodRepository;
 import com.procurement.clarification.repository.RulesRepository;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
@@ -24,26 +28,47 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
     @Override
     public void saveEnquiryPeriod(EnquiryPeriodDto dataDto) {
         Objects.requireNonNull(dataDto);
-        convertDtoToEntity(dataDto).ifPresent(s -> enquiryPeriodRepository.save(s));
+        createEntity(dataDto.getOcId(), dataDto.getStartDate(), dataDto.getEndDate()).ifPresent(s ->
+                                                                                                 enquiryPeriodRepository.save(s));
     }
 
     @Override
-    public void calculateAndSaveEnquiryPeriod(EnquiryPeriodDto dataDto, String iso) {
+    public void calculateAndSaveEnquiryPeriod(PeriodDataDto dataDto) {
         Objects.requireNonNull(dataDto);
-        Objects.requireNonNull(iso);
-        RulesEntity rules = rulesRepository.getByIso(iso);
-        dataDto.setEndDate(dataDto.getEndDate()
-                                  .minusDays(rules.getOffset()));
+        String offsetValue = rulesRepository.getValue(dataDto.getCountry(),
+                                                      dataDto.getProcurementMethodDetails(),
+                                                      "offset");
+        Long offset = Long.valueOf(offsetValue);
 
-        convertDtoToEntity(dataDto)
-            .ifPresent(period -> enquiryPeriodRepository.save(period));
+        String intervalValue = rulesRepository.getValue(dataDto.getCountry(),
+                                                        dataDto.getProcurementMethodDetails(),
+                                                        "interval");
+        Long interval = Long.valueOf(intervalValue);
+
+        TenderPeriodDto tenderPeriod = dataDto.getTenderPeriod();
+
+        LocalDateTime enquiryPeriodEndDate = tenderPeriod.getEndDate()
+                                                   .minusDays(offset);
+
+        if (checkInterval(tenderPeriod.getStartDate(), enquiryPeriodEndDate, interval)) {
+            createEntity(dataDto.getOcId(), tenderPeriod.getStartDate(), enquiryPeriodEndDate)
+                .ifPresent(s -> enquiryPeriodRepository.save(s));
+        }
     }
 
-    public Optional<EnquiryPeriodEntity> convertDtoToEntity(EnquiryPeriodDto dataDto) {
+    private Boolean checkInterval(LocalDateTime startDate, LocalDateTime endDate, Long interval) {
+        Long days = DAYS.between(startDate.toLocalDate(), endDate.toLocalDate());
+        return (days >= interval);
+    }
+
+    public Optional<EnquiryPeriodEntity> createEntity(String ocId, LocalDateTime startDate, LocalDateTime endDate) {
+        Objects.requireNonNull(ocId);
+        Objects.requireNonNull(startDate);
+        Objects.requireNonNull(endDate);
         EnquiryPeriodEntity enquiryPeriodEntity = new EnquiryPeriodEntity();
-        enquiryPeriodEntity.setOcId(dataDto.getOcId());
-        enquiryPeriodEntity.setStartDate(dataDto.getStartDate());
-        enquiryPeriodEntity.setEndDate(dataDto.getEndDate());
+        enquiryPeriodEntity.setOcId(ocId);
+        enquiryPeriodEntity.setStartDate(startDate);
+        enquiryPeriodEntity.setEndDate(endDate);
         return Optional.of(enquiryPeriodEntity);
     }
 }

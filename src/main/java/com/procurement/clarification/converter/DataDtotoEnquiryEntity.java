@@ -15,9 +15,9 @@ public class DataDtotoEnquiryEntity implements Converter<DataDto, EnquiryEntity>
 
     @Override
     public EnquiryEntity convert(final DataDto dataDto) {
-        EnquiryDto enquiryDto = dataDto.getEnquiry();
+        final EnquiryDto enquiryDto = dataDto.getEnquiry();
 
-        EnquiryEntity enquiryEntity = new EnquiryEntity();
+        final EnquiryEntity enquiryEntity = new EnquiryEntity();
         enquiryEntity.setOcId(dataDto.getOcid());
         enquiryEntity.setEnquiryId(getUUID(enquiryDto));
 
@@ -29,19 +29,19 @@ public class DataDtotoEnquiryEntity implements Converter<DataDto, EnquiryEntity>
         return enquiryEntity;
     }
 
-    UUID getUUID(EnquiryDto enquiryDto) {
+    UUID getUUID(final EnquiryDto enquiryDto) {
         return Objects.isNull(enquiryDto.getId())
                ? UUIDs.timeBased()
                : UUID.fromString(enquiryDto.getId());
     }
 
-    void setDate(EnquiryDto enquiryDto, final LocalDateTime localDateTime) {
+    void setDate(final EnquiryDto enquiryDto, final LocalDateTime localDateTime) {
         if (Objects.isNull(enquiryDto.getDate())) {
             enquiryDto.setDate(localDateTime);
         }
     }
 
-    boolean setAnswered(EnquiryDto enquiryDto) {
+    boolean setAnswered(final EnquiryDto enquiryDto) {
         if (Objects.nonNull(enquiryDto.getAnswer()) && Objects.nonNull(enquiryDto.getDateAnswered())) {
             return true;
         }

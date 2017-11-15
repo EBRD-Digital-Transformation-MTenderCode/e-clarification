@@ -30,6 +30,10 @@ import lombok.Setter;
     "threadID"
 })
 public class EnquiryDto {
+    public static final int MAX_LENGTH_TITLE = 100;
+    public static final int MAX_LENGHT_DESCRIPTION = 2500;
+    public static final int MAX_LENGHT_ANSWER = 2500;
+
     @JsonProperty("id")
     private String id;
 
@@ -44,16 +48,16 @@ public class EnquiryDto {
 
     @JsonProperty("title")
     @NotNull
-    @Size(min = 1, max = 100)
+    @Size(min = 1, max = MAX_LENGTH_TITLE)
     private final String title;
 
     @JsonProperty("description")
     @NotNull
-    @Size(min = 1, max = 2500)
+    @Size(min = 1, max = MAX_LENGHT_DESCRIPTION)
     private final String description;
 
     @JsonProperty("answer")
-    @Max(2500)
+    @Max(MAX_LENGHT_ANSWER)
     private final String answer;
 
     @JsonProperty("dateAnswered")

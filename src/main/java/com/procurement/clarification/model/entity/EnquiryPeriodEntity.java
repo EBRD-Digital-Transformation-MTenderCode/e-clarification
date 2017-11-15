@@ -21,27 +21,28 @@ public class EnquiryPeriodEntity {
     @Column(value = "end_date")
     private LocalDateTime endDate;
 
-    public boolean equals(Object obj) {
-        if (obj == this)
+    public boolean equals(final Object obj) {
+        if (obj == this) {
             return true;
-
-
-
-        if (obj == null)
-            return false;
-
-
-
-        if (!(getClass() == obj.getClass()))
-            return false;
-        else {
-            EnquiryPeriodEntity tmp = (EnquiryPeriodEntity) obj;
-            if (tmp.ocId == this.ocId &&
-                tmp.endDate == this.endDate &&
-                tmp.startDate == this.startDate)
-                return true;
-            else
-                return false;
         }
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(getClass() == obj.getClass())) {
+            return false;
+        } else {
+            final EnquiryPeriodEntity tmp = (EnquiryPeriodEntity) obj;
+
+            return tmp.ocId == this.ocId &&
+                tmp.endDate == this.endDate &&
+                tmp.startDate == this.startDate;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return ocId.hashCode();
     }
 }

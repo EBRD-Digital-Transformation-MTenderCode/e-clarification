@@ -16,15 +16,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
+    public static final String ERROR_MESSAGE = "Houston we have a problem";
+
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ValidationException.class)
     public ValidationErrorResponse handleValidationContractProcessPeriod(
         final ValidationException e) {
-        String message = "Houston we have a problem";
+
         return new ValidationErrorResponse(
-            message,
-            e.getErrors().getFieldErrors().stream()
+            ERROR_MESSAGE,
+            e.getErrors()
+             .getFieldErrors()
+             .stream()
              .map(f -> new ValidationErrorResponse.ErrorPoint(
                  f.getField(),
                  f.getDefaultMessage(),
@@ -36,8 +40,8 @@ public class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(JsonMappingException.class)
     public MappingErrorResponse handleJsonMappingException(final JsonMappingException e) {
-        String message = "Houston we have a problem";
-        return new MappingErrorResponse(message, e);
+
+        return new MappingErrorResponse(ERROR_MESSAGE, e);
     }
 
     @ResponseBody
@@ -46,5 +50,4 @@ public class ControllerExceptionHandler {
     public ErrorInsertResponse handleErrorInsertException(final ErrorInsertException e) {
         return new ErrorInsertResponse(e.getMessage());
     }
-
 }

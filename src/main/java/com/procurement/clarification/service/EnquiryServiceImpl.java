@@ -18,10 +18,10 @@ public class EnquiryServiceImpl implements EnquiryService {
     private JsonUtil jsonUtil;
     private ConversionService conversionService;
 
-    public EnquiryServiceImpl(EnquiryRepository enquiryRepository,
-                              EnquiryPeriodRepository periodRepository,
-                              JsonUtil jsonUtil,
-                              ConversionService conversionService) {
+    public EnquiryServiceImpl(final EnquiryRepository enquiryRepository,
+                              final EnquiryPeriodRepository periodRepository,
+                              final JsonUtil jsonUtil,
+                              final ConversionService conversionService) {
         this.enquiryRepository = enquiryRepository;
         this.periodRepository = periodRepository;
         this.jsonUtil = jsonUtil;
@@ -29,18 +29,18 @@ public class EnquiryServiceImpl implements EnquiryService {
     }
 
     @Override
-    public EnquiryEntity saveEnquiry(DataDto dataDto) {
+    public EnquiryEntity saveEnquiry(final DataDto dataDto) {
         final LocalDateTime localDateTime = LocalDateTime.now();
         checkPeriod(localDateTime, dataDto.getOcid());
-        EnquiryEntity enquiryEntity = conversionService.convert(dataDto, EnquiryEntity.class);
-        return enquiryRepository.save(enquiryEntity);//todo в тестах замокать репозиторий и проверить что сейв
+        final EnquiryEntity enquiryEntity = conversionService.convert(dataDto, EnquiryEntity.class);
+        return enquiryRepository.save(enquiryEntity); //todo в тестах замокать репозиторий и проверить что сейв
         // вызывается с моими параметрами только один раз
     }
 
     private void checkPeriod(final LocalDateTime localDateTime, final String tenderId) {
         final EnquiryPeriodEntity periodEntity = periodRepository.getByOcId(tenderId);
-        boolean localDateTimeAfter = localDateTime.isAfter(periodEntity.getStartDate());
-        boolean localDateTimeBefore = localDateTime.isBefore(periodEntity.getEndDate());
+        final boolean localDateTimeAfter = localDateTime.isAfter(periodEntity.getStartDate());
+        final boolean localDateTimeBefore = localDateTime.isBefore(periodEntity.getEndDate());
         if (!localDateTimeAfter && !localDateTimeBefore) {
             throw new ErrorInsertException("Date not in period.");
         }

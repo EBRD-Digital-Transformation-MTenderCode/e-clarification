@@ -40,35 +40,35 @@ public class EnquiryDto {
 
     @JsonProperty("author")
     @NotEmpty
-    private AuthorDto author;
+    private final AuthorDto author;
 
     @JsonProperty("title")
     @NotNull
     @Size(min = 1, max = 100)
-    private String title;
+    private final String title;
 
     @JsonProperty("description")
     @NotNull
     @Size(min = 1, max = 2500)
-    private String description;
+    private final String description;
 
     @JsonProperty("answer")
     @Max(2500)
-    private String answer;
+    private final String answer;
 
     @JsonProperty("dateAnswered")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime dateAnswered;
+    private final LocalDateTime dateAnswered;
 
     @JsonProperty("relatedItem")
-    private String relatedItem;
+    private final String relatedItem;
 
     @JsonProperty("relatedLot")
-    private String relatedLot;
+    private final String relatedLot;
 
     @JsonProperty("threadID")
-    private String threadID;
+    private final String threadID;
 
     @JsonCreator
     public EnquiryDto(@JsonProperty("id") final String id,

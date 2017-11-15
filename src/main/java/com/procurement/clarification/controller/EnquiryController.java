@@ -35,6 +35,6 @@ public class EnquiryController {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
-        enquiryService.insertData(dataDto);
+        enquiryService.saveEnquiry(dataDto);
     }
 }

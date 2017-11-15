@@ -25,12 +25,12 @@ public class EnquiryPeriodEntity {
         if (obj == this)
             return true;
 
-     /* obj ссылается на null */
+
 
         if (obj == null)
             return false;
 
-     /* Удостоверимся, что ссылки имеют тот же самый тип */
+
 
         if (!(getClass() == obj.getClass()))
             return false;

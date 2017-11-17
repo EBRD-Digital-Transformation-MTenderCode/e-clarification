@@ -21,6 +21,7 @@ public class EnquiryPeriodEntity {
     @Column(value = "end_date")
     private LocalDateTime endDate;
 
+    @Override
     public boolean equals(final Object obj) {
         if (obj == this) {
             return true;
@@ -35,9 +36,9 @@ public class EnquiryPeriodEntity {
         } else {
             final EnquiryPeriodEntity tmp = (EnquiryPeriodEntity) obj;
 
-            return tmp.ocId == this.ocId &&
-                tmp.endDate == this.endDate &&
-                tmp.startDate == this.startDate;
+            return tmp.ocId.equals(this.ocId) &&
+                tmp.endDate.equals(this.endDate) &&
+                tmp.startDate.equals(this.startDate);
         }
     }
 

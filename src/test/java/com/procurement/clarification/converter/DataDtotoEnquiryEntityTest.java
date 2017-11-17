@@ -1,7 +1,11 @@
 package com.procurement.clarification.converter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.procurement.clarification.model.dto.AuthorDto;
+import com.procurement.clarification.model.dto.DataDto;
 import com.procurement.clarification.model.dto.EnquiryDto;
+import com.procurement.clarification.model.entity.EnquiryEntity;
+import com.procurement.clarification.utils.JsonUtil;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,6 +27,7 @@ public class DataDtotoEnquiryEntityTest {
     private final static String RELATED_ID = "related_id";
     private final static String RELATED_LOT = "related_lot";
     private final static String THREAD_ID = "thread_id";
+    public static final String OCID = "ocds-213czf-000-00001";
 
     private static EnquiryDto enquiryDto;
 
@@ -42,6 +47,23 @@ public class DataDtotoEnquiryEntityTest {
                                     RELATED_ID,
                                     RELATED_LOT,
                                     THREAD_ID);
+    }
+
+    @Test
+    @DisplayName("Converter")
+    void convertTest(){
+        DataDto dataDto  = new DataDto(OCID, enquiryDto);
+        EnquiryEntity enquiryEntity = new EnquiryEntity();
+        enquiryEntity.setOcId(OCID);
+        enquiryEntity.setEnquiryId(dataDtotoEnquiryEntity.getUUID(enquiryDto));
+        enquiryEntity.setJsonData(new JsonUtil(new ObjectMapper()).toJson(enquiryDto));
+        enquiryEntity.setIsAnswered(true);
+
+        EnquiryEntity enquiryEntityConverted = dataDtotoEnquiryEntity.convert(dataDto);
+
+        assertEquals(enquiryEntity,enquiryEntityConverted);
+
+
     }
 
     @Test

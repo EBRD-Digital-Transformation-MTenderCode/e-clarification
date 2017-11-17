@@ -23,4 +23,31 @@ public class EnquiryEntity {
 
     @Column(value = "is_answered")
     private Boolean isAnswered;
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(getClass() == obj.getClass())) {
+            return false;
+        } else {
+            final EnquiryEntity tmp = (EnquiryEntity) obj;
+
+            return tmp.ocId.equals(this.ocId) &&
+                tmp.enquiryId.equals(this.enquiryId) &&
+                tmp.jsonData.equals(this.jsonData) &&
+                tmp.isAnswered.equals(this.isAnswered);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return enquiryId.hashCode();
+    }
 }

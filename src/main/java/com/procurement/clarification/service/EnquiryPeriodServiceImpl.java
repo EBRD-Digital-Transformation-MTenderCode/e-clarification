@@ -8,7 +8,7 @@ import com.procurement.clarification.repository.EnquiryPeriodRepository;
 import com.procurement.clarification.repository.RulesRepository;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Optional;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -18,19 +18,20 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
 
     private EnquiryPeriodRepository enquiryPeriodRepository;
     private RulesRepository rulesRepository;
+    private ConversionService conversionService;
 
     public EnquiryPeriodServiceImpl(final EnquiryPeriodRepository enquiryPeriodRepository,
-                                    final RulesRepository rulesRepository) {
+                                    final RulesRepository rulesRepository,
+                                    final ConversionService conversionService) {
         this.enquiryPeriodRepository = enquiryPeriodRepository;
         this.rulesRepository = rulesRepository;
+        this.conversionService = conversionService;
     }
 
     @Override
     public void saveEnquiryPeriod(final EnquiryPeriodDto dataDto) {
-        Objects.requireNonNull(dataDto);
-        createEntity(dataDto.getOcId(), dataDto.getStartDate(),
-                     dataDto.getEndDate()).ifPresent(s ->
-                                                         enquiryPeriodRepository.save(s));
+        EnquiryPeriodEntity enquiryPeriodEntity = conversionService.convert(dataDto, EnquiryPeriodEntity.class);
+        enquiryPeriodRepository.save(enquiryPeriodEntity);
     }
 
     @Override
@@ -52,26 +53,13 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
                                                                .minusDays(offset);
 
         if (checkInterval(tenderPeriod.getStartDate(), enquiryPeriodEndDate, interval)) {
-            createEntity(dataDto.getOcId(), tenderPeriod.getStartDate(), enquiryPeriodEndDate)
-                .ifPresent(s -> enquiryPeriodRepository.save(s));
+            EnquiryPeriodEntity enquiryPeriodEntity = conversionService.convert(dataDto, EnquiryPeriodEntity.class);
+            enquiryPeriodRepository.save(enquiryPeriodEntity);
         }
     }
 
     private Boolean checkInterval(final LocalDateTime startDate, final LocalDateTime endDate, final Long interval) {
         final Long days = DAYS.between(startDate.toLocalDate(), endDate.toLocalDate());
         return days >= interval;
-    }
-
-    public Optional<EnquiryPeriodEntity> createEntity(final String ocId,
-                                                      final LocalDateTime startDate,
-                                                      final LocalDateTime endDate) {
-        Objects.requireNonNull(ocId);
-        Objects.requireNonNull(startDate);
-        Objects.requireNonNull(endDate);
-        final EnquiryPeriodEntity enquiryPeriodEntity = new EnquiryPeriodEntity();
-        enquiryPeriodEntity.setOcId(ocId);
-        enquiryPeriodEntity.setStartDate(startDate);
-        enquiryPeriodEntity.setEndDate(endDate);
-        return Optional.of(enquiryPeriodEntity);
     }
 }

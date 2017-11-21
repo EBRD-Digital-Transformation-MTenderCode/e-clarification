@@ -9,5 +9,5 @@ public interface EnquiryPeriodService {
 
     void saveEnquiryPeriod(EnquiryPeriodDto data);
 
-    void calculateAndSaveEnquiryPeriod(PeriodDataDto data);
+    EnquiryPeriodDto calculateAndSaveEnquiryPeriod(PeriodDataDto data);
 }

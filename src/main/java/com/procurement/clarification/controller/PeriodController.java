@@ -7,6 +7,7 @@ import com.procurement.clarification.service.EnquiryPeriodService;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,12 +37,12 @@ public class PeriodController {
     }
 
     @PostMapping("/calculateAndSave")
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void calculateAndSavePeriod(@Valid @RequestBody final PeriodDataDto dataDto,
-                                              final BindingResult bindingResult) {
+    public ResponseEntity<EnquiryPeriodDto> calculateAndSavePeriod(@Valid @RequestBody final PeriodDataDto dataDto,
+                                                          final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
-        enquiryPeriodService.calculateAndSaveEnquiryPeriod(dataDto);
+        EnquiryPeriodDto enquiryPeriod = enquiryPeriodService.calculateAndSaveEnquiryPeriod(dataDto);
+        return new ResponseEntity<>(enquiryPeriod, HttpStatus.CREATED);
     }
 }

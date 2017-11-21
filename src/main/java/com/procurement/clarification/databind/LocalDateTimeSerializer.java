@@ -8,12 +8,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
+
 public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
-    private final static DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+
+    private static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder()
         .parseCaseInsensitive()
-        .append(DateTimeFormatter.ISO_LOCAL_DATE)
+        .append(ISO_LOCAL_DATE)
         .appendLiteral('T')
-        .append(DateTimeFormatter.ofPattern("HH:mm:ss.nnnnnnnnn"))
+        .append(ISO_LOCAL_TIME)
         .appendLiteral('Z')
         .toFormatter();
 
@@ -25,7 +29,7 @@ public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
     public void serialize(final LocalDateTime localDateTime,
                           final JsonGenerator jsonGenerator,
                           final SerializerProvider serializerProvider) throws IOException {
-        jsonGenerator.writeString(localDateTime.format(formatter));
+        jsonGenerator.writeString(localDateTime.format(FORMATTER));
     }
 
     @Override

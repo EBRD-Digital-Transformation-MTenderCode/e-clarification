@@ -2,6 +2,7 @@ package com.procurement.clarification.controller;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.procurement.clarification.exception.ErrorInsertException;
+import com.procurement.clarification.exception.PeriodException;
 import com.procurement.clarification.exception.ValidationException;
 import com.procurement.clarification.model.dto.response.ErrorInsertResponse;
 import com.procurement.clarification.model.dto.response.MappingErrorResponse;
@@ -44,6 +45,13 @@ public class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ErrorInsertException.class)
     public ErrorInsertResponse handleErrorInsertException(final ErrorInsertException e) {
+        return new ErrorInsertResponse(e.getMessage());
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PeriodException.class)
+    public ErrorInsertResponse handleErrorInsertException(final PeriodException e) {
         return new ErrorInsertResponse(e.getMessage());
     }
 

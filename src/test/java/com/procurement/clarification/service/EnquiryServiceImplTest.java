@@ -40,7 +40,8 @@ public class EnquiryServiceImplTest {
     private final EnquiryRepository enquiryRepository = mock(EnquiryRepository.class);
     private final ConversionService conversionService = mock(ConversionService.class);
 
-  private final   EnquiryServiceImpl enquiryService = new EnquiryServiceImpl(enquiryRepository, periodRepository, new JsonUtil
+    private final EnquiryServiceImpl enquiryService = new EnquiryServiceImpl(enquiryRepository, periodRepository, new
+        JsonUtil
         (new ObjectMapper()), conversionService);
 
     @Test
@@ -67,18 +68,18 @@ public class EnquiryServiceImplTest {
 
         EnquiryPeriodEntity enquiryPeriodEntity = new EnquiryPeriodEntity();
         enquiryPeriodEntity.setOcId(OCID);
-        enquiryPeriodEntity.setStartDate(LocalDateTime.now().minusDays(2));
-        enquiryPeriodEntity.setEndDate(LocalDateTime.now().plusDays(2));
-
-
+        enquiryPeriodEntity.setStartDate(LocalDateTime.now()
+                                                      .minusDays(2));
+        enquiryPeriodEntity.setEndDate(LocalDateTime.now()
+                                                    .plusDays(2));
 
         when(conversionService.convert(dataDto, EnquiryEntity.class)).thenReturn(enquiryEntity);
 
-        EnquiryServiceImpl spy= spy(enquiryService);
-        doNothing().when(spy).checkPeriod(LocalDateTime.now(),OCID);
+        EnquiryServiceImpl spy = spy(enquiryService);
+        doNothing().when(spy)
+                   .checkPeriod(LocalDateTime.now(), OCID);
         when(periodRepository.getByOcId(OCID)).thenReturn(enquiryPeriodEntity);
         enquiryService.saveEnquiry(dataDto);
-
 
         verify(enquiryRepository, times(1)).save(enquiryEntity);
     }
@@ -88,12 +89,7 @@ public class EnquiryServiceImplTest {
     void checkPeriodTest() {
 
         when(periodRepository.getByOcId(OCID)).thenThrow(new NullPointerException("nullPointer"));
-        assertThrows(NullPointerException.class,()-> enquiryService.checkPeriod(LOCAL_DATE_TIME,OCID));
-
-
-
-
-
+        assertThrows(NullPointerException.class, () -> enquiryService.checkPeriod(LOCAL_DATE_TIME, OCID));
     }
 
     @Test
@@ -101,11 +97,13 @@ public class EnquiryServiceImplTest {
     void checkPeriodIncorrectDateTest() {
         EnquiryPeriodEntity enquiryPeriodEntity = new EnquiryPeriodEntity();
         enquiryPeriodEntity.setOcId(OCID);
-        enquiryPeriodEntity.setStartDate(LocalDateTime.now().minusDays(3));
-        enquiryPeriodEntity.setEndDate(LocalDateTime.now().minusDays(2));
-
+        enquiryPeriodEntity.setStartDate(LocalDateTime.now()
+                                                      .minusDays(3));
+        enquiryPeriodEntity.setEndDate(LocalDateTime.now()
+                                                    .minusDays(2));
 
         when(periodRepository.getByOcId(OCID)).thenReturn(enquiryPeriodEntity);
-        assertThrows(ErrorInsertException.class,()->enquiryService.checkPeriod(LOCAL_DATE_TIME,OCID));
+        assertThrows(ErrorInsertException.class, () -> enquiryService.checkPeriod(LOCAL_DATE_TIME, OCID));
     }
+
 }

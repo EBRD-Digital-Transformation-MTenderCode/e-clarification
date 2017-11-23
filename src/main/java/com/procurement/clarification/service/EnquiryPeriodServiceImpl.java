@@ -31,10 +31,9 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
     @Override
     public void saveEnquiryPeriod(final EnquiryPeriodDto dataDto) {
         EnquiryPeriodEntity enquiryPeriodEntity = conversionService.convert(dataDto, EnquiryPeriodEntity.class);
-        if (enquiryPeriodEntity!=null){
+        if (enquiryPeriodEntity != null) {
             enquiryPeriodRepository.save(enquiryPeriodEntity);
         }
-
     }
 
     @Override
@@ -57,14 +56,13 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
 
         if (checkInterval(tenderPeriod.getStartDate(), enquiryPeriodEndDate, interval)) {
             EnquiryPeriodEntity enquiryPeriodEntity = conversionService.convert(dataDto, EnquiryPeriodEntity.class);
-            if (enquiryPeriodEntity!=null){
+            if (enquiryPeriodEntity != null) {
                 enquiryPeriodRepository.save(enquiryPeriodEntity);
             }
-
         }
     }
 
-    private Boolean checkInterval(final LocalDateTime startDate, final LocalDateTime endDate, final Long interval) {
+     Boolean checkInterval(final LocalDateTime startDate, final LocalDateTime endDate, final Long interval) {
         final Long days = DAYS.between(startDate.toLocalDate(), endDate.toLocalDate());
         return days >= interval;
     }

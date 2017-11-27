@@ -54,7 +54,7 @@ public class ControllerExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NullPointerException.class)
-    public NullPointerException handleNullPointerException(final ErrorInsertException e) {
-        return new NullPointerException(e.getMessage());
+    public ErrorInsertResponse handleNullPointerException(final NullPointerException e) {
+        return new ErrorInsertResponse(e.getMessage());
     }
 }

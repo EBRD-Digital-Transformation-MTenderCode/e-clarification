@@ -6,6 +6,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface EnquiryService {
-    //void insertData(DataDto dataDto);
     EnquiryEntity saveEnquiry(DataDto dataDto);
 }

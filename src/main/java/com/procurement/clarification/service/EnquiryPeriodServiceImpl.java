@@ -30,7 +30,7 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
 
     @Override
     public void saveEnquiryPeriod(final EnquiryPeriodDto dataDto) {
-        EnquiryPeriodEntity enquiryPeriodEntity = conversionService.convert(dataDto, EnquiryPeriodEntity.class);
+        final EnquiryPeriodEntity enquiryPeriodEntity = conversionService.convert(dataDto, EnquiryPeriodEntity.class);
         if (enquiryPeriodEntity != null) {
             enquiryPeriodRepository.save(enquiryPeriodEntity);
         }
@@ -55,14 +55,15 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
                                                                .minusDays(offset);
 
         if (checkInterval(tenderPeriod.getStartDate(), enquiryPeriodEndDate, interval)) {
-            EnquiryPeriodEntity enquiryPeriodEntity = conversionService.convert(dataDto, EnquiryPeriodEntity.class);
+            final EnquiryPeriodEntity enquiryPeriodEntity = conversionService.convert(dataDto, EnquiryPeriodEntity
+                .class);
             if (enquiryPeriodEntity != null) {
                 enquiryPeriodRepository.save(enquiryPeriodEntity);
             }
         }
     }
 
-     Boolean checkInterval(final LocalDateTime startDate, final LocalDateTime endDate, final Long interval) {
+    Boolean checkInterval(final LocalDateTime startDate, final LocalDateTime endDate, final Long interval) {
         final Long days = DAYS.between(startDate.toLocalDate(), endDate.toLocalDate());
         return days >= interval;
     }

@@ -39,14 +39,13 @@ public class EnquiryServiceImpl implements EnquiryService {
 
     void checkPeriod(final LocalDateTime localDateTime, final String tenderId) {
         final EnquiryPeriodEntity periodEntity = Optional.ofNullable(periodRepository.getByOcId(tenderId))
-            .orElseThrow(() -> new NullPointerException("Period not found"));
+                                                         .orElseThrow(() -> new NullPointerException("Period not " +
+                                                                                                         "found"));
 
-            final boolean localDateTimeAfter = localDateTime.isAfter(periodEntity.getStartDate());
-            final boolean localDateTimeBefore = localDateTime.isBefore(periodEntity.getEndDate());
-            if (!localDateTimeAfter || !localDateTimeBefore) {
-                throw new ErrorInsertException("Date not in period.");
-            }
-
-
+        final boolean localDateTimeAfter = localDateTime.isAfter(periodEntity.getStartDate());
+        final boolean localDateTimeBefore = localDateTime.isBefore(periodEntity.getEndDate());
+        if (!localDateTimeAfter || !localDateTimeBefore) {
+            throw new ErrorInsertException("Date not in period.");
+        }
     }
 }

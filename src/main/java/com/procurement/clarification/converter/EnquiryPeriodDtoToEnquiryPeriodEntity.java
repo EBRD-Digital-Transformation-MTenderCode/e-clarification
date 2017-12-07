@@ -7,7 +7,7 @@ import org.springframework.core.convert.converter.Converter;
 public class EnquiryPeriodDtoToEnquiryPeriodEntity implements Converter<EnquiryPeriodDto, EnquiryPeriodEntity> {
 
     @Override
-    public  EnquiryPeriodEntity convert(EnquiryPeriodDto enquiryPeriodDto) {
+    public EnquiryPeriodEntity convert(final EnquiryPeriodDto enquiryPeriodDto) {
 
         final EnquiryPeriodEntity enquiryPeriodEntity = new EnquiryPeriodEntity();
         enquiryPeriodEntity.setOcId(enquiryPeriodDto.getOcId());

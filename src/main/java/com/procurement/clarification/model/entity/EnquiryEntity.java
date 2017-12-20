@@ -8,19 +8,19 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-@Table("enquiry")
+@Table("clarification_enquiry")
 @Getter
 @Setter
 public class EnquiryEntity {
     @PrimaryKeyColumn(name = "oc_id", type = PrimaryKeyType.PARTITIONED)
     private String ocId;
 
+    @PrimaryKeyColumn(value = "is_answered", type = PrimaryKeyType.CLUSTERED)
+    private Boolean isAnswered;
+
     @PrimaryKeyColumn(value = "enquiry_id", type = PrimaryKeyType.CLUSTERED)
     private UUID enquiryId;
 
     @Column(value = "json_data")
     private String jsonData;
-
-    @Column(value = "is_answered")
-    private Boolean isAnswered;
 }

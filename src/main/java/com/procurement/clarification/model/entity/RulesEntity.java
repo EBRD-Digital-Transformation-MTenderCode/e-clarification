@@ -7,7 +7,7 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-@Table("enquiry_rules")
+@Table("clarification_rules")
 @Getter
 @Setter
 public class RulesEntity {

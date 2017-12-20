@@ -37,4 +37,9 @@ public class EnquiryController {
         }
         enquiryService.insertData(dataDto);
     }
+
+    @PostMapping(value = "/checkEnquiries")
+    public ResponseEntity<Boolean> checkEnquiries(@RequestParam final String  ocid) {
+        return new ResponseEntity<>(enquiryService.checkEnquiries(ocid), HttpStatus.OK);
+    }
 }

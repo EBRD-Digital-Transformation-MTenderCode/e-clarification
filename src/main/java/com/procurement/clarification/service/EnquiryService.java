@@ -6,4 +6,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface EnquiryService {
     void insertData(DataDto dataDto);
+
+    Boolean checkEnquiries(String ocid);
 }

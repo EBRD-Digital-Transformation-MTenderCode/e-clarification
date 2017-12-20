@@ -47,6 +47,11 @@ public class EnquiryServiceImpl implements EnquiryService {
         }
     }
 
+    @Override
+    public Boolean checkEnquiries(String ocid) {
+        return !enquiryRepository.getByOcIdNotAnswered(ocid).isPresent();
+    }
+
     private Optional<EnquiryEntity> convertDtoToEntity(String ocId, LocalDateTime localDateTime, EnquiryDto enquiryDto) {
         Objects.requireNonNull(ocId);
         Objects.requireNonNull(enquiryDto);

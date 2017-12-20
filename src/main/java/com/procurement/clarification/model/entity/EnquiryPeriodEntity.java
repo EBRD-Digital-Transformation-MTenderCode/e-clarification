@@ -8,7 +8,7 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-@Table("enquiry_period")
+@Table("clarification_period")
 @Getter
 @Setter
 public class EnquiryPeriodEntity {

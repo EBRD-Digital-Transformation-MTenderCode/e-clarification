@@ -8,20 +8,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.procurement.clarification.databind.LocalDateTimeDeserializer;
 import com.procurement.clarification.databind.LocalDateTimeSerializer;
 import java.time.LocalDateTime;
-import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 @JsonPropertyOrder({
-    "ocid",
-    "startDate",
-    "endDate"
+        "startDate",
+        "endDate"
 })
 public class EnquiryPeriodDto {
-    @NotNull
-    @JsonProperty("ocid")
-    private String ocId;
-
     @JsonProperty("startDate")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -33,10 +27,8 @@ public class EnquiryPeriodDto {
     private LocalDateTime endDate;
 
     @JsonCreator
-    public EnquiryPeriodDto(@JsonProperty("ocid") final String ocId,
-                            @JsonProperty("startDate") final LocalDateTime startDate,
+    public EnquiryPeriodDto(@JsonProperty("startDate") final LocalDateTime startDate,
                             @JsonProperty("endDate") final LocalDateTime endDate) {
-        this.ocId = ocId;
         this.startDate = startDate;
         this.endDate = endDate;
     }

@@ -1,7 +1,7 @@
 package com.procurement.clarification.controller;
 
 import com.procurement.clarification.JsonUtil;
-import com.procurement.clarification.service.EnquiryPeriodService;
+import com.procurement.clarification.service.PeriodService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -18,7 +18,7 @@ class PeriodControllerTest {
     @Test
     @DisplayName("Test /enquiryPeriod/save status: 201 - Created")
     void saveEnquiryPeriodStatusCreated() throws Exception {
-        final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
+        final PeriodService enquiryPeriodService = mock(PeriodService.class);
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .build();
         mockMvc.perform(post("/period/save")
@@ -30,7 +30,7 @@ class PeriodControllerTest {
     @Test
     @DisplayName("Test /enquiryPeriod/save status: 400 - Bad Request")
     void saveEnquiryPeriodStatusBadRequest() throws Exception {
-        final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
+        final PeriodService enquiryPeriodService = mock(PeriodService.class);
         ControllerExceptionHandler handler = new ControllerExceptionHandler();
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .setControllerAdvice(handler)
@@ -45,7 +45,7 @@ class PeriodControllerTest {
     @Test
     @DisplayName("Test /enquiryPeriod/calculateAndSave status: 201 - Created")
     void calculateAndSaveEnquiryPeriodStatusCreated() throws Exception {
-        final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
+        final PeriodService enquiryPeriodService = mock(PeriodService.class);
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .build();
         mockMvc.perform(post("/period/calculateAndSave")
@@ -58,7 +58,7 @@ class PeriodControllerTest {
     @Test
     @DisplayName("Test /enquiryPeriod/calculateAndSave status: 400 - Bad Request")
     void calculateAndSaveEnquiryPeriodBadRequest() throws Exception {
-        final EnquiryPeriodService enquiryPeriodService = mock(EnquiryPeriodService.class);
+        final PeriodService enquiryPeriodService = mock(PeriodService.class);
         ControllerExceptionHandler handler = new ControllerExceptionHandler();
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new PeriodController(enquiryPeriodService))
                                          .setControllerAdvice(handler)

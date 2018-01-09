@@ -5,9 +5,10 @@ import com.procurement.clarification.exception.ErrorInsertException;
 import com.procurement.clarification.model.dto.DataDto;
 import com.procurement.clarification.model.dto.EnquiryDto;
 import com.procurement.clarification.model.entity.EnquiryEntity;
-import com.procurement.clarification.model.entity.EnquiryPeriodEntity;
-import com.procurement.clarification.repository.EnquiryPeriodRepository;
+import com.procurement.clarification.model.entity.PeriodEntity;
 import com.procurement.clarification.repository.EnquiryRepository;
+import com.procurement.clarification.repository.PeriodRepository;
+import com.procurement.clarification.utils.DateUtil;
 import com.procurement.clarification.utils.JsonUtil;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -17,48 +18,49 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EnquiryServiceImpl implements EnquiryService {
-    private EnquiryRepository enquiryRepository;
-    private EnquiryPeriodRepository periodRepository;
-    private JsonUtil jsonUtil;
 
-    public EnquiryServiceImpl(EnquiryRepository enquiryRepository,
-                              EnquiryPeriodRepository periodRepository,
-                              JsonUtil jsonUtil) {
+    private final EnquiryRepository enquiryRepository;
+    private final PeriodRepository periodRepository;
+    private final JsonUtil jsonUtil;
+    private final DateUtil dateUtil;
+
+    public EnquiryServiceImpl(final EnquiryRepository enquiryRepository,
+                              final PeriodRepository periodRepository,
+                              final JsonUtil jsonUtil,
+                              final DateUtil dateUtil) {
         this.enquiryRepository = enquiryRepository;
         this.periodRepository = periodRepository;
         this.jsonUtil = jsonUtil;
+        this.dateUtil = dateUtil;
     }
 
     @Override
-    public void insertData(DataDto dataDto) {
-        Objects.requireNonNull(dataDto);
+    public void insertData(final DataDto dataDto) {
         final LocalDateTime localDateTime = LocalDateTime.now();
         checkPeriod(localDateTime, dataDto.getOcid());
-        convertDtoToEntity(dataDto.getOcid(), localDateTime, dataDto.getEnquiry())
-            .ifPresent(enquiry -> enquiryRepository.save(enquiry));
+        enquiryRepository.save(getEntity(dataDto.getOcid(), localDateTime, dataDto.getEnquiry()));
     }
 
-    private void checkPeriod(final LocalDateTime localDateTime, final String ocid) {
-        final EnquiryPeriodEntity periodEntity = periodRepository.getByOcId(ocid);
-        boolean localDateTimeAfter = localDateTime.isAfter(periodEntity.getStartDate());
-        boolean localDateTimeBefore = localDateTime.isBefore(periodEntity.getEndDate());
+    private void checkPeriod(final LocalDateTime dateTime, final String ocid) {
+        final PeriodEntity periodEntity = periodRepository.getByOcId(ocid);
+        final boolean localDateTimeAfter = dateTime.isAfter(dateUtil.dateToLocal(periodEntity.getStartDate()));
+        final boolean localDateTimeBefore = dateTime.isBefore(dateUtil.dateToLocal(periodEntity.getEndDate()));
         if (!localDateTimeAfter && !localDateTimeBefore) {
             throw new ErrorInsertException("Date not in period.");
         }
     }
 
     @Override
-    public Boolean checkEnquiries(String ocid) {
+    public Boolean checkEnquiries(final String ocid) {
         return !enquiryRepository.getByOcIdNotAnswered(ocid).isPresent();
     }
 
-    private Optional<EnquiryEntity> convertDtoToEntity(String ocId, LocalDateTime localDateTime, EnquiryDto enquiryDto) {
-        Objects.requireNonNull(ocId);
-        Objects.requireNonNull(enquiryDto);
-        Objects.requireNonNull(localDateTime);
-        EnquiryEntity enquiryEntity = new EnquiryEntity();
+    private EnquiryEntity getEntity(final String ocId,
+                                    final LocalDateTime localDateTime,
+                                    final EnquiryDto enquiryDto) {
+        final EnquiryEntity enquiryEntity = new EnquiryEntity();
         enquiryEntity.setOcId(ocId);
-        UUID enquiryId;
+        final UUID enquiryId;
         if (Objects.isNull(enquiryDto.getId())) {
             enquiryId = UUIDs.timeBased();
             enquiryDto.setId(enquiryId.toString());
@@ -73,6 +75,6 @@ public class EnquiryServiceImpl implements EnquiryService {
         }
         enquiryEntity.setEnquiryId(enquiryId);
         enquiryEntity.setJsonData(jsonUtil.toJson(enquiryDto));
-        return Optional.of(enquiryEntity);
+        return enquiryEntity;
     }
 }

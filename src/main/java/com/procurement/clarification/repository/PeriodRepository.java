@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PeriodRepository extends CassandraRepository<PeriodEntity, String> {
 
-    @Query(value = "select * from enquiry_period where oc_id=?0 LIMIT 1")
-    PeriodEntity getByOcId(String ocId);
+    @Query(value = "select * from clarification_period where cp_id=?0 LIMIT 1")
+    PeriodEntity getByOcId(String cpId);
 }

@@ -47,10 +47,10 @@ public class PeriodServiceImpl implements PeriodService {
             periodEntity.setCpId(cpid);
             periodEntity.setStage(stage);
             periodEntity.setStartDate(dateUtil.localToDate(startDate));
-            periodEntity.setEndDate(dateUtil.localToDate(endDate));
+            periodEntity.setEndDate(dateUtil.localToDate(enquiryPeriodEndDate));
             periodRepository.save(periodEntity);
         }
-        return new ResponseDto(true,null, new EnquiryPeriodDto(startDate, endDate));
+        return new ResponseDto(true,null, new EnquiryPeriodDto(startDate, enquiryPeriodEndDate));
     }
 
     private Boolean checkInterval(final LocalDateTime startDate, final LocalDateTime endDate, final int interval) {

@@ -8,16 +8,19 @@ CREATE TABLE IF NOT EXISTS  ocds.clarification_rules (
     primary key(country, method, parameter)
 );
 
-INSERT INTO ocds.enquiry_rules (country, method, parameter, value) VALUES ('UA', 'micro', 'offset', '3');
-INSERT INTO ocds.enquiry_rules (country, method, parameter, value) VALUES ('UA', 'micro', 'interval', '3');
+INSERT INTO ocds.clarification_rules (country, method, parameter, value) VALUES ('UA', 'micro', 'offset', '3');
+INSERT INTO ocds.clarification_rules (country, method, parameter, value) VALUES ('UA', 'micro', 'interval', '3');
 
 
 CREATE TABLE IF NOT EXISTS  ocds.clarification_period (
-    oc_id text,
+    cp_id text,
+    stage text,
     start_date timestamp,
     end_date timestamp,
-    primary key(oc_id)
+    primary key(cp_id, stage)
 );
+
+select * from ocds.clarification_period;
 
 CREATE TABLE IF NOT EXISTS  ocds.clarification_enquiry (
     oc_id text,

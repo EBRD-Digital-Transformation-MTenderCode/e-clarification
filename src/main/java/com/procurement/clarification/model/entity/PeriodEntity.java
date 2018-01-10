@@ -23,4 +23,10 @@ public class PeriodEntity {
 
     @Column(value = "end_date")
     private Date endDate;
+
+    @Column(value = "owner")
+    private String owner;
+
+    @Column(value = "tender_period_end_date")
+    private Date tenderPeriodEndDate;
 }

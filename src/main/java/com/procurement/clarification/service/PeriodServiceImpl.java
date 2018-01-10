@@ -48,6 +48,8 @@ public class PeriodServiceImpl implements PeriodService {
             periodEntity.setStage(stage);
             periodEntity.setStartDate(dateUtil.localToDate(startDate));
             periodEntity.setEndDate(dateUtil.localToDate(enquiryPeriodEndDate));
+            periodEntity.setOwner(owner);
+            periodEntity.setTenderPeriodEndDate(dateUtil.localToDate(endDate));
             periodRepository.save(periodEntity);
         }
         return new ResponseDto(true,null, new EnquiryPeriodDto(startDate, enquiryPeriodEndDate));

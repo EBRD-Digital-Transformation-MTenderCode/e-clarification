@@ -17,8 +17,19 @@ CREATE TABLE IF NOT EXISTS  ocds.clarification_period (
     stage text,
     start_date timestamp,
     end_date timestamp,
+    owner text,
+    tender_period_end_date timestamp,
     primary key(cp_id, stage)
 );
+
+Query; CQL [
+INSERT INTO clarification_period (cp_id,stage,end_date,owner,start_date,tender_period_end_date)
+VALUES ('ocds-t1s2t3-UA-1515589018079','dzo',1517932512831,'ps',1515589010194,1518191712831);];
+Expected 8 or 0 byte long for date (2);
+nested exception is com.datastax.driver.core.exceptions.InvalidQueryException:
+Expected 8 or 0 byte long for date (2)","path":"/period/save"}
+
+
 
 select * from ocds.clarification_period;
 

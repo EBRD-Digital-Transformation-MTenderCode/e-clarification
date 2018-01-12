@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/period")
+@RequestMapping(path = "/enquiryperiod")
 public class PeriodController {
 
     private EnquiryPeriodService enquiryPeriodService;
@@ -23,6 +23,8 @@ public class PeriodController {
         this.enquiryPeriodService = enquiryPeriodService;
     }
 
+
+    //удалить?
     @PostMapping("/save")
     @ResponseStatus(value = HttpStatus.CREATED)
     public void savePeriod(@Valid @RequestBody final EnquiryPeriodDto dataDto,
@@ -33,6 +35,7 @@ public class PeriodController {
         enquiryPeriodService.saveEnquiryPeriod(dataDto);
     }
 
+    //переименовать и поменять с дто на пост
     @PostMapping("/calculateAndSave")
     @ResponseStatus(value = HttpStatus.CREATED)
     public void calculateAndSavePeriod(@Valid @RequestBody final PeriodDataDto dataDto,
@@ -40,6 +43,8 @@ public class PeriodController {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
+
+        //вернуть ответ формата json
         enquiryPeriodService.calculateAndSaveEnquiryPeriod(dataDto);
     }
 }

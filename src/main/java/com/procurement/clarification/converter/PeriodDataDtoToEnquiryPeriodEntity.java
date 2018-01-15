@@ -10,7 +10,7 @@ public class PeriodDataDtoToEnquiryPeriodEntity implements Converter<PeriodDataD
     public EnquiryPeriodEntity convert(final PeriodDataDto periodDataDto) {
 
         final EnquiryPeriodEntity enquiryPeriodEntity = new EnquiryPeriodEntity();
-        enquiryPeriodEntity.setOcId(periodDataDto.getOcId());
+        enquiryPeriodEntity.setCpId(periodDataDto.getOcId());
         enquiryPeriodEntity.setStartDate(periodDataDto.getTenderPeriod().getStartDate());
         enquiryPeriodEntity.setEndDate(periodDataDto.getTenderPeriod().getEndDate());
         return enquiryPeriodEntity;

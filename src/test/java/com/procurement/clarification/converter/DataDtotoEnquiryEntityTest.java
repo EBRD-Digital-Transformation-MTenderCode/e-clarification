@@ -54,7 +54,7 @@ public class DataDtotoEnquiryEntityTest {
     void convertTest(){
         DataDto dataDto  = new DataDto(OCID, enquiryDto);
         EnquiryEntity enquiryEntity = new EnquiryEntity();
-        enquiryEntity.setOcId(OCID);
+        enquiryEntity.setCpId(OCID);
         enquiryEntity.setEnquiryId(dataDtotoEnquiryEntity.getUUID(enquiryDto));
         enquiryEntity.setJsonData(new JsonUtil(new ObjectMapper()).toJson(enquiryDto));
         enquiryEntity.setIsAnswered(true);

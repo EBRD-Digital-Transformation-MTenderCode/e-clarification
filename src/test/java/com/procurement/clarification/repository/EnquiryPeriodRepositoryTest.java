@@ -17,24 +17,24 @@ class EnquiryPeriodRepositoryTest {
     @BeforeAll
     static void setUp() {
         enquiryPeriodEntity = new EnquiryPeriodEntity();
-        enquiryPeriodEntity.setOcId("ocds-213czf-000-00001");
+        enquiryPeriodEntity.setCpId("ocds-213czf-000-00001");
         enquiryPeriodEntity.setStartDate(LocalDateTime.now());
         enquiryPeriodEntity.setEndDate(LocalDateTime.now()
                                                     .plusDays(20));
         enquiryPeriodRepository = mock(EnquiryPeriodRepository.class);
-        given(enquiryPeriodRepository.getByOcId(enquiryPeriodEntity.getOcId())).willReturn(enquiryPeriodEntity);
+        given(enquiryPeriodRepository.getByOcId(enquiryPeriodEntity.getCpId())).willReturn(enquiryPeriodEntity);
         given(enquiryPeriodRepository.save(enquiryPeriodEntity)).willReturn(enquiryPeriodEntity);
     }
 
     @Test
     public void save() {
         EnquiryPeriodEntity result = enquiryPeriodRepository.save(enquiryPeriodEntity);
-        assertEquals(result.getOcId(), enquiryPeriodEntity.getOcId());
+        assertEquals(result.getCpId(), enquiryPeriodEntity.getCpId());
     }
 
     @Test
     public void getByOcId() {
-        EnquiryPeriodEntity result = enquiryPeriodRepository.getByOcId(enquiryPeriodEntity.getOcId());
-        assertEquals(result.getOcId(), enquiryPeriodEntity.getOcId());
+        EnquiryPeriodEntity result = enquiryPeriodRepository.getByOcId(enquiryPeriodEntity.getCpId());
+        assertEquals(result.getCpId(), enquiryPeriodEntity.getCpId());
     }
 }

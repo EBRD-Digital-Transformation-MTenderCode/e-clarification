@@ -64,6 +64,12 @@
         </profile>
     </profiles>
     <dependencies>
+        <!--Apache lib-->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
         <!--Web-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

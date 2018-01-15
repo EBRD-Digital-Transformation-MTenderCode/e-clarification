@@ -1,13 +1,10 @@
 package com.procurement.clarification.service;
 
 import com.procurement.clarification.model.dto.EnquiryPeriodDto;
-import com.procurement.clarification.model.dto.PeriodDataDto;
-import com.procurement.clarification.model.dto.TenderPeriodDto;
 import com.procurement.clarification.model.entity.EnquiryPeriodEntity;
 import com.procurement.clarification.repository.EnquiryPeriodRepository;
 import com.procurement.clarification.repository.RulesRepository;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
@@ -28,41 +25,43 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
         this.conversionService = conversionService;
     }
 
-
-    //удалить?
     @Override
-    public void saveEnquiryPeriod(final EnquiryPeriodDto dataDto) {
-        final EnquiryPeriodEntity enquiryPeriodEntity = conversionService.convert(dataDto, EnquiryPeriodEntity.class);
-        if (enquiryPeriodEntity != null) {
-            enquiryPeriodRepository.save(enquiryPeriodEntity);
-        }
-    }
-
-    @Override
-    public void calculateAndSaveEnquiryPeriod(final PeriodDataDto dataDto) {
-        Objects.requireNonNull(dataDto);
-        final String offsetValue = rulesRepository.getValue(dataDto.getCountry(),
-                                                            dataDto.getProcurementMethodDetails(),
+    public EnquiryPeriodDto calculateAndSaveEnquiryPeriod(
+        final String cpId,
+        final String country,
+        final String pmd,
+        final LocalDateTime startDate,
+        final LocalDateTime endDate,
+        final String owner) {
+        final String offsetValue = rulesRepository.getValue(country,
+                                                            pmd,
                                                             "offset");
         final Long offset = Long.valueOf(offsetValue);
 
-        final String intervalValue = rulesRepository.getValue(dataDto.getCountry(),
-                                                              dataDto.getProcurementMethodDetails(),
+        final String intervalValue = rulesRepository.getValue(country,
+                                                              pmd,
                                                               "interval");
         final Long interval = Long.valueOf(intervalValue);
 
-        final TenderPeriodDto tenderPeriod = dataDto.getTenderPeriod();
 
-        final LocalDateTime enquiryPeriodEndDate = tenderPeriod.getEndDate()
-                                                               .minusDays(offset);
 
-        if (checkInterval(tenderPeriod.getStartDate(), enquiryPeriodEndDate, interval)) {
-            final EnquiryPeriodEntity enquiryPeriodEntity = conversionService.convert(dataDto, EnquiryPeriodEntity
-                .class);
-            if (enquiryPeriodEntity != null) {
-                enquiryPeriodRepository.save(enquiryPeriodEntity);
-            }
+        final LocalDateTime enquiryPeriodEndDate = endDate.minusDays(offset);
+
+        if (checkInterval(startDate, enquiryPeriodEndDate, interval)) {
+            final EnquiryPeriodEntity enquiryPeriodEntity = new EnquiryPeriodEntity();
+
+            enquiryPeriodEntity.setCpId(cpId);
+            enquiryPeriodEntity.setOwner(owner);
+            enquiryPeriodEntity.setStartDate(startDate);
+            enquiryPeriodEntity.setEndDate(enquiryPeriodEndDate);
+
+            enquiryPeriodRepository.save(enquiryPeriodEntity);
+
+            return new EnquiryPeriodDto(cpId,startDate,enquiryPeriodEndDate);
+        }else {
+            return new EnquiryPeriodDto(cpId,startDate,enquiryPeriodEndDate);
         }
+
     }
 
     Boolean checkInterval(final LocalDateTime startDate, final LocalDateTime endDate, final Long interval) {

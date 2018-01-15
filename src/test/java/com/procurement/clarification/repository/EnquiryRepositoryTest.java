@@ -18,7 +18,7 @@ class EnquiryRepositoryTest {
     @BeforeAll
     static void setUp() {
         enquiryEntity = new EnquiryEntity();
-        enquiryEntity.setOcId("ocds-213czf-000-00001");
+        enquiryEntity.setCpId("ocds-213czf-000-00001");
         enquiryEntity.setEnquiryId(UUIDs.timeBased());
         enquiryEntity.setIsAnswered(true);
         enquiryEntity.setJsonData(new JsonUtil().getResource("json/data.json"));
@@ -29,6 +29,6 @@ class EnquiryRepositoryTest {
     @Test
     public void save() {
         EnquiryEntity result = enquiryRepository.save(enquiryEntity);
-        assertEquals(result.getOcId(), enquiryEntity.getOcId());
+        assertEquals(result.getCpId(), enquiryEntity.getCpId());
     }
 }

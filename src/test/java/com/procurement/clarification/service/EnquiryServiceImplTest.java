@@ -61,13 +61,13 @@ public class EnquiryServiceImplTest {
         DataDto dataDto = new DataDto(OCID, enquiryDto);
 
         EnquiryEntity enquiryEntity = new EnquiryEntity();
-        enquiryEntity.setOcId(OCID);
+        enquiryEntity.setCpId(OCID);
         enquiryEntity.setEnquiryId(UUID.randomUUID());
         enquiryEntity.setIsAnswered(true);
         enquiryEntity.setJsonData("json");
 
         EnquiryPeriodEntity enquiryPeriodEntity = new EnquiryPeriodEntity();
-        enquiryPeriodEntity.setOcId(OCID);
+        enquiryPeriodEntity.setCpId(OCID);
         enquiryPeriodEntity.setStartDate(LocalDateTime.now()
                                                       .minusDays(2));
         enquiryPeriodEntity.setEndDate(LocalDateTime.now()
@@ -96,7 +96,7 @@ public class EnquiryServiceImplTest {
     @DisplayName("Check Period")
     void checkPeriodIncorrectDateTest() {
         EnquiryPeriodEntity enquiryPeriodEntity = new EnquiryPeriodEntity();
-        enquiryPeriodEntity.setOcId(OCID);
+        enquiryPeriodEntity.setCpId(OCID);
         enquiryPeriodEntity.setStartDate(LocalDateTime.now()
                                                       .minusDays(3));
         enquiryPeriodEntity.setEndDate(LocalDateTime.now()

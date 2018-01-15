@@ -23,7 +23,7 @@ public class EnquiryPeriodDtoToEnquiryPeriodEntityTest {
                                                                  start,
                                                                  end);
         EnquiryPeriodEntity enquiryPeriodEntity = new EnquiryPeriodEntity();
-        enquiryPeriodEntity.setOcId(ocId);
+        enquiryPeriodEntity.setCpId(ocId);
         enquiryPeriodEntity.setStartDate(start);
         enquiryPeriodEntity.setEndDate(end);
 

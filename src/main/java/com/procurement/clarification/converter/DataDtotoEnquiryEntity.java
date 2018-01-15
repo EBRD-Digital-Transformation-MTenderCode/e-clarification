@@ -18,7 +18,7 @@ public class DataDtotoEnquiryEntity implements Converter<DataDto, EnquiryEntity>
         final EnquiryDto enquiryDto = dataDto.getEnquiry();
 
         final EnquiryEntity enquiryEntity = new EnquiryEntity();
-        enquiryEntity.setOcId(dataDto.getOcid());
+        enquiryEntity.setCpId(dataDto.getOcid());
         enquiryEntity.setEnquiryId(getUUID(enquiryDto));
 
         setDate(enquiryDto, LocalDateTime.now());

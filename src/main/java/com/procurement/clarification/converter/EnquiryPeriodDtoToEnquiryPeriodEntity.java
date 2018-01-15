@@ -10,7 +10,7 @@ public class EnquiryPeriodDtoToEnquiryPeriodEntity implements Converter<EnquiryP
     public EnquiryPeriodEntity convert(final EnquiryPeriodDto enquiryPeriodDto) {
 
         final EnquiryPeriodEntity enquiryPeriodEntity = new EnquiryPeriodEntity();
-        enquiryPeriodEntity.setOcId(enquiryPeriodDto.getOcId());
+        enquiryPeriodEntity.setCpId(enquiryPeriodDto.getOcId());
         enquiryPeriodEntity.setStartDate(enquiryPeriodDto.getStartDate());
         enquiryPeriodEntity.setEndDate(enquiryPeriodDto.getEndDate());
         return enquiryPeriodEntity;

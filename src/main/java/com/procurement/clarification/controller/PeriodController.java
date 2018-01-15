@@ -4,12 +4,18 @@ import com.procurement.clarification.exception.ValidationException;
 import com.procurement.clarification.model.dto.EnquiryPeriodDto;
 import com.procurement.clarification.model.dto.PeriodDataDto;
 import com.procurement.clarification.service.EnquiryPeriodService;
+import java.time.LocalDateTime;
 import javax.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,28 +29,28 @@ public class PeriodController {
         this.enquiryPeriodService = enquiryPeriodService;
     }
 
-
-    //удалить?
-    @PostMapping("/save")
+    @PostMapping("/{cpid}")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public void savePeriod(@Valid @RequestBody final EnquiryPeriodDto dataDto,
-                                  final BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException(bindingResult);
-        }
-        enquiryPeriodService.saveEnquiryPeriod(dataDto);
-    }
+    public ResponseEntity<EnquiryPeriodDto> calculateAndSavePeriod(
+                                       @PathVariable(value = "cpid") final String cpid,
+                                       @RequestParam(value = "country")
+                                       final String country,
+                                       @RequestParam(value = "pmd")
+                                       final String pmd,
+                                       @RequestParam(value = "stage")
+                                       final String stage,
+                                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                       @RequestParam(value = "startDate")
+                                       final LocalDateTime startDate,
+                                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                       @RequestParam(value = "endDate")
+                                       final LocalDateTime endDate,
+                                       @RequestParam(value = "owner")
+                                       final String owner) {
 
-    //переименовать и поменять с дто на пост
-    @PostMapping("/calculateAndSave")
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void calculateAndSavePeriod(@Valid @RequestBody final PeriodDataDto dataDto,
-                                              final BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException(bindingResult);
-        }
 
-        //вернуть ответ формата json
-        enquiryPeriodService.calculateAndSaveEnquiryPeriod(dataDto);
+        EnquiryPeriodDto periodDto = enquiryPeriodService.calculateAndSaveEnquiryPeriod(cpid,country,pmd,startDate,endDate,owner);
+        return new ResponseEntity<>(periodDto, HttpStatus.OK);
+
     }
 }

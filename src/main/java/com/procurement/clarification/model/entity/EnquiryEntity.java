@@ -3,6 +3,8 @@ package com.procurement.clarification.model.entity;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
@@ -12,11 +14,14 @@ import org.springframework.data.cassandra.core.mapping.Table;
 @Getter
 @Setter
 public class EnquiryEntity {
-    @PrimaryKeyColumn(name = "oc_id", type = PrimaryKeyType.PARTITIONED)
-    private String ocId;
+    @PrimaryKeyColumn(name = "cp_id", type = PrimaryKeyType.PARTITIONED)
+    private String cpId;
 
-    @PrimaryKeyColumn(value = "enquiry_id", type = PrimaryKeyType.CLUSTERED)
+    @PrimaryKeyColumn(value = "enquiryId", type = PrimaryKeyType.CLUSTERED)
     private UUID enquiryId;
+
+    @PrimaryKeyColumn(name = "owner")
+    private String owner;
 
     @Column(value = "json_data")
     private String jsonData;
@@ -25,29 +30,29 @@ public class EnquiryEntity {
     private Boolean isAnswered;
 
     @Override
-    public boolean equals(final Object obj) {
-        if (obj == this) {
+    public boolean equals(final Object other) {
+        if (other == this) {
             return true;
         }
-
-        if (obj == null) {
+        if (!(other instanceof EnquiryEntity)) {
             return false;
         }
-
-        if (!(getClass() == obj.getClass())) {
-            return false;
-        } else {
-            final EnquiryEntity tmp = (EnquiryEntity) obj;
-
-            return tmp.ocId.equals(this.ocId) &&
-                tmp.enquiryId.equals(this.enquiryId) &&
-                tmp.jsonData.equals(this.jsonData) &&
-                tmp.isAnswered.equals(this.isAnswered);
-        }
+        final EnquiryEntity rhs = (EnquiryEntity) other;
+        return new EqualsBuilder().append(cpId, rhs.cpId)
+                                  .append(enquiryId, rhs.enquiryId)
+                                  .append(owner, rhs.owner)
+                                  .append(jsonData, rhs.jsonData)
+                                  .append(isAnswered, rhs.isAnswered)
+                                  .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return enquiryId.hashCode();
+        return new HashCodeBuilder().append(cpId)
+                                    .append(enquiryId)
+                                    .append(owner)
+                                    .append(jsonData)
+                                    .append(isAnswered)
+                                    .toHashCode();
     }
 }

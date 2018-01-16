@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 
 class EnquiryPeriodDtoTest extends AbstractDomainObjectTest {
 
-    @Test
-    @DisplayName("Testing mapping json to EnquiryPeriodDtoTest and to json")
-    public void testJsonToEnquiryPeriodDtoToJson() {
-        compare(EnquiryPeriodDto.class, "json/enquiry-period.json");
-    }
+//    @Test
+//    @DisplayName("Testing mapping json to EnquiryPeriodDtoTest and to json")
+//    public void testJsonToEnquiryPeriodDtoToJson() {
+//        compare(EnquiryPeriodDto.class, "json/enquiry-period.json");
+//    }
 }

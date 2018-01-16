@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 class DataDtoTest extends AbstractDomainObjectTest {
 
-    @Test
-    @DisplayName("Testing mapping json to DataDto and to json")
-    public void testJsonToDataDtoToJson() {
-        compare(DataDto.class, "json/data.json");
-    }
+//    @Test
+//    @DisplayName("Testing mapping json to DataDto and to json")
+//    public void testJsonToDataDtoToJson() {
+//        compare(DataDto.class, "json/data.json");
+//    }
 
 }

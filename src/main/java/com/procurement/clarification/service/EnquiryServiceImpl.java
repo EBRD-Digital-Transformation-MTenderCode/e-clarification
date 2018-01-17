@@ -92,6 +92,8 @@ public class EnquiryServiceImpl implements EnquiryService {
                     responseDetails.add(new ResponseDto.ResponseDetailsDto("code", "already answered"));
                     return new ResponseDto(false, responseDetails, null);
                 } else {
+                    LocalDateTime currentLocalDateTime = dateUtil.getNowUTC();
+
                     final CreateEnquiryRSDto enquiry = jsonUtil.toObject(CreateEnquiryRSDto.class, enquiryEntity
                         .getJsonData());
                     final UpdateEnquiryRQDto answer = updateAnswerRQ.getDataDto()
@@ -103,14 +105,18 @@ public class EnquiryServiceImpl implements EnquiryService {
                                                                                          enquiry.getTitle(),
                                                                                          enquiry.getDescription(),
                                                                                          answer.getAnswer(),
-                                                                                         dateUtil.getNowUTC(),
+                                                                                         currentLocalDateTime,
                                                                                          enquiry.getRelatedItem(),
                                                                                          enquiry.getRelatedLot(),
                                                                                          true);
-                    final UpdateAnswerRSDto updateAnswerRSDto = new UpdateAnswerRSDto(null, updateEnquiryRSDto);
+                     UpdateAnswerRSDto updateAnswerRSDto = new UpdateAnswerRSDto( null,
+                                                                                      updateEnquiryRSDto);
                     enquiryEntity.setIsAnswered(true);
                     enquiryEntity.setJsonData(jsonUtil.toJson(updateAnswerRSDto));
                     enquiryRepository.save(enquiryEntity);
+                    updateAnswerRSDto.setAllAnswers(isAllAnsweredAfterEndPeriod
+                                                        (currentLocalDateTime,
+                                                         enquiryEntity.getCpId()));
                     return new ResponseDto(true, null, updateAnswerRSDto);
                 }
             } else {
@@ -136,12 +142,7 @@ public class EnquiryServiceImpl implements EnquiryService {
             return new ResponseDto(true, null, new CheckEnquiresPeriodRSDto(endDate));
         } else {
 
-            final long countNotAnswered = enquiryRepository.getCountByCpIdAndIsAnswered(cpId);
-            Boolean allAnswers = false;
-            if (countNotAnswered == 0) {
-                allAnswers = true;
-            }
-            return new ResponseDto(true, null, new CheckEnquiresAllAnswersRSDto(allAnswers));
+            return new ResponseDto(true, null, new CheckEnquiresAllAnswersRSDto(isAllAnswered(cpId)));
         }
     }
 
@@ -159,6 +160,29 @@ public class EnquiryServiceImpl implements EnquiryService {
             }
         }
 
+        return null;
+    }
+
+    private Boolean isAllAnswered(final String cpId) {
+        final long countNotAnswered = enquiryRepository.getCountByCpIdAndIsAnswered(cpId);
+        Boolean allAnswers = false;
+        if (countNotAnswered == 0) {
+            allAnswers = true;
+        }
+
+        return allAnswers;
+    }
+
+    private Boolean isAllAnsweredAfterEndPeriod(final LocalDateTime localDateTimeNow, final String cpId) {
+        EnquiryPeriodEntity enquiryPeriodEntity = periodRepository.getByCpId(cpId);
+        if (enquiryPeriodEntity != null) {
+            final LocalDateTime endDate = enquiryPeriodEntity.getEndDate();
+            if (dateUtil.getMilliUTC(localDateTimeNow) > dateUtil.getMilliUTC(enquiryPeriodEntity.getEndDate())) {
+                return isAllAnswered(cpId);
+            } else {
+                return false;
+            }
+        }
         return null;
     }
 }

@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface EnquiryPeriodRepository extends CassandraRepository<EnquiryPeriodEntity, String> {
 
     @Query(value = "select * from enquiry_period where cp_id=?0 LIMIT 1")
-    EnquiryPeriodEntity getByOcId(String tenderId);
+    EnquiryPeriodEntity getByCpId(String tenderId);
 }

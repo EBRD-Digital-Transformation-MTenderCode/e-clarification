@@ -1,6 +1,7 @@
 package com.procurement.clarification.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.procurement.clarification.databind.LocalDateTimeDeserializer;
 import com.procurement.clarification.databind.LocalDateTimeSerializer;
 import java.time.LocalDateTime;
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -18,32 +20,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonPropertyOrder({
-    "id",
-    "date",
     "author",
     "title",
     "description",
-    "answer",
-    "dateAnswered",
     "relatedItem",
-    "relatedLot",
-    "threadID"
+    "relatedLot"
 })
-public class EnquiryDto {
+public class CreateEnquiryRQDto {
     public static final int MAX_LENGTH_TITLE = 100;
     public static final int MAX_LENGHT_DESCRIPTION = 2500;
     public static final int MAX_LENGHT_ANSWER = 2500;
 
-    @JsonProperty("id")
-    private String id;
-
-    @JsonProperty("date")
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime date;
-
     @JsonProperty("author")
-    @NotEmpty
+    @NotNull
+    @Valid
     private final AuthorDto author;
 
     @JsonProperty("title")
@@ -56,45 +46,28 @@ public class EnquiryDto {
     @Size(min = 1, max = MAX_LENGHT_DESCRIPTION)
     private final String description;
 
-    @JsonProperty("answer")
-    @Max(MAX_LENGHT_ANSWER)
-    private final String answer;
-
-    @JsonProperty("dateAnswered")
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private final LocalDateTime dateAnswered;
-
     @JsonProperty("relatedItem")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String relatedItem;
 
     @JsonProperty("relatedLot")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String relatedLot;
 
-    @JsonProperty("threadID")
-    private final String threadID;
 
     @JsonCreator
-    public EnquiryDto(@JsonProperty("id") final String id,
-                      @JsonProperty("date") final LocalDateTime date,
-                      @JsonProperty("author") final AuthorDto author,
-                      @JsonProperty("title") final String title,
-                      @JsonProperty("description") final String description,
-                      @JsonProperty("answer") final String answer,
-                      @JsonProperty("dateAnswered") final LocalDateTime dateAnswered,
-                      @JsonProperty("relatedItem") final String relatedItem,
-                      @JsonProperty("relatedLot") final String relatedLot,
-                      @JsonProperty("threadID") final String threadID) {
+    public CreateEnquiryRQDto(
+                             @JsonProperty("author") final AuthorDto author,
+                             @JsonProperty("title") final String title,
+                             @JsonProperty("description") final String description,
+                             @JsonProperty("relatedItem") final String relatedItem,
+                             @JsonProperty("relatedLot") final String relatedLot) {
 
-        this.id = id;
-        this.date = date;
+
         this.author = author;
         this.title = title;
         this.description = description;
-        this.answer = answer;
-        this.dateAnswered = dateAnswered;
         this.relatedItem = relatedItem;
         this.relatedLot = relatedLot;
-        this.threadID = threadID;
     }
 }

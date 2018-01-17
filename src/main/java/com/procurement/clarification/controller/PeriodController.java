@@ -3,6 +3,7 @@ package com.procurement.clarification.controller;
 import com.procurement.clarification.exception.ValidationException;
 import com.procurement.clarification.model.dto.EnquiryPeriodDto;
 import com.procurement.clarification.model.dto.PeriodDataDto;
+import com.procurement.clarification.model.dto.bpe.ResponseDto;
 import com.procurement.clarification.service.EnquiryPeriodService;
 import java.time.LocalDateTime;
 import javax.validation.Valid;
@@ -31,7 +32,7 @@ public class PeriodController {
 
     @PostMapping("/{cpid}")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<EnquiryPeriodDto> calculateAndSavePeriod(
+    public ResponseEntity<ResponseDto> calculateAndSavePeriod(
                                        @PathVariable(value = "cpid") final String cpid,
                                        @RequestParam(value = "country")
                                        final String country,
@@ -49,8 +50,7 @@ public class PeriodController {
                                        final String owner) {
 
 
-        EnquiryPeriodDto periodDto = enquiryPeriodService.calculateAndSaveEnquiryPeriod(cpid,country,pmd,startDate,endDate,owner);
-        return new ResponseEntity<>(periodDto, HttpStatus.OK);
-
+        ResponseDto responseDto = enquiryPeriodService.calculateAndSaveEnquiryPeriod(cpid,country,pmd,startDate,endDate,owner);
+        return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 }

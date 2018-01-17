@@ -2,9 +2,10 @@ package com.procurement.clarification.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.procurement.clarification.converter.DataDtotoEnquiryEntity;
+import com.procurement.clarification.converter.CreateAnswerRQToEnquiryEntity;
 import com.procurement.clarification.converter.EnquiryPeriodDtoToEnquiryPeriodEntity;
 import com.procurement.clarification.converter.PeriodDataDtoToEnquiryPeriodEntity;
+import com.procurement.clarification.utils.DateUtil;
 import com.procurement.clarification.utils.JsonUtil;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +22,7 @@ public class ServiceConfig {
     @Bean
     public ConversionServiceFactoryBean conversionService() {
         final Set<Converter> converters = new HashSet<>();
-        converters.add(new DataDtotoEnquiryEntity());
+        converters.add(new CreateAnswerRQToEnquiryEntity());
         converters.add(new EnquiryPeriodDtoToEnquiryPeriodEntity());
         converters.add(new PeriodDataDtoToEnquiryPeriodEntity());
         final ConversionServiceFactoryBean bean = new ConversionServiceFactoryBean();
@@ -32,6 +33,12 @@ public class ServiceConfig {
     @Bean
     public JsonUtil jsonUtil() {
         return new JsonUtil(objectMapper());
+    }
+
+
+    @Bean
+    public DateUtil dateUtil() {
+        return new DateUtil();
     }
 
     @Bean

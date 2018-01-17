@@ -1,10 +1,13 @@
 package com.procurement.clarification.service;
 
 import com.procurement.clarification.model.dto.EnquiryPeriodDto;
+import com.procurement.clarification.model.dto.bpe.ResponseDto;
 import com.procurement.clarification.model.entity.EnquiryPeriodEntity;
 import com.procurement.clarification.repository.EnquiryPeriodRepository;
 import com.procurement.clarification.repository.RulesRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +29,7 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
     }
 
     @Override
-    public EnquiryPeriodDto calculateAndSaveEnquiryPeriod(
+    public ResponseDto calculateAndSaveEnquiryPeriod(
         final String cpId,
         final String country,
         final String pmd,
@@ -57,9 +60,15 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
 
             enquiryPeriodRepository.save(enquiryPeriodEntity);
 
-            return new EnquiryPeriodDto(cpId,startDate,enquiryPeriodEndDate);
+            return new ResponseDto(true,null,new EnquiryPeriodDto(cpId,startDate,enquiryPeriodEndDate));
+
+
         }else {
-            return new EnquiryPeriodDto(cpId,startDate,enquiryPeriodEndDate);
+            ResponseDto.ResponseDetailsDto responseDetailsDto = new ResponseDto.ResponseDetailsDto("code","offset date is not in interval");
+            List<ResponseDto.ResponseDetailsDto> details = new ArrayList<>();
+            details.add(responseDetailsDto);
+
+            return new ResponseDto(false,details, null);
         }
 
     }

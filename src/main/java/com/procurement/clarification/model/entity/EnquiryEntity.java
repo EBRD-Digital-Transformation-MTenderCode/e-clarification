@@ -17,7 +17,7 @@ public class EnquiryEntity {
     @PrimaryKeyColumn(name = "cp_id", type = PrimaryKeyType.PARTITIONED)
     private String cpId;
 
-    @PrimaryKeyColumn(value = "enquiryId", type = PrimaryKeyType.CLUSTERED)
+    @PrimaryKeyColumn(value = "enquiry_id", type = PrimaryKeyType.CLUSTERED)
     private UUID enquiryId;
 
     @PrimaryKeyColumn(name = "owner")

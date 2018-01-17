@@ -1,0 +1,14 @@
+{
+  "enquiry":
+  {
+    "author":
+    {
+      "name":"name",
+      "id":"id"
+    },
+    "title":"title",
+    "description":"description",
+    "--relatedItem":"",
+    "--relatedLot":""
+  }
+}

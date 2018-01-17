@@ -32,6 +32,7 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
     public ResponseDto calculateAndSaveEnquiryPeriod(
         final String cpId,
         final String country,
+        final String stage,
         final String pmd,
         final LocalDateTime startDate,
         final LocalDateTime endDate,
@@ -46,8 +47,6 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
                                                               "interval");
         final Long interval = Long.valueOf(intervalValue);
 
-
-
         final LocalDateTime enquiryPeriodEndDate = endDate.minusDays(offset);
 
         if (checkInterval(startDate, enquiryPeriodEndDate, interval)) {
@@ -56,21 +55,23 @@ public class EnquiryPeriodServiceImpl implements EnquiryPeriodService {
             enquiryPeriodEntity.setCpId(cpId);
             enquiryPeriodEntity.setOwner(owner);
             enquiryPeriodEntity.setStartDate(startDate);
-            enquiryPeriodEntity.setEndDate(enquiryPeriodEndDate);
+            enquiryPeriodEntity.setEndDate(endDate);
+            enquiryPeriodEntity.setEnquiryEndDate(enquiryPeriodEndDate);
+            enquiryPeriodEntity.setStage(stage);
 
             enquiryPeriodRepository.save(enquiryPeriodEntity);
 
-            return new ResponseDto(true,null,new EnquiryPeriodDto(cpId,startDate,enquiryPeriodEndDate));
-
-
-        }else {
-            ResponseDto.ResponseDetailsDto responseDetailsDto = new ResponseDto.ResponseDetailsDto("code","offset date is not in interval");
-            List<ResponseDto.ResponseDetailsDto> details = new ArrayList<>();
+            return new ResponseDto(true, null, new EnquiryPeriodDto(startDate, enquiryPeriodEndDate));
+        } else {
+            final ResponseDto.ResponseDetailsDto responseDetailsDto = new ResponseDto.ResponseDetailsDto(
+                "code",
+                "offset date is not in interval"
+            );
+            final List<ResponseDto.ResponseDetailsDto> details = new ArrayList<>();
             details.add(responseDetailsDto);
 
-            return new ResponseDto(false,details, null);
+            return new ResponseDto(false, details, null);
         }
-
     }
 
     Boolean checkInterval(final LocalDateTime startDate, final LocalDateTime endDate, final Long interval) {

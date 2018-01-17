@@ -2,7 +2,6 @@ package com.procurement.clarification.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,15 +10,14 @@ import lombok.Setter;
 @Setter
 @JsonPropertyOrder(
     "allAnswers")
-public class CheckEnquiresRSDto {
+public class CheckEnquiresAllAnswersRSDto {
 
     @JsonProperty("allAnswers")
-    final Boolean allAnswers;
+    private final Boolean allAnswers;
 
-    public CheckEnquiresRSDto(
+    public CheckEnquiresAllAnswersRSDto(
         @NotNull
-        @JsonProperty("allAnswers")
-                                  Boolean allAnswers) {
+        @JsonProperty("allAnswers") final Boolean allAnswers) {
         this.allAnswers = allAnswers;
     }
 }

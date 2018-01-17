@@ -1,13 +1,6 @@
 package com.procurement.clarification.service;
 
-import com.procurement.clarification.model.dto.CreateAnswerRQ;
-import com.procurement.clarification.model.dto.CreateAnswerRSDto;
-import com.procurement.clarification.model.dto.CreateEnquiryRQDto;
-import com.procurement.clarification.model.dto.CreateEnquiryRSDto;
-import com.procurement.clarification.model.dto.UpdateAnswerRQ;
-import com.procurement.clarification.model.dto.UpdateAnswerRSDto;
-import com.procurement.clarification.model.dto.UpdateEnquiryRQDto;
-import com.procurement.clarification.model.dto.UpdateEnquiryRSDto;
+import com.procurement.clarification.model.dto.*;
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
 import com.procurement.clarification.model.entity.EnquiryEntity;
 import com.procurement.clarification.model.entity.EnquiryPeriodEntity;
@@ -48,98 +41,113 @@ public class EnquiryServiceImpl implements EnquiryService {
         checkPeriod(localDateTime, createAnswerRQ.getCpid());
         final EnquiryEntity enquiryEntity = conversionService.convert(createAnswerRQ, EnquiryEntity.class);
 
-        String errorMessage = checkPeriod(localDateTime, createAnswerRQ.getCpid());
+        final String errorMessage = checkPeriod(localDateTime, createAnswerRQ.getCpid());
 
         if (errorMessage != null) {
-            List<ResponseDto.ResponseDetailsDto> responseDetails = new ArrayList<>();
+            final List<ResponseDto.ResponseDetailsDto> responseDetails = new ArrayList<>();
             responseDetails.add(new ResponseDto.ResponseDetailsDto("code", errorMessage));
             return new ResponseDto(false, responseDetails, null);
         } else {
 
-            String ownerId = periodRepository.getByCpId(createAnswerRQ.getCpid())
-                                             .getOwner();
+            final String ownerId = periodRepository.getByCpId(createAnswerRQ.getCpid())
+                                                   .getOwner();
             enquiryEntity.setOwner(ownerId);
 
-            CreateEnquiryRQDto createEnquiryRQDto = createAnswerRQ.getDataDto()
-                                                                  .getEnquiry();
+            final CreateEnquiryRQDto createEnquiryRQDto = createAnswerRQ.getDataDto()
+                                                                        .getEnquiry();
 
-            CreateEnquiryRSDto createEnquiryRSDto = new CreateEnquiryRSDto(enquiryEntity.getEnquiryId()
-                                                                                        .toString(), createAnswerRQ
-                                                                               .getDate(),
-                                                                           createEnquiryRQDto.getAuthor(),
-                                                                           createEnquiryRQDto.getTitle(),
-                                                                           createEnquiryRQDto.getDescription(),
-                                                                           enquiryEntity.getIsAnswered(),
-                                                                           createEnquiryRQDto.getRelatedItem(),
-                                                                           createEnquiryRQDto.getRelatedLot());
+            final CreateEnquiryRSDto createEnquiryRSDto = new CreateEnquiryRSDto(enquiryEntity.getEnquiryId()
+                                                                                              .toString(),
+                                                                                 createAnswerRQ
+                                                                                     .getDate(),
+                                                                                 createEnquiryRQDto.getAuthor(),
+                                                                                 createEnquiryRQDto.getTitle(),
+                                                                                 createEnquiryRQDto.getDescription(),
+                                                                                 enquiryEntity.getIsAnswered(),
+                                                                                 createEnquiryRQDto.getRelatedItem(),
+                                                                                 createEnquiryRQDto.getRelatedLot());
             enquiryEntity.setJsonData(jsonUtil.toJson(createEnquiryRSDto));
 
             enquiryRepository.save(enquiryEntity);
 
-            CreateAnswerRSDto createAnswerRSDto = new CreateAnswerRSDto(enquiryEntity.getEnquiryId()
-                                                                                     .toString(), createEnquiryRSDto);
+            final CreateAnswerRSDto createAnswerRSDto = new CreateAnswerRSDto(enquiryEntity.getEnquiryId()
+                                                                                           .toString(),
+                                                                              createEnquiryRSDto);
 
             return new ResponseDto(true, null, createAnswerRSDto);
         }
     }
 
     @Override
-    public ResponseDto updateEnquiry(UpdateAnswerRQ updateAnswerRQ) {
-
-        EnquiryEntity enquiryEntity = enquiryRepository.getByCpIdaAndEnquiryId(updateAnswerRQ.getCpId(), UUID.fromString(updateAnswerRQ.getDataDto()
-                                                                                                                                       .getEnquiry()
-                                                                                                                                       .getId()));
+    public ResponseDto updateEnquiry(final UpdateAnswerRQ updateAnswerRQ) {
+        final EnquiryEntity enquiryEntity = enquiryRepository.getByCpIdaAndEnquiryId(updateAnswerRQ.getCpId(), UUID
+            .fromString(updateAnswerRQ.getDataDto()
+                                      .getEnquiry()
+                                      .getId()));
         if (enquiryEntity != null) {
-
             if (enquiryEntity.getOwner()
                              .equals(updateAnswerRQ.getIdPlatform())) {
                 if (enquiryEntity.getIsAnswered()) {
-                    List<ResponseDto.ResponseDetailsDto> responseDetails = new ArrayList<>();
+                    final List<ResponseDto.ResponseDetailsDto> responseDetails = new ArrayList<>();
                     responseDetails.add(new ResponseDto.ResponseDetailsDto("code", "already answered"));
                     return new ResponseDto(false, responseDetails, null);
                 } else {
-                    CreateEnquiryRSDto enquiry = jsonUtil.toObject(CreateEnquiryRSDto.class, enquiryEntity
+                    final CreateEnquiryRSDto enquiry = jsonUtil.toObject(CreateEnquiryRSDto.class, enquiryEntity
                         .getJsonData());
-
-                    UpdateEnquiryRQDto answer = updateAnswerRQ.getDataDto()
-                                                              .getEnquiry();
-
-                    UpdateEnquiryRSDto updateEnquiryRSDto = new UpdateEnquiryRSDto(enquiryEntity.getEnquiryId()
-                                                                                                .toString(),
-                                                                                   enquiry.getDate(),
-                                                                                   enquiry.getAuthor(),
-                                                                                   enquiry.getTitle(),
-                                                                                   enquiry.getDescription(),
-                                                                                   answer.getAnswer(),
-                                                                                   dateUtil.getNowUTC(),
-                                                                                   enquiry.getRelatedItem(),
-                                                                                   enquiry.getRelatedLot(),
-                                                                                   true);
-
-                    UpdateAnswerRSDto updateAnswerRSDto = new UpdateAnswerRSDto(null, updateEnquiryRSDto);
-
+                    final UpdateEnquiryRQDto answer = updateAnswerRQ.getDataDto()
+                                                                    .getEnquiry();
+                    final UpdateEnquiryRSDto updateEnquiryRSDto = new UpdateEnquiryRSDto(enquiryEntity.getEnquiryId()
+                                                                                                      .toString(),
+                                                                                         enquiry.getDate(),
+                                                                                         enquiry.getAuthor(),
+                                                                                         enquiry.getTitle(),
+                                                                                         enquiry.getDescription(),
+                                                                                         answer.getAnswer(),
+                                                                                         dateUtil.getNowUTC(),
+                                                                                         enquiry.getRelatedItem(),
+                                                                                         enquiry.getRelatedLot(),
+                                                                                         true);
+                    final UpdateAnswerRSDto updateAnswerRSDto = new UpdateAnswerRSDto(null, updateEnquiryRSDto);
                     enquiryEntity.setIsAnswered(true);
                     enquiryEntity.setJsonData(jsonUtil.toJson(updateAnswerRSDto));
-
                     enquiryRepository.save(enquiryEntity);
-
                     return new ResponseDto(true, null, updateAnswerRSDto);
                 }
             } else {
-                List<ResponseDto.ResponseDetailsDto> responseDetails = new ArrayList<>();
+                final List<ResponseDto.ResponseDetailsDto> responseDetails = new ArrayList<>();
                 responseDetails.add(new ResponseDto.ResponseDetailsDto("code", "invalid platform id"));
                 return new ResponseDto(false, responseDetails, null);
             }
         } else {
-            List<ResponseDto.ResponseDetailsDto> responseDetails = new ArrayList<>();
+            final List<ResponseDto.ResponseDetailsDto> responseDetails = new ArrayList<>();
             responseDetails.add(new ResponseDto.ResponseDetailsDto("code", "not found"));
             return new ResponseDto(false, responseDetails, null);
         }
     }
 
+    @Override
+    public ResponseDto checkEnquiries(final String cpId, final String stage) {
+
+        final EnquiryPeriodEntity enquiryPeriodEntity = periodRepository.getByCpIdAndStage(cpId, stage);
+        final LocalDateTime endDate = enquiryPeriodEntity.getEndDate();
+        final LocalDateTime currentDate = dateUtil.getNowUTC();
+
+        if (dateUtil.getMilliUTC(currentDate) < dateUtil.getMilliUTC(endDate)) {
+            return new ResponseDto(true, null, new CheckEnquiresPeriodRSDto(endDate));
+        } else {
+
+            final long countNotAnswered = enquiryRepository.getCountByCpIdAndIsAnswered(cpId);
+            Boolean allAnswers = false;
+            if (countNotAnswered == 0) {
+                allAnswers = true;
+            }
+            return new ResponseDto(true, null, new CheckEnquiresAllAnswersRSDto(allAnswers));
+        }
+    }
+
     String checkPeriod(final LocalDateTime localDateTime, final String tenderId) {
 
-        EnquiryPeriodEntity enquiryPeriodEntity = periodRepository.getByCpId(tenderId);
+        final EnquiryPeriodEntity enquiryPeriodEntity = periodRepository.getByCpId(tenderId);
 
         if (periodRepository.getByCpId(tenderId) == null) {
             return "Period not found";

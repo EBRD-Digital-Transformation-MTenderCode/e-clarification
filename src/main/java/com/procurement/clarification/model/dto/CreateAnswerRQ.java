@@ -8,10 +8,10 @@ import lombok.Setter;
 public class CreateAnswerRQ {
     private final String cpid;
     private final String stage;
-    @Setter
-    private LocalDateTime date;
     private final String idPlatform;
     private final CreateAnswerRQDto dataDto;
+    @Setter
+    private LocalDateTime date;
 
     public CreateAnswerRQ(final String cpid,
                           final String stage,
@@ -24,5 +24,4 @@ public class CreateAnswerRQ {
         this.idPlatform = idPlatform;
         this.dataDto = dataDto;
     }
-
 }

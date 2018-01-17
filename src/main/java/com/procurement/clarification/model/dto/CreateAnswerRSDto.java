@@ -31,7 +31,7 @@ public class CreateAnswerRSDto {
         @NotEmpty
         @Valid
         @JsonProperty("enquiry") final CreateEnquiryRSDto enquiry) {
-        this.token=token;
+        this.token = token;
         this.enquiry = enquiry;
     }
 }

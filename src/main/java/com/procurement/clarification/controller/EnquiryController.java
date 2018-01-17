@@ -13,17 +13,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/enquiry")
+@RequestMapping("/")
 public class EnquiryController {
 
     private EnquiryService enquiryService;
@@ -32,7 +25,7 @@ public class EnquiryController {
         this.enquiryService = enquiryService;
     }
 
-    @PostMapping("/{cpid}")
+    @PostMapping("enquiry/{cpid}")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ResponseDto> saveEnquiry(@Valid @RequestBody final CreateAnswerRQDto dataDto,
                                                    @PathVariable(value = "cpid") final String cpid,
@@ -45,34 +38,39 @@ public class EnquiryController {
             throw new ValidationException(bindingResult);
         }
 
-        CreateAnswerRQ answerRQ = new CreateAnswerRQ(cpid, stage, date, idPlatform, dataDto);
+        final CreateAnswerRQ answerRQ = new CreateAnswerRQ(cpid, stage, date, idPlatform, dataDto);
 
-        ResponseDto responseDto = enquiryService.saveEnquiry(answerRQ);
+        final ResponseDto responseDto = enquiryService.saveEnquiry(answerRQ);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @PutMapping("/{cpid}")
+    @PutMapping("enquiry/{cpid}")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ResponseDto> updateEnquiry(@Valid @RequestBody final UpdateAnswerRQDto dataDto,
-                                                   @PathVariable(value = "cpid") final String cpid,
+                                                     @PathVariable(value = "cpid") final String cpid,
                                                      @RequestParam(value = "token") final String token,
-                                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                                                   @RequestParam(value = "date") final LocalDateTime date,
-                                                   @RequestParam(value = "idPlatform") final String idPlatform,
-                                                   final BindingResult bindingResult) {
+                                                     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                                     @RequestParam(value = "date") final LocalDateTime date,
+                                                     @RequestParam(value = "idPlatform") final String idPlatform,
+                                                     final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
 
-        UpdateAnswerRQ answerRQ = new UpdateAnswerRQ(dataDto, token, cpid,date, idPlatform);
+        final UpdateAnswerRQ answerRQ = new UpdateAnswerRQ(dataDto, token, cpid, date, idPlatform);
 
-        ResponseDto responseDto = enquiryService.updateEnquiry(answerRQ);
+        final ResponseDto responseDto = enquiryService.updateEnquiry(answerRQ);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    @GetMapping("get/enquiry/{cpid}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ResponseDto> chackEnquires(@PathVariable(value = "cpid") final String cpid,
+                                                     @RequestParam(value = "stage") final String stage) {
 
-
-
+        final ResponseDto responseDto = enquiryService.checkEnquiries(cpid, stage);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 }

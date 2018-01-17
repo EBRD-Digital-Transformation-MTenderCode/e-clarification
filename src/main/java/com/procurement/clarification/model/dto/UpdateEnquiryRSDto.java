@@ -30,37 +30,28 @@ import lombok.Setter;
 })
 public class UpdateEnquiryRSDto {
 
-    @JsonProperty("id")
-    private String id;
-
-    @JsonProperty("date")
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime date;
-
     @JsonProperty("author")
     private final AuthorDto author;
-
     @JsonProperty("title")
     private final String title;
-
     @JsonProperty("description")
     private final String description;
-
     @JsonProperty("answer")
     private final String answer;
-
     @JsonProperty("dateAnswered")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private final LocalDateTime dateAnswered;
-
     @JsonProperty("relatedItem")
     private final String relatedItem;
-
     @JsonProperty("relatedLot")
     private final String relatedLot;
-
     @JsonProperty("signOfResponse")
     private final Boolean signOfResponse;
+    @JsonProperty("id")
+    private String id;
+    @JsonProperty("date")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime date;
 
     @JsonCreator
     public UpdateEnquiryRSDto(

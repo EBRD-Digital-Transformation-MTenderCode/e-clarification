@@ -4,14 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.procurement.clarification.databind.LocalDateTimeDeserializer;
-import com.procurement.clarification.databind.LocalDateTimeSerializer;
-import java.time.LocalDateTime;
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Getter;
@@ -54,15 +47,13 @@ public class CreateEnquiryRQDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String relatedLot;
 
-
     @JsonCreator
     public CreateEnquiryRQDto(
-                             @JsonProperty("author") final AuthorDto author,
-                             @JsonProperty("title") final String title,
-                             @JsonProperty("description") final String description,
-                             @JsonProperty("relatedItem") final String relatedItem,
-                             @JsonProperty("relatedLot") final String relatedLot) {
-
+        @JsonProperty("author") final AuthorDto author,
+        @JsonProperty("title") final String title,
+        @JsonProperty("description") final String description,
+        @JsonProperty("relatedItem") final String relatedItem,
+        @JsonProperty("relatedLot") final String relatedLot) {
 
         this.author = author;
         this.title = title;

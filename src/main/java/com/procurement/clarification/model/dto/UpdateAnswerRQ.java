@@ -19,7 +19,7 @@ public class UpdateAnswerRQ {
                           final String idPlatform) {
         this.dataDto = dataDto;
         this.token = token;
-        this.cpId=cpId;
+        this.cpId = cpId;
         this.date = date;
         this.idPlatform = idPlatform;
     }

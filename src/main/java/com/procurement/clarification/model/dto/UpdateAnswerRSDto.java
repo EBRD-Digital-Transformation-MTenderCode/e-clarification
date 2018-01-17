@@ -30,7 +30,7 @@ public class UpdateAnswerRSDto {
         @NotEmpty
         @Valid
         @JsonProperty("enquiry") final UpdateEnquiryRSDto enquiry) {
-        this.allAnswers=allAnswers;
+        this.allAnswers = allAnswers;
         this.enquiry = enquiry;
     }
 }

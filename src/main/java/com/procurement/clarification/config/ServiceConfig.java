@@ -3,7 +3,6 @@ package com.procurement.clarification.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.procurement.clarification.converter.CreateAnswerRQToEnquiryEntity;
-import com.procurement.clarification.converter.EnquiryPeriodDtoToEnquiryPeriodEntity;
 import com.procurement.clarification.converter.PeriodDataDtoToEnquiryPeriodEntity;
 import com.procurement.clarification.utils.DateUtil;
 import com.procurement.clarification.utils.JsonUtil;
@@ -23,7 +22,6 @@ public class ServiceConfig {
     public ConversionServiceFactoryBean conversionService() {
         final Set<Converter> converters = new HashSet<>();
         converters.add(new CreateAnswerRQToEnquiryEntity());
-        converters.add(new EnquiryPeriodDtoToEnquiryPeriodEntity());
         converters.add(new PeriodDataDtoToEnquiryPeriodEntity());
         final ConversionServiceFactoryBean bean = new ConversionServiceFactoryBean();
         bean.setConverters(converters);
@@ -34,7 +32,6 @@ public class ServiceConfig {
     public JsonUtil jsonUtil() {
         return new JsonUtil(objectMapper());
     }
-
 
     @Bean
     public DateUtil dateUtil() {

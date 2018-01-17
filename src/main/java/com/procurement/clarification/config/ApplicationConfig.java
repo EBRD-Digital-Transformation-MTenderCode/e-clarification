@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({
-        DatabaseConfig.class,
-        ServiceConfig.class,
-        WebConfig.class
+    DatabaseConfig.class,
+    ServiceConfig.class,
+    WebConfig.class
 })
 public class ApplicationConfig {
 }

@@ -15,9 +15,11 @@ INSERT INTO ocds.enquiry_rules (country, method, parameter, value) VALUES ('UA',
 CREATE TABLE IF NOT EXISTS  ocds.enquiry_period (
     cp_id text,
     owner text,
+    stage text,
     start_date timestamp,
     end_date timestamp,
-    primary key(cp_id)
+    enquiry_end_date timestamp,
+    primary key(cp_id,stage)
 );
 
 CREATE TABLE IF NOT EXISTS  ocds.enquiry (
@@ -26,5 +28,5 @@ CREATE TABLE IF NOT EXISTS  ocds.enquiry (
     enquiry_id UUID,
     json_data text,
     is_answered boolean,
-    primary key(cp_id, enquiry_id)
+    primary key(cp_id,enquiry_id)
 )WITH CLUSTERING ORDER BY (enquiry_id DESC);

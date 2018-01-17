@@ -6,7 +6,6 @@ import com.procurement.clarification.model.dto.CreateAnswerRQ;
 import com.procurement.clarification.model.dto.CreateAnswerRQDto;
 import com.procurement.clarification.model.entity.EnquiryEntity;
 import com.procurement.clarification.utils.JsonUtil;
-import java.time.LocalDateTime;
 import org.springframework.core.convert.converter.Converter;
 
 public class CreateAnswerRQToEnquiryEntity implements Converter<CreateAnswerRQ, EnquiryEntity> {
@@ -18,7 +17,6 @@ public class CreateAnswerRQToEnquiryEntity implements Converter<CreateAnswerRQ, 
         final EnquiryEntity enquiryEntity = new EnquiryEntity();
         enquiryEntity.setCpId(dataDto.getCpid());
         enquiryEntity.setEnquiryId(UUIDs.timeBased());
-
 
         enquiryEntity.setIsAnswered(false);
 

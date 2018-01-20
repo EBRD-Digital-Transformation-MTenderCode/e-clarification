@@ -8,8 +8,10 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @JsonPropertyOrder({
     "allAnswers",
     "enquiry"
@@ -17,7 +19,7 @@ import lombok.Getter;
 public class UpdateAnswerRSDto {
 
     @JsonProperty("allAnswers")
-    private final Boolean allAnswers;
+    private Boolean allAnswers;
 
     @NotNull
     @JsonProperty("enquiry")

@@ -1,5 +1,7 @@
 package com.procurement.clarification.model.entity;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +10,7 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-@Table("clarification_period")
+@Table("enquiry_period")
 @Getter
 @Setter
 public class PeriodEntity {
@@ -29,4 +31,12 @@ public class PeriodEntity {
 
     @Column(value = "tender_period_end_date")
     private Date tenderPeriodEndDate;
+
+    public LocalDateTime getStartDate() {
+        return LocalDateTime.ofInstant(startDate.toInstant(), ZoneOffset.UTC);
+    }
+
+    public LocalDateTime getEndDate() {
+        return LocalDateTime.ofInstant(endDate.toInstant(), ZoneOffset.UTC);
+    }
 }

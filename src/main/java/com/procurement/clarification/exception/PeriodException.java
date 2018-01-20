@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public class PeriodException extends RuntimeException {
 
-    private String message;
+    private final String message;
 
-    public PeriodException(String message) {
+    public PeriodException(final String message) {
         this.message = message;
     }
 }

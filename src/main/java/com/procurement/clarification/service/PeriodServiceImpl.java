@@ -42,11 +42,8 @@ public class PeriodServiceImpl implements PeriodService {
         if (checkInterval(startDate, enquiryPeriodEndDate, interval)) {
             final PeriodEntity periodEntity = new PeriodEntity();
             periodEntity.setCpId(cpid);
-            periodEntity.setStage(stage);
             periodEntity.setStartDate(dateUtil.localToDate(startDate));
             periodEntity.setEndDate(dateUtil.localToDate(enquiryPeriodEndDate));
-            periodEntity.setOwner(owner);
-            periodEntity.setTenderPeriodEndDate(dateUtil.localToDate(endDate));
             periodRepository.save(periodEntity);
         }
         return new ResponseDto(true, null, new EnquiryPeriodDto(startDate, enquiryPeriodEndDate));
@@ -72,11 +69,6 @@ public class PeriodServiceImpl implements PeriodService {
         } else {
             throw new PeriodException("Period not found");
         }
-    }
-
-    @Override
-    public String getPeriodOwner(final String cpId) {
-        return getPeriod(cpId).getOwner();
     }
 
     private Boolean checkInterval(final LocalDateTime startDate, final LocalDateTime endDate, final int interval) {

@@ -22,18 +22,18 @@ public class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ValidationException.class)
     public ValidationErrorResponse handleValidationContractProcessPeriod(
-        final ValidationException e) {
+            final ValidationException e) {
 
         return new ValidationErrorResponse(
-            ERROR_MESSAGE,
-            e.getErrors()
-             .getFieldErrors()
-             .stream()
-             .map(f -> new ValidationErrorResponse.ErrorPoint(
-                 f.getField(),
-                 f.getDefaultMessage(),
-                 f.getCode()))
-             .collect(Collectors.toList()));
+                ERROR_MESSAGE,
+                e.getErrors()
+                        .getFieldErrors()
+                        .stream()
+                        .map(f -> new ValidationErrorResponse.ErrorPoint(
+                                f.getField(),
+                                f.getDefaultMessage(),
+                                f.getCode()))
+                        .collect(Collectors.toList()));
     }
 
     @ResponseBody

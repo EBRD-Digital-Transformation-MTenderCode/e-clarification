@@ -19,7 +19,4 @@ public interface PeriodService {
     void checkDateInPeriod(LocalDateTime localDateTime, String cpid);
 
     PeriodEntity getPeriod(String cpId);
-
-    String getPeriodOwner(String cpId);
-
 }

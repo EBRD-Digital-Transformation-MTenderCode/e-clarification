@@ -4,11 +4,7 @@ server:
 spring:
   application:
     name: e-clarification
-
-#  cloud:
-#    config:
-#      failFast: true
-#      name: Notifier
-#      label: v1
-#      username:
-#      password:
+  cloud:
+    config:
+      failFast: true
+      name: e-clarification

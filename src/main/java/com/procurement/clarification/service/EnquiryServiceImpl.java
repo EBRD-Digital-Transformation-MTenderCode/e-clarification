@@ -1,189 +1,108 @@
 package com.procurement.clarification.service;
 
+import com.datastax.driver.core.utils.UUIDs;
+import com.procurement.clarification.exception.ErrorInsertException;
 import com.procurement.clarification.model.dto.*;
-import com.procurement.clarification.model.dto.bpe.ResponseDetailsDto;
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
 import com.procurement.clarification.model.entity.EnquiryEntity;
 import com.procurement.clarification.model.entity.PeriodEntity;
 import com.procurement.clarification.repository.EnquiryRepository;
-import com.procurement.clarification.repository.PeriodRepository;
 import com.procurement.clarification.utils.DateUtil;
 import com.procurement.clarification.utils.JsonUtil;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EnquiryServiceImpl implements EnquiryService {
+
     private EnquiryRepository enquiryRepository;
-    private PeriodRepository periodRepository;
+    private PeriodService periodService;
     private JsonUtil jsonUtil;
     private DateUtil dateUtil;
     private ConversionService conversionService;
 
     public EnquiryServiceImpl(final EnquiryRepository enquiryRepository,
-                              final PeriodRepository periodRepository,
+                              final PeriodService periodService,
                               final JsonUtil jsonUtil,
                               final DateUtil dateUtil,
                               final ConversionService conversionService) {
         this.enquiryRepository = enquiryRepository;
-        this.periodRepository = periodRepository;
+        this.periodService = periodService;
         this.jsonUtil = jsonUtil;
         this.dateUtil = dateUtil;
         this.conversionService = conversionService;
     }
 
     @Override
-    public ResponseDto saveEnquiry(final CreateAnswerRQ createAnswerRQ) {
-        final LocalDateTime localDateTime = createAnswerRQ.getDate();
-        checkPeriod(localDateTime, createAnswerRQ.getCpid());
-        final EnquiryEntity enquiryEntity = conversionService.convert(createAnswerRQ, EnquiryEntity.class);
-
-        final String errorMessage = checkPeriod(localDateTime, createAnswerRQ.getCpid());
-
-        if (errorMessage != null) {
-            final List<ResponseDetailsDto> responseDetails = new ArrayList<>();
-            responseDetails.add(new ResponseDetailsDto("code", errorMessage));
-            return new ResponseDto(false, responseDetails, null);
-        } else {
-
-            final String ownerId = periodRepository.getByCpId(createAnswerRQ.getCpid())
-                    .getOwner();
-            enquiryEntity.setOwner(ownerId);
-
-            final CreateEnquiryRQDto createEnquiryRQDto = createAnswerRQ.getDataDto()
-                    .getEnquiry();
-
-            final CreateEnquiryRSDto createEnquiryRSDto = new CreateEnquiryRSDto(enquiryEntity.getEnquiryId()
-                    .toString(),
-                    createAnswerRQ
-                            .getDate(),
-                    createEnquiryRQDto.getAuthor(),
-                    createEnquiryRQDto.getTitle(),
-                    createEnquiryRQDto.getDescription(),
-                    enquiryEntity.getIsAnswered(),
-                    createEnquiryRQDto.getRelatedItem(),
-                    createEnquiryRQDto.getRelatedLot());
-            enquiryEntity.setJsonData(jsonUtil.toJson(createEnquiryRSDto));
-
-            enquiryRepository.save(enquiryEntity);
-
-            final CreateAnswerRSDto createAnswerRSDto = new CreateAnswerRSDto(enquiryEntity.getEnquiryId()
-                    .toString(),
-                    createEnquiryRSDto);
-
-            return new ResponseDto(true, null, createAnswerRSDto);
-        }
+    public ResponseDto saveEnquiry(final CreateEnquiryParams params) {
+        periodService.checkDateInPeriod(params.getDate(), params.getCpid());
+        final EnquiryDto enquiryDto = params.getDataDto().getEnquiry();
+        enquiryDto.setId(UUIDs.timeBased().toString());
+        enquiryDto.setDate(params.getDate());
+        final EnquiryEntity entity = new EnquiryEntity();
+        entity.setCpId(params.getCpid());
+        entity.setToken(UUIDs.timeBased().toString());
+        entity.setIsAnswered(false);
+        entity.setOwner(params.getOwner());
+        entity.setJsonData(jsonUtil.toJson(enquiryDto));
+        enquiryRepository.save(entity);
+        return new ResponseDto(true, null, new CreateEnquiryResponseDto(entity.getToken(), enquiryDto));
     }
 
     @Override
-    public ResponseDto updateEnquiry(final UpdateAnswerRQ updateAnswerRQ) {
-        final EnquiryEntity enquiryEntity = enquiryRepository.getByCpIdaAndEnquiryId(updateAnswerRQ.getCpId(), UUID
-                .fromString(updateAnswerRQ.getDataDto()
-                        .getEnquiry()
-                        .getId()));
-        if (enquiryEntity != null) {
-            if (enquiryEntity.getOwner()
-                    .equals(updateAnswerRQ.getIdPlatform())) {
-                if (enquiryEntity.getIsAnswered()) {
-                    final List<ResponseDetailsDto> responseDetails = new ArrayList<>();
-                    responseDetails.add(new ResponseDetailsDto("code", "already answered"));
-                    return new ResponseDto(false, responseDetails, null);
-                } else {
-                    final LocalDateTime currentLocalDateTime = dateUtil.localNowUTC();
-
-                    final CreateEnquiryRSDto enquiry = jsonUtil.toObject(CreateEnquiryRSDto.class, enquiryEntity
-                            .getJsonData());
-                    final UpdateEnquiryRQDto answer = updateAnswerRQ.getDataDto()
-                            .getEnquiry();
-                    final UpdateEnquiryRSDto updateEnquiryRSDto = new UpdateEnquiryRSDto(enquiryEntity.getEnquiryId()
-                            .toString(),
-                            enquiry.getDate(),
-                            enquiry.getAuthor(),
-                            enquiry.getTitle(),
-                            enquiry.getDescription(),
-                            answer.getAnswer(),
-                            currentLocalDateTime,
-                            enquiry.getRelatedItem(),
-                            enquiry.getRelatedLot(),
-                            true);
-                    final UpdateAnswerRSDto updateAnswerRSDto = new UpdateAnswerRSDto(null,
-                            updateEnquiryRSDto);
-                    enquiryEntity.setIsAnswered(true);
-                    enquiryEntity.setJsonData(jsonUtil.toJson(updateAnswerRSDto));
-                    enquiryRepository.save(enquiryEntity);
-                    updateAnswerRSDto.setAllAnswers(
-                            isAllAnsweredAfterEndPeriod(currentLocalDateTime, enquiryEntity.getCpId())
-                    );
-                    return new ResponseDto(true, null, updateAnswerRSDto);
-                }
-            } else {
-                final List<ResponseDetailsDto> responseDetails = new ArrayList<>();
-                responseDetails.add(new ResponseDetailsDto("code", "invalid platform id"));
-                return new ResponseDto(false, responseDetails, null);
-            }
+    public ResponseDto updateEnquiry(final UpdateEnquiryParams params) {
+        final Optional<EnquiryEntity> entityOptional = enquiryRepository.getByCpIdaAndToken(
+                params.getCpId(),
+                params.getToken());
+        if (entityOptional.isPresent()) {
+            final EnquiryEntity entity = entityOptional.get();
+            checkEnquiry(entity, params);
+            final EnquiryDto enquiryDto = jsonUtil.toObject(EnquiryDto.class, entity.getJsonData());
+            enquiryDto.setAnswer(params.getDataDto().getEnquiry().getAnswer());
+            entity.setIsAnswered(true);
+            entity.setJsonData(jsonUtil.toJson(enquiryDto));
+            enquiryRepository.save(entity);
+            final Boolean isAllAnswered = isAllAnsweredAfterEndPeriod(params.getCpId());
+            return new ResponseDto(true, null, new UpdateEnquiryResponseDto(isAllAnswered, enquiryDto));
         } else {
-            final List<ResponseDetailsDto> responseDetails = new ArrayList<>();
-            responseDetails.add(new ResponseDetailsDto("code", "not found"));
-            return new ResponseDto(false, responseDetails, null);
+            throw new ErrorInsertException("Enquiry not found.");
         }
     }
 
     @Override
     public ResponseDto checkEnquiries(final String cpId, final String stage) {
-
-        final PeriodEntity periodEntity = periodRepository.getByCpIdAndStage(cpId, stage);
-        final LocalDateTime endDate = dateUtil.dateToLocal(periodEntity.getEndDate());
-        final LocalDateTime currentDate = dateUtil.localNowUTC();
-
-        if (dateUtil.getMilliUTC(currentDate) < dateUtil.getMilliUTC(endDate)) {
-            return new ResponseDto(true, null, new CheckEnquiresPeriodRSDto(endDate));
+        final PeriodEntity periodEntity = periodService.getPeriod(cpId);
+        final LocalDateTime endDate = periodEntity.getEndDate();
+        if (dateUtil.localNowUTC().isBefore(endDate)) {
+            return new ResponseDto(true, null, new CheckEnquiresResponseDto(endDate, null));
         } else {
-
-            return new ResponseDto(true, null, new CheckEnquiresAllAnswersRSDto(isAllAnswered(cpId)));
+            return new ResponseDto(true, null, new CheckEnquiresResponseDto(null, isAllAnswered(cpId)));
         }
     }
 
-    private String checkPeriod(final LocalDateTime localDateTime, final String tenderId) {
-
-        final PeriodEntity periodEntity = periodRepository.getByCpId(tenderId);
-
-        if (periodEntity == null) {
-            return "Period not found";
-        } else {
-            final boolean localDateTimeAfter = localDateTime.isAfter(dateUtil.dateToLocal(periodEntity.getStartDate()));
-            final boolean localDateTimeBefore = localDateTime.isBefore(dateUtil.dateToLocal(periodEntity.getEndDate()));
-            if (!localDateTimeAfter || !localDateTimeBefore) {
-                return "Date not in period.";
-            }
+    private void checkEnquiry(final EnquiryEntity entity, final UpdateEnquiryParams params) {
+        if (!entity.getOwner().equals(params.getOwner())) {
+            throw new ErrorInsertException("Invalid owner.");
         }
-
-        return null;
+        if (entity.getIsAnswered()) {
+            throw new ErrorInsertException("The enquiry already has an answer.");
+        }
     }
 
     private Boolean isAllAnswered(final String cpId) {
-        final long countNotAnswered = enquiryRepository.getCountByCpIdAndIsAnswered(cpId);
-        Boolean allAnswers = false;
-        if (countNotAnswered == 0) {
-            allAnswers = true;
-        }
-
-        return allAnswers;
+        return (enquiryRepository.getCountByCpIdAndIsAnswered(cpId) == 0) ? true : false;
     }
 
-    private Boolean isAllAnsweredAfterEndPeriod(final LocalDateTime localDateTimeNow, final String cpId) {
-        final PeriodEntity periodEntity = periodRepository.getByCpId(cpId);
-        if (periodEntity != null) {
-            final LocalDateTime endDate = dateUtil.dateToLocal(periodEntity.getEndDate());
-            if (localDateTimeNow.isAfter(endDate)) {
-                return isAllAnswered(cpId);
-            } else {
-                return false;
-            }
+    private Boolean isAllAnsweredAfterEndPeriod(final String cpId) {
+        final PeriodEntity periodEntity = periodService.getPeriod(cpId);
+        final LocalDateTime endDate = periodEntity.getEndDate();
+        if (dateUtil.localNowUTC().isAfter(endDate)) {
+            return isAllAnswered(cpId);
+        } else {
+            return false;
         }
-        return null;
     }
+
 }

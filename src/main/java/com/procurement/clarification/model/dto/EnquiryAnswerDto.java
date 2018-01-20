@@ -13,18 +13,19 @@ import lombok.Setter;
     "id",
     "answer"
 })
-public class UpdateEnquiryRQDto {
+public class EnquiryAnswerDto {
 
-    @JsonProperty("answer")
-    @NotNull
-    private final String answer;
     @JsonProperty("id")
     @NotNull
     private String id;
 
+    @JsonProperty("answer")
+    @NotNull
+    private final String answer;
+
     @JsonCreator
-    public UpdateEnquiryRQDto(@JsonProperty("id") final String id,
-                              @JsonProperty("answer") final String answer) {
+    public EnquiryAnswerDto(@JsonProperty("id") final String id,
+                            @JsonProperty("answer") final String answer) {
 
         this.id = id;
         this.answer = answer;

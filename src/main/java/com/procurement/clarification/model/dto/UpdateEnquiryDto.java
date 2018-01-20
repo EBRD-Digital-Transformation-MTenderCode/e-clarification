@@ -11,18 +11,18 @@ import lombok.Getter;
 @Getter
 @JsonPropertyOrder(
     "enquiry")
-public class UpdateAnswerRQDto {
+public class UpdateEnquiryDto {
     @NotNull
     @Valid
     @JsonProperty("enquiry")
-    private final UpdateEnquiryRQDto enquiry;
+    private final EnquiryAnswerDto enquiry;
 
     @JsonCreator
-    public UpdateAnswerRQDto(
+    public UpdateEnquiryDto(
 
         @NotEmpty
         @Valid
-        @JsonProperty("enquiry") final UpdateEnquiryRQDto enquiry) {
+        @JsonProperty("enquiry") final EnquiryAnswerDto enquiry) {
 
         this.enquiry = enquiry;
     }

@@ -15,8 +15,11 @@ public interface PeriodService {
                                        String owner,
                                        LocalDateTime startDate,
                                        LocalDateTime endDate);
-    void checkPeriod(String cpid);
+
+    void checkDateInPeriod(LocalDateTime localDateTime, String cpid);
 
     PeriodEntity getPeriod(String cpId);
+
+    String getPeriodOwner(String cpId);
 
 }

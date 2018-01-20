@@ -54,9 +54,13 @@ public class PeriodServiceImpl implements PeriodService {
 
 
     @Override
-    public void checkPeriod(final String cpid) {
-        if (isPeriodValid(cpid)) {
-            throw new PeriodException("Not found date.");
+    public void checkDateInPeriod(final LocalDateTime localDateTime, final String cpid) {
+        final LocalDateTime localDateTimeNow = dateUtil.localNowUTC();
+        final PeriodEntity periodEntity = getPeriod(cpid);
+        final boolean localDateTimeBefore = localDateTimeNow.isBefore(periodEntity.getEndDate());
+        final boolean localDateTimeAfter = localDateTimeNow.isAfter(periodEntity.getStartDate());
+        if(!localDateTimeBefore || !localDateTimeAfter) {
+            throw new PeriodException("Date does not match period.");
         }
     }
 
@@ -70,12 +74,9 @@ public class PeriodServiceImpl implements PeriodService {
         }
     }
 
-    public boolean isPeriodValid(final String cpid) {
-        final LocalDateTime localDateTime = dateUtil.localNowUTC();
-        final PeriodEntity periodEntity = getPeriod(cpid);
-        final boolean localDateTimeAfter = localDateTime.isAfter(periodEntity.getStartDate());
-        final boolean localDateTimeBefore = localDateTime.isBefore(periodEntity.getEndDate());
-        return !localDateTimeAfter || !localDateTimeBefore;
+    @Override
+    public String getPeriodOwner(final String cpId) {
+        return getPeriod(cpId).getOwner();
     }
 
     private Boolean checkInterval(final LocalDateTime startDate, final LocalDateTime endDate, final int interval) {

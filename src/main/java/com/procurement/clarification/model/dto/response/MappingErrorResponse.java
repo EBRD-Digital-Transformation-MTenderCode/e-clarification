@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 public class MappingErrorResponse {
-    final String message;
-    final JsonMappingException e;
+    private final String message;
+    private final JsonMappingException e;
 
-    public MappingErrorResponse(String message, JsonMappingException e) {
+    public MappingErrorResponse(final String message, final JsonMappingException e) {
         this.message = message;
         this.e = e;
     }

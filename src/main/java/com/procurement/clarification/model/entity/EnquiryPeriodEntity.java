@@ -1,6 +1,6 @@
 package com.procurement.clarification.model.entity;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -10,49 +10,55 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-@Table("enquiry")
+@Table("enquiry_period")
 @Getter
 @Setter
-public class EnquiryEntity {
+public class EnquiryPeriodEntity {
     @PrimaryKeyColumn(name = "cp_id", type = PrimaryKeyType.PARTITIONED)
     private String cpId;
 
-    @PrimaryKeyColumn(value = "enquiry_id", type = PrimaryKeyType.CLUSTERED)
-    private UUID enquiryId;
+    @PrimaryKeyColumn(name = "stage", type = PrimaryKeyType.PARTITIONED)
+    private String stage;
 
-    @PrimaryKeyColumn(name = "owner")
+    @Column(value = "owner")
     private String owner;
 
-    @Column(value = "json_data")
-    private String jsonData;
+    @Column(value = "start_date")
+    private LocalDateTime startDate;
 
-    @Column(value = "is_answered")
-    private Boolean isAnswered;
+    @Column(value = "end_date")
+    private LocalDateTime endDate;
+
+    @Column(value = "enquiry_end_date")
+    private LocalDateTime enquiryEndDate;
 
     @Override
     public boolean equals(final Object other) {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof EnquiryEntity)) {
+        if (!(other instanceof EnquiryPeriodEntity)) {
             return false;
         }
-        final EnquiryEntity rhs = (EnquiryEntity) other;
+        final EnquiryPeriodEntity rhs = (EnquiryPeriodEntity) other;
         return new EqualsBuilder().append(cpId, rhs.cpId)
-                                  .append(enquiryId, rhs.enquiryId)
                                   .append(owner, rhs.owner)
-                                  .append(jsonData, rhs.jsonData)
-                                  .append(isAnswered, rhs.isAnswered)
+                                  .append(stage, rhs.stage)
+                                  .append(startDate, rhs.startDate)
+                                  .append(endDate, rhs.endDate)
+                                  .append(enquiryEndDate, rhs.enquiryEndDate)
                                   .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(cpId)
-                                    .append(enquiryId)
                                     .append(owner)
-                                    .append(jsonData)
-                                    .append(isAnswered)
+                                    .append(stage)
+                                    .append(startDate)
+                                    .append(endDate)
+                                    .append(enquiryEndDate)
                                     .toHashCode();
     }
 }
+

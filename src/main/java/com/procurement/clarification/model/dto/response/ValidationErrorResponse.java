@@ -5,21 +5,21 @@ import lombok.Getter;
 
 @Getter
 public class ValidationErrorResponse {
-    private String message;
-    private List<ErrorPoint> errors;
+    private final String message;
+    private final List<ErrorPoint> errors;
 
-    public ValidationErrorResponse(String message, List<ErrorPoint> errors) {
+    public ValidationErrorResponse(final String message, final List<ErrorPoint> errors) {
         this.message = message;
         this.errors = errors;
     }
 
     @Getter
     public static class ErrorPoint {
-        private String field;
-        private String message;
-        private String code;
+        private final String field;
+        private final String message;
+        private final String code;
 
-        public ErrorPoint(String field, String message, String code) {
+        public ErrorPoint(final String field, final String message, final String code) {
             this.field = field;
             this.message = message;
             this.code = code;

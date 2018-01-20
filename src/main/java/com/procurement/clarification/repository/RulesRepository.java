@@ -10,5 +10,4 @@ public interface RulesRepository extends CassandraRepository<RulesEntity, String
 
     @Query(value = "select value from clarification_rules where country=?0 AND method=?1 AND parameter=?2 LIMIT 1")
     String getValue(String country, String method, String parameter);
-
 }

@@ -36,6 +36,7 @@ public class ControllerExceptionHandler {
                         .collect(Collectors.toList()));
     }
 
+
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(JsonMappingException.class)

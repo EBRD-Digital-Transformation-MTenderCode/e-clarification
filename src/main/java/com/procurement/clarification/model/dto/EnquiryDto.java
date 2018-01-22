@@ -34,7 +34,7 @@ public class EnquiryDto {
     @JsonProperty("author")
     @NotNull
     @Valid
-    private final AuthorDto author;
+    private final OrganizationReferenceDto author;
     @JsonProperty("title")
     @NotNull
     @Size(min = 1, max = 100)
@@ -57,7 +57,7 @@ public class EnquiryDto {
     public EnquiryDto(
             @JsonProperty("id") final String id,
             @JsonProperty("date") final LocalDateTime date,
-            @JsonProperty("author") final AuthorDto author,
+            @JsonProperty("author") final OrganizationReferenceDto author,
             @JsonProperty("title") final String title,
             @JsonProperty("description") final String description,
             @JsonProperty("relatedItem") final String relatedItem,

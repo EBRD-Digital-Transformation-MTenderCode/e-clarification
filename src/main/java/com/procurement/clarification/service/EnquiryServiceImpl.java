@@ -53,7 +53,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 
     @Override
     public ResponseDto updateEnquiry(final UpdateEnquiryParams params) {
-        final Optional<EnquiryEntity> entityOptional = enquiryRepository.getByCpIdaAndToken(
+        final Optional<EnquiryEntity> entityOptional = enquiryRepository.getByCpIdAndToken(
                 params.getCpId(),
                 params.getToken());
         if (entityOptional.isPresent()) {

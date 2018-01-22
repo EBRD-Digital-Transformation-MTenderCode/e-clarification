@@ -21,18 +21,15 @@ public class EnquiryServiceImpl implements EnquiryService {
     private PeriodService periodService;
     private JsonUtil jsonUtil;
     private DateUtil dateUtil;
-    private ConversionService conversionService;
 
     public EnquiryServiceImpl(final EnquiryRepository enquiryRepository,
                               final PeriodService periodService,
                               final JsonUtil jsonUtil,
-                              final DateUtil dateUtil,
-                              final ConversionService conversionService) {
+                              final DateUtil dateUtil) {
         this.enquiryRepository = enquiryRepository;
         this.periodService = periodService;
         this.jsonUtil = jsonUtil;
         this.dateUtil = dateUtil;
-        this.conversionService = conversionService;
     }
 
     @Override

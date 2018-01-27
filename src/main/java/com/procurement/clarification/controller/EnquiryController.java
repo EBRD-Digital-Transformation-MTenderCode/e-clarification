@@ -25,7 +25,7 @@ public class EnquiryController {
         this.enquiryService = enquiryService;
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<ResponseDto> createEnquiry(@RequestParam(value = "cpid") final String cpid,
                                                      @RequestParam(value = "stage") final String stage,
                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -36,7 +36,7 @@ public class EnquiryController {
         return new ResponseEntity<>(enquiryService.saveEnquiry(params), HttpStatus.CREATED);
     }
 
-    @PostMapping("/update")
+    @PutMapping
     public ResponseEntity<ResponseDto> updateEnquiry(@RequestParam(value = "cpid") final String cpid,
                                                      @RequestParam(value = "token") final String token,
                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -47,7 +47,7 @@ public class EnquiryController {
         return new ResponseEntity<>(enquiryService.updateEnquiry(params), HttpStatus.OK);
     }
 
-    @GetMapping("/checkEnquiries")
+    @GetMapping
     public ResponseEntity<ResponseDto> checkEnquiries(@RequestParam(value = "cpid") final String cpid,
                                                       @RequestParam(value = "stage") final String stage) {
         return new ResponseEntity<>(enquiryService.checkEnquiries(cpid, stage), HttpStatus.OK);

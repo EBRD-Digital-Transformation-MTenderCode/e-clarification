@@ -21,7 +21,7 @@ public class PeriodController {
         this.periodService = periodService;
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public ResponseEntity<ResponseDto> savePeriod(@RequestParam("cpid") final String cpid,
                                                   @RequestParam("country") final String country,
                                                   @RequestParam("pmd") final String pmd,

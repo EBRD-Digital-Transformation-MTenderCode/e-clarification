@@ -1,7 +1,7 @@
 package com.procurement.clarification.service;
 
 import com.datastax.driver.core.utils.UUIDs;
-import com.procurement.clarification.exception.ErrorInsertException;
+import com.procurement.clarification.exception.ErrorException;
 import com.procurement.clarification.model.dto.*;
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
 import com.procurement.clarification.model.entity.EnquiryEntity;
@@ -11,7 +11,6 @@ import com.procurement.clarification.utils.DateUtil;
 import com.procurement.clarification.utils.JsonUtil;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -50,22 +49,17 @@ public class EnquiryServiceImpl implements EnquiryService {
 
     @Override
     public ResponseDto updateEnquiry(final UpdateEnquiryParams params) {
-        final Optional<EnquiryEntity> entityOptional = enquiryRepository.getByCpIdAndToken(
-                params.getCpId(),
-                params.getToken());
-        if (entityOptional.isPresent()) {
-            final EnquiryEntity entity = entityOptional.get();
-            checkEnquiry(entity, params);
-            final EnquiryDto enquiryDto = jsonUtil.toObject(EnquiryDto.class, entity.getJsonData());
-            enquiryDto.setAnswer(params.getDataDto().getEnquiry().getAnswer());
-            entity.setIsAnswered(true);
-            entity.setJsonData(jsonUtil.toJson(enquiryDto));
-            enquiryRepository.save(entity);
-            final Boolean isAllAnswered = isAllAnsweredAfterEndPeriod(params.getCpId());
-            return new ResponseDto(true, null, new UpdateEnquiryResponseDto(isAllAnswered, enquiryDto));
-        } else {
-            throw new ErrorInsertException("Enquiry not found.");
-        }
+        final EnquiryEntity entity = Optional.ofNullable(
+                enquiryRepository.getByCpIdAndToken(params.getCpId(), params.getToken()))
+                .orElseThrow(() -> new ErrorException("Enquiry not found."));
+        checkEnquiry(entity, params);
+        final EnquiryDto enquiryDto = jsonUtil.toObject(EnquiryDto.class, entity.getJsonData());
+        enquiryDto.setAnswer(params.getDataDto().getEnquiry().getAnswer());
+        entity.setIsAnswered(true);
+        entity.setJsonData(jsonUtil.toJson(enquiryDto));
+        enquiryRepository.save(entity);
+        final Boolean isAllAnswered = isAllAnsweredAfterEndPeriod(params.getCpId());
+        return new ResponseDto(true, null, new UpdateEnquiryResponseDto(isAllAnswered, enquiryDto));
     }
 
     @Override
@@ -81,10 +75,10 @@ public class EnquiryServiceImpl implements EnquiryService {
 
     private void checkEnquiry(final EnquiryEntity entity, final UpdateEnquiryParams params) {
         if (!entity.getOwner().equals(params.getOwner())) {
-            throw new ErrorInsertException("Invalid owner.");
+            throw new ErrorException("Invalid owner.");
         }
         if (entity.getIsAnswered()) {
-            throw new ErrorInsertException("The enquiry already has an answer.");
+            throw new ErrorException("The enquiry already has an answer.");
         }
     }
 

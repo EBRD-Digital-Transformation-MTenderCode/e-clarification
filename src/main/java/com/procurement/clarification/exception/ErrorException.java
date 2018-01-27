@@ -1,10 +1,10 @@
 package com.procurement.clarification.exception;
 
-public class ErrorInsertException extends RuntimeException {
+public class ErrorException extends RuntimeException {
 
     private final String message;
 
-    public ErrorInsertException(final String message) {
+    public ErrorException(final String message) {
         this.message = message;
     }
 }

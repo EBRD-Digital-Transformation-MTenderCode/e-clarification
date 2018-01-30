@@ -1,6 +1,6 @@
 package com.procurement.clarification.service;
 
-import com.procurement.clarification.exception.PeriodException;
+import com.procurement.clarification.exception.ErrorException;
 import com.procurement.clarification.model.dto.EnquiryPeriodDto;
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
 import com.procurement.clarification.model.entity.PeriodEntity;
@@ -56,8 +56,8 @@ public class PeriodServiceImpl implements PeriodService {
         final PeriodEntity periodEntity = getPeriod(cpid);
         final boolean localDateTimeBefore = localDateTimeNow.isBefore(periodEntity.getEndDate());
         final boolean localDateTimeAfter = localDateTimeNow.isAfter(periodEntity.getStartDate());
-        if(!localDateTimeBefore || !localDateTimeAfter) {
-            throw new PeriodException("Date does not match period.");
+        if (!localDateTimeBefore || !localDateTimeAfter) {
+            throw new ErrorException("Date does not match period.");
         }
     }
 
@@ -67,13 +67,13 @@ public class PeriodServiceImpl implements PeriodService {
         if (entityOptional.isPresent()) {
             return entityOptional.get();
         } else {
-            throw new PeriodException("Period not found");
+            throw new ErrorException("Period not found");
         }
     }
 
     private Boolean checkInterval(final LocalDateTime startDate, final LocalDateTime endDate, final int interval) {
         final Long days = DAYS.between(startDate.toLocalDate(), endDate.toLocalDate());
-        if (days < interval) throw new PeriodException("Period invalid.");
+        if (days < interval) throw new ErrorException("Period invalid.");
         else return true;
     }
 }

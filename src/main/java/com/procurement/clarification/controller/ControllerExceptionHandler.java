@@ -2,17 +2,16 @@ package com.procurement.clarification.controller;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.procurement.clarification.exception.ErrorException;
-import com.procurement.clarification.exception.PeriodException;
 import com.procurement.clarification.exception.ValidationException;
-import com.procurement.clarification.model.dto.response.ErrorResponse;
-import com.procurement.clarification.model.dto.response.MappingErrorResponse;
-import com.procurement.clarification.model.dto.response.ValidationErrorResponse;
-import java.util.function.Function;
+import com.procurement.clarification.model.dto.bpe.ResponseDetailsDto;
+import com.procurement.clarification.model.dto.bpe.ResponseDto;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.validation.ConstraintViolationException;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,83 +19,72 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static java.util.stream.Collectors.toList;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.OK;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
-    private static final String MESSAGE = "Request data not valid.";
-
+    @ResponseBody
+    @ResponseStatus(OK)
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ValidationErrorResponse> handleValidationContractProcessPeriod(
-            final ValidationException e) {
-        return new ResponseEntity<>(getValidationErrorResponse(e.getErrors()), BAD_REQUEST);
+    public ResponseDto handleValidationContractProcessPeriod(final ValidationException e) {
+        return new ResponseDto<>(false, getErrors(e.getErrors()), null);
     }
 
+    @ResponseBody
+    @ResponseStatus(OK)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationErrorResponse> methodArgumentNotValidException(
-            final MethodArgumentNotValidException e) {
-        return new ResponseEntity<>(getValidationErrorResponse(e.getBindingResult()), BAD_REQUEST);
+    public ResponseDto methodArgumentNotValidException(final MethodArgumentNotValidException e) {
+        return new ResponseDto<>(false, getErrors(e.getBindingResult()), null);
     }
 
+    @ResponseBody
+    @ResponseStatus(OK)
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ValidationErrorResponse> handle(
-            final ConstraintViolationException e) {
-        return new ResponseEntity<>(getValidationErrorResponse(e), BAD_REQUEST);
-    }
-
-    private ValidationErrorResponse getValidationErrorResponse(final ConstraintViolationException e) {
-        return new ValidationErrorResponse(
-                MESSAGE,
-                e.getConstraintViolations()
-                        .stream()
-                        .map(s -> new ValidationErrorResponse.ErrorPoint(
-                                s.getPropertyPath().toString(),
-                                s.getMessage(),
-                                s.getMessageTemplate()))
-                        .collect(toList()));
-    }
-
-    private ValidationErrorResponse getValidationErrorResponse(final BindingResult e) {
-        return new ValidationErrorResponse(
-                MESSAGE,
-                e.getFieldErrors()
-                        .stream()
-                        .map(getErrorPointFunction())
-                        .collect(toList()));
-    }
-
-    private Function<FieldError, ValidationErrorResponse.ErrorPoint> getErrorPointFunction() {
-        return f -> new ValidationErrorResponse.ErrorPoint(
-                f.getField(),
-                f.getDefaultMessage(),
-                f.getCode());
+    public ResponseDto handle(final ConstraintViolationException e) {
+        return new ResponseDto<>(false, getErrors(e), null);
     }
 
     @ResponseBody
-    @ResponseStatus(BAD_REQUEST)
+    @ResponseStatus(OK)
     @ExceptionHandler(JsonMappingException.class)
-    public MappingErrorResponse handleJsonMappingExceptionException(final JsonMappingException e) {
-        return new MappingErrorResponse(MESSAGE, e);
+    public ResponseDto handleJsonMappingExceptionException(final JsonMappingException e) {
+        return new ResponseDto<>(false, getErrors(e.getMessage()), null);
     }
 
     @ResponseBody
-    @ResponseStatus(BAD_REQUEST)
-    @ExceptionHandler(PeriodException.class)
-    public ErrorResponse handleErrorInsertException(final PeriodException e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ResponseBody
-    @ResponseStatus(BAD_REQUEST)
+    @ResponseStatus(OK)
     @ExceptionHandler(ErrorException.class)
-    public ErrorResponse handleErrorInsertException(final ErrorException e) {
-        return new ErrorResponse(e.getMessage());
+    public ResponseDto handleErrorInsertException(final ErrorException e) {
+        return new ResponseDto<>(false, getErrors(e.getMessage()), null);
     }
 
     @ResponseBody
-    @ResponseStatus(BAD_REQUEST)
+    @ResponseStatus(OK)
     @ExceptionHandler(ServletException.class)
-    public ErrorResponse handleErrorInsertException(final ServletException e) {
-        return new ErrorResponse(e.getMessage());
+    public ResponseDto handleErrorInsertException(final ServletException e) {
+        return new ResponseDto<>(false, getErrors(e.getMessage()), null);
+    }
+
+    private List<ResponseDetailsDto> getErrors(final BindingResult result) {
+        return result.getFieldErrors()
+                .stream()
+                .map(f -> new ResponseDetailsDto(
+                        f.getField(),
+                        f.getCode() + " : " + f.getDefaultMessage()))
+                .collect(Collectors.toList());
+    }
+
+    private List<ResponseDetailsDto> getErrors(final ConstraintViolationException e) {
+        return e.getConstraintViolations()
+                .stream()
+                .map(f -> new ResponseDetailsDto(
+                        f.getPropertyPath()
+                                .toString(),
+                        f.getMessage() + " " + f.getMessageTemplate()))
+                .collect(toList());
+    }
+
+    private List<ResponseDetailsDto> getErrors(final String error) {
+        return Arrays.asList(new ResponseDetailsDto(HttpStatus.BAD_REQUEST.toString(), error));
     }
 }

@@ -30,7 +30,6 @@ public class PeriodServiceImpl implements PeriodService {
 
     @Override
     public ResponseDto calculateAndSavePeriod(final PeriodEnquiryParams params) {
-
         final int offset = rulesService.getOffset(params.getCountry(), params.getPmd());
         final int interval = rulesService.getInterval(params.getCountry(), params.getPmd());
         final LocalDateTime enquiryPeriodEndDate = params.getEndDate().minusDays(offset);

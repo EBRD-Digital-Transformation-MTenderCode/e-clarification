@@ -1,25 +1,30 @@
-package com.procurement.clarification.model.dto;
+package com.procurement.clarification.model.dto.params;
 
+import com.procurement.clarification.model.dto.UpdateEnquiryDto;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class CreateEnquiryParams {
+@Setter
+public class UpdateEnquiryParams {
+
     private final String cpId;
     private final String stage;
+    private final String token;
+    private final LocalDateTime date;
     private final String owner;
-    private final CreateEnquiryDto dataDto;
-    @Setter
-    private LocalDateTime date;
+    private final UpdateEnquiryDto dataDto;
 
-    public CreateEnquiryParams(final String cpId,
+    public UpdateEnquiryParams(final String cpId,
                                final String stage,
+                               final String token,
                                final LocalDateTime date,
                                final String owner,
-                               final CreateEnquiryDto dataDto) {
+                               final UpdateEnquiryDto dataDto) {
         this.cpId = cpId;
         this.stage = stage;
+        this.token = token;
         this.date = date;
         this.owner = owner;
         this.dataDto = dataDto;

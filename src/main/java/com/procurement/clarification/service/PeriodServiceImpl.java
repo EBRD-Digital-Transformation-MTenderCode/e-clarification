@@ -3,6 +3,7 @@ package com.procurement.clarification.service;
 import com.procurement.clarification.exception.ErrorException;
 import com.procurement.clarification.model.dto.EnquiryPeriodDto;
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
+import com.procurement.clarification.model.dto.params.PeriodEnquiryParams;
 import com.procurement.clarification.model.entity.PeriodEntity;
 import com.procurement.clarification.repository.PeriodRepository;
 import com.procurement.clarification.utils.DateUtil;
@@ -28,26 +29,21 @@ public class PeriodServiceImpl implements PeriodService {
     }
 
     @Override
-    public ResponseDto calculateAndSavePeriod(final String cpId,
-                                              final String country,
-                                              final String pmd,
-                                              final String stage,
-                                              final String owner,
-                                              final LocalDateTime startDate,
-                                              final LocalDateTime endDate) {
+    public ResponseDto calculateAndSavePeriod(final PeriodEnquiryParams params) {
 
-        final int offset = rulesService.getOffset(country, pmd);
-        final int interval = rulesService.getInterval(country, pmd);
-        final LocalDateTime enquiryPeriodEndDate = endDate.minusDays(offset);
-        if (checkInterval(startDate, enquiryPeriodEndDate, interval)) {
+        final int offset = rulesService.getOffset(params.getCountry(), params.getPmd());
+        final int interval = rulesService.getInterval(params.getCountry(), params.getPmd());
+        final LocalDateTime enquiryPeriodEndDate = params.getEndDate().minusDays(offset);
+        if (checkInterval(params.getStartDate(), enquiryPeriodEndDate, interval)) {
             final PeriodEntity periodEntity = new PeriodEntity();
-            periodEntity.setCpId(cpId);
-            periodEntity.setStage(stage);
-            periodEntity.setStartDate(dateUtil.localToDate(startDate));
+            periodEntity.setCpId(params.getCpId());
+            periodEntity.setStage(params.getStage());
+            periodEntity.setStartDate(dateUtil.localToDate(params.getStartDate()));
             periodEntity.setEndDate(dateUtil.localToDate(enquiryPeriodEndDate));
             periodRepository.save(periodEntity);
         }
-        return new ResponseDto<>(true, null, new EnquiryPeriodDto(startDate, enquiryPeriodEndDate));
+        return new ResponseDto<>(true, null,
+                new EnquiryPeriodDto(params.getStartDate(), enquiryPeriodEndDate));
     }
 
 

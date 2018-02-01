@@ -1,9 +1,9 @@
 package com.procurement.clarification.controller;
 
 import com.procurement.clarification.model.dto.CreateEnquiryDto;
-import com.procurement.clarification.model.dto.CreateEnquiryParams;
+import com.procurement.clarification.model.dto.params.CreateEnquiryParams;
 import com.procurement.clarification.model.dto.UpdateEnquiryDto;
-import com.procurement.clarification.model.dto.UpdateEnquiryParams;
+import com.procurement.clarification.model.dto.params.UpdateEnquiryParams;
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
 import com.procurement.clarification.service.EnquiryService;
 import java.time.LocalDateTime;

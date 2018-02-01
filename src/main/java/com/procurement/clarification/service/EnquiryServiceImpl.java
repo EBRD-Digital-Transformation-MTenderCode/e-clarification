@@ -4,6 +4,8 @@ import com.datastax.driver.core.utils.UUIDs;
 import com.procurement.clarification.exception.ErrorException;
 import com.procurement.clarification.model.dto.*;
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
+import com.procurement.clarification.model.dto.params.CreateEnquiryParams;
+import com.procurement.clarification.model.dto.params.UpdateEnquiryParams;
 import com.procurement.clarification.model.entity.EnquiryEntity;
 import com.procurement.clarification.model.entity.PeriodEntity;
 import com.procurement.clarification.repository.EnquiryRepository;

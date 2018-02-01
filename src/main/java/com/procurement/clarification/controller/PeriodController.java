@@ -1,6 +1,7 @@
 package com.procurement.clarification.controller;
 
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
+import com.procurement.clarification.model.dto.params.PeriodEnquiryParams;
 import com.procurement.clarification.service.PeriodService;
 import java.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,15 +32,7 @@ public class PeriodController {
                                                   @RequestParam final LocalDateTime startDate,
                                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                                                   @RequestParam final LocalDateTime endDate) {
-        return new ResponseEntity<>(
-                periodService.calculateAndSavePeriod(
-                        cpId,
-                        country,
-                        pmd,
-                        stage,
-                        owner,
-                        startDate,
-                        endDate),
-                HttpStatus.CREATED);
+        PeriodEnquiryParams params = new PeriodEnquiryParams(cpId, country, pmd, stage, owner, startDate, endDate);
+        return new ResponseEntity<>(periodService.calculateAndSavePeriod(params), HttpStatus.CREATED);
     }
 }

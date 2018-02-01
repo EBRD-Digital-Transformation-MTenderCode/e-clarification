@@ -33,24 +33,24 @@ public class EnquiryServiceImpl implements EnquiryService {
 
     @Override
     public ResponseDto saveEnquiry(final CreateEnquiryParams params) {
-        periodService.checkDateInPeriod(params.getDate(), params.getCpid());
+        periodService.checkDateInPeriod(params.getDate(), params.getCpId(), params.getStage());
         final EnquiryDto enquiryDto = params.getDataDto().getEnquiry();
         enquiryDto.setId(UUIDs.timeBased().toString());
         enquiryDto.setDate(params.getDate());
         final EnquiryEntity entity = new EnquiryEntity();
-        entity.setCpId(params.getCpid());
+        entity.setCpId(params.getCpId());
         entity.setToken(UUIDs.timeBased().toString());
         entity.setIsAnswered(false);
         entity.setOwner(params.getOwner());
         entity.setJsonData(jsonUtil.toJson(enquiryDto));
         enquiryRepository.save(entity);
-        return new ResponseDto(true, null, new CreateEnquiryResponseDto(entity.getToken(), enquiryDto));
+        return new ResponseDto<>(true, null, new CreateEnquiryResponseDto(entity.getToken(), enquiryDto));
     }
 
     @Override
     public ResponseDto updateEnquiry(final UpdateEnquiryParams params) {
         final EnquiryEntity entity = Optional.ofNullable(
-                enquiryRepository.getByCpIdAndToken(params.getCpId(), params.getToken()))
+                enquiryRepository.getByCpIdAndStageAndToken(params.getCpId(), params.getStage(), params.getToken()))
                 .orElseThrow(() -> new ErrorException("Enquiry not found."));
         checkEnquiry(entity, params);
         final EnquiryDto enquiryDto = jsonUtil.toObject(EnquiryDto.class, entity.getJsonData());
@@ -58,18 +58,19 @@ public class EnquiryServiceImpl implements EnquiryService {
         entity.setIsAnswered(true);
         entity.setJsonData(jsonUtil.toJson(enquiryDto));
         enquiryRepository.save(entity);
-        final Boolean isAllAnswered = isAllAnsweredAfterEndPeriod(params.getCpId());
-        return new ResponseDto(true, null, new UpdateEnquiryResponseDto(isAllAnswered, enquiryDto));
+        final Boolean isAllAnswered = isAllAnsweredAfterEndPeriod(params.getCpId(), params.getStage());
+        return new ResponseDto<>(true, null, new UpdateEnquiryResponseDto(isAllAnswered, enquiryDto));
     }
 
     @Override
     public ResponseDto checkEnquiries(final String cpId, final String stage) {
-        final PeriodEntity periodEntity = periodService.getPeriod(cpId);
+        final PeriodEntity periodEntity = periodService.getPeriod(cpId, stage);
         final LocalDateTime endDate = periodEntity.getEndDate();
         if (dateUtil.localNowUTC().isBefore(endDate)) {
-            return new ResponseDto(true, null, new CheckEnquiresResponseDto(endDate, null));
+            return new ResponseDto<>(true, null, new CheckEnquiresResponseDto(endDate, null));
         } else {
-            return new ResponseDto(true, null, new CheckEnquiresResponseDto(null, isAllAnswered(cpId)));
+            return new ResponseDto<>(true, null,
+                    new CheckEnquiresResponseDto(null, isAllAnswered(cpId, stage)));
         }
     }
 
@@ -82,15 +83,15 @@ public class EnquiryServiceImpl implements EnquiryService {
         }
     }
 
-    private Boolean isAllAnswered(final String cpId) {
-        return (enquiryRepository.getCountByCpIdAndIsAnswered(cpId) == 0) ? true : false;
+    private Boolean isAllAnswered(final String cpId, final String stage) {
+        return (enquiryRepository.getCountByCpIdAndStageAndIsAnswered(cpId, stage) == 0) ? true : false;
     }
 
-    private Boolean isAllAnsweredAfterEndPeriod(final String cpId) {
-        final PeriodEntity periodEntity = periodService.getPeriod(cpId);
+    private Boolean isAllAnsweredAfterEndPeriod(final String cpId, final String stage) {
+        final PeriodEntity periodEntity = periodService.getPeriod(cpId, stage);
         final LocalDateTime endDate = periodEntity.getEndDate();
         if (dateUtil.localNowUTC().isAfter(endDate)) {
-            return isAllAnswered(cpId);
+            return isAllAnswered(cpId, stage);
         } else {
             return false;
         }

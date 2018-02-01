@@ -6,19 +6,19 @@ import lombok.Setter;
 
 @Getter
 public class CreateEnquiryParams {
-    private final String cpid;
+    private final String cpId;
     private final String stage;
     private final String owner;
     private final CreateEnquiryDto dataDto;
     @Setter
     private LocalDateTime date;
 
-    public CreateEnquiryParams(final String cpid,
+    public CreateEnquiryParams(final String cpId,
                                final String stage,
                                final LocalDateTime date,
                                final String owner,
                                final CreateEnquiryDto dataDto) {
-        this.cpid = cpid;
+        this.cpId = cpId;
         this.stage = stage;
         this.date = date;
         this.owner = owner;

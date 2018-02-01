@@ -14,16 +14,18 @@ INSERT INTO ocds.clarification_rules (country, method, parameter, value) VALUES 
 
 CREATE TABLE IF NOT EXISTS  ocds.clarification_period (
     cp_id text,
+    stage text,
     start_date timestamp,
     end_date timestamp,
-    primary key(cp_id)
+    primary key(cp_id, stage)
 );
 
 CREATE TABLE IF NOT EXISTS  ocds.clarification_enquiry (
     cp_id text,
+    stage text,
     token_entity text,
     owner text,
     json_data text,
     is_answered boolean,
-    primary key(cp_id, token_entity)
+    primary key(cp_id, stage, token_entity)
 );

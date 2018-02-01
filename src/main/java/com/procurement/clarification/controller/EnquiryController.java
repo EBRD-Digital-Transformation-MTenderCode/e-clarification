@@ -26,30 +26,31 @@ public class EnquiryController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDto> createEnquiry(@RequestParam(value = "cpid") final String cpid,
+    public ResponseEntity<ResponseDto> createEnquiry(@RequestParam(value = "cpid") final String cpId,
                                                      @RequestParam(value = "stage") final String stage,
                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                                                      @RequestParam(value = "date") final LocalDateTime date,
                                                      @RequestParam(value = "owner") final String owner,
                                                      @Valid @RequestBody final CreateEnquiryDto dataDto) {
-        CreateEnquiryParams params = new CreateEnquiryParams(cpid, stage, date, owner, dataDto);
+        CreateEnquiryParams params = new CreateEnquiryParams(cpId, stage, date, owner, dataDto);
         return new ResponseEntity<>(enquiryService.saveEnquiry(params), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<ResponseDto> updateEnquiry(@RequestParam(value = "cpid") final String cpid,
+    public ResponseEntity<ResponseDto> updateEnquiry(@RequestParam(value = "cpId") final String cpId,
+                                                     @RequestParam(value = "stage") final String stage,
                                                      @RequestParam(value = "token") final String token,
                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                                                      @RequestParam(value = "date") final LocalDateTime date,
                                                      @RequestParam(value = "owner") final String owner,
                                                      @Valid @RequestBody final UpdateEnquiryDto dataDto) {
-        UpdateEnquiryParams params = new UpdateEnquiryParams(token, cpid, date, owner, dataDto);
+        UpdateEnquiryParams params = new UpdateEnquiryParams(cpId, stage, token, date, owner, dataDto);
         return new ResponseEntity<>(enquiryService.updateEnquiry(params), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDto> checkEnquiries(@RequestParam(value = "cpid") final String cpid,
+    public ResponseEntity<ResponseDto> checkEnquiries(@RequestParam(value = "cpId") final String cpId,
                                                       @RequestParam(value = "stage") final String stage) {
-        return new ResponseEntity<>(enquiryService.checkEnquiries(cpid, stage), HttpStatus.OK);
+        return new ResponseEntity<>(enquiryService.checkEnquiries(cpId, stage), HttpStatus.OK);
     }
 }

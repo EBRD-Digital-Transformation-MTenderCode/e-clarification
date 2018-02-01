@@ -28,7 +28,7 @@ public class PeriodServiceImpl implements PeriodService {
     }
 
     @Override
-    public ResponseDto calculateAndSavePeriod(final String cpid,
+    public ResponseDto calculateAndSavePeriod(final String cpId,
                                               final String country,
                                               final String pmd,
                                               final String stage,
@@ -41,19 +41,20 @@ public class PeriodServiceImpl implements PeriodService {
         final LocalDateTime enquiryPeriodEndDate = endDate.minusDays(offset);
         if (checkInterval(startDate, enquiryPeriodEndDate, interval)) {
             final PeriodEntity periodEntity = new PeriodEntity();
-            periodEntity.setCpId(cpid);
+            periodEntity.setCpId(cpId);
+            periodEntity.setStage(stage);
             periodEntity.setStartDate(dateUtil.localToDate(startDate));
             periodEntity.setEndDate(dateUtil.localToDate(enquiryPeriodEndDate));
             periodRepository.save(periodEntity);
         }
-        return new ResponseDto(true, null, new EnquiryPeriodDto(startDate, enquiryPeriodEndDate));
+        return new ResponseDto<>(true, null, new EnquiryPeriodDto(startDate, enquiryPeriodEndDate));
     }
 
 
     @Override
-    public void checkDateInPeriod(final LocalDateTime localDateTime, final String cpid) {
+    public void checkDateInPeriod(final LocalDateTime localDateTime, final String cpId, final String stage) {
         final LocalDateTime localDateTimeNow = dateUtil.localNowUTC();
-        final PeriodEntity periodEntity = getPeriod(cpid);
+        final PeriodEntity periodEntity = getPeriod(cpId, stage);
         final boolean localDateTimeBefore = localDateTimeNow.isBefore(periodEntity.getEndDate());
         final boolean localDateTimeAfter = localDateTimeNow.isAfter(periodEntity.getStartDate());
         if (!localDateTimeBefore || !localDateTimeAfter) {
@@ -62,8 +63,8 @@ public class PeriodServiceImpl implements PeriodService {
     }
 
     @Override
-    public PeriodEntity getPeriod(final String cpid) {
-        final Optional<PeriodEntity> entityOptional = periodRepository.getByCpId(cpid);
+    public PeriodEntity getPeriod(final String cpId, final String stage) {
+        final Optional<PeriodEntity> entityOptional = periodRepository.getByCpIdAndStage(cpId, stage);
         if (entityOptional.isPresent()) {
             return entityOptional.get();
         } else {
@@ -74,6 +75,6 @@ public class PeriodServiceImpl implements PeriodService {
     private Boolean checkInterval(final LocalDateTime startDate, final LocalDateTime endDate, final int interval) {
         final Long days = DAYS.between(startDate.toLocalDate(), endDate.toLocalDate());
         if (days < interval) throw new ErrorException("Period invalid.");
-        else return true;
+        return true;
     }
 }

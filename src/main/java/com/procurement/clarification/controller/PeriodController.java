@@ -22,18 +22,18 @@ public class PeriodController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<ResponseDto> savePeriod(@RequestParam("cpid") final String cpid,
-                                                  @RequestParam("country") final String country,
-                                                  @RequestParam("pmd") final String pmd,
-                                                  @RequestParam("stage") final String stage,
-                                                  @RequestParam("owner") final String owner,
+    public ResponseEntity<ResponseDto> savePeriod(@RequestParam final String cpId,
+                                                  @RequestParam final String country,
+                                                  @RequestParam final String pmd,
+                                                  @RequestParam final String stage,
+                                                  @RequestParam final String owner,
                                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                                                  @RequestParam("startDate") final LocalDateTime startDate,
+                                                  @RequestParam final LocalDateTime startDate,
                                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                                                  @RequestParam("endDate") final LocalDateTime endDate) {
+                                                  @RequestParam final LocalDateTime endDate) {
         return new ResponseEntity<>(
                 periodService.calculateAndSavePeriod(
-                        cpid,
+                        cpId,
                         country,
                         pmd,
                         stage,

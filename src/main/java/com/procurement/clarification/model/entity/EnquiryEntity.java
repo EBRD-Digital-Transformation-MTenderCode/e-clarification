@@ -14,6 +14,9 @@ public class EnquiryEntity {
     @PrimaryKeyColumn(name = "cp_id", type = PrimaryKeyType.PARTITIONED)
     private String cpId;
 
+    @PrimaryKeyColumn(name = "stage", type = PrimaryKeyType.CLUSTERED)
+    private String stage;
+
     @PrimaryKeyColumn(value = "token_entity", type = PrimaryKeyType.CLUSTERED)
     private String token;
 

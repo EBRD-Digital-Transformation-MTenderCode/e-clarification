@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface PeriodService {
 
-    ResponseDto calculateAndSavePeriod(String cpid,
+    ResponseDto calculateAndSavePeriod(String cpId,
                                        String country,
                                        String pmd,
                                        String stage,
@@ -16,7 +16,7 @@ public interface PeriodService {
                                        LocalDateTime startDate,
                                        LocalDateTime endDate);
 
-    void checkDateInPeriod(LocalDateTime localDateTime, String cpid);
+    void checkDateInPeriod(LocalDateTime localDateTime, String cpId, String stage);
 
-    PeriodEntity getPeriod(String cpId);
+    PeriodEntity getPeriod(String cpId, String stage);
 }

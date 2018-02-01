@@ -17,6 +17,9 @@ public class PeriodEntity {
     @PrimaryKeyColumn(name = "cp_id", type = PrimaryKeyType.PARTITIONED)
     private String cpId;
 
+    @PrimaryKeyColumn(name = "stage", type = PrimaryKeyType.CLUSTERED)
+    private String stage;
+
     @Column(value = "start_date")
     private Date startDate;
 

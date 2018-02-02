@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonPropertyOrder({
-        "allAnswers",
+        "allAnswered",
         "enquiry"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)

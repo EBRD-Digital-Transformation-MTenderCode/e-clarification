@@ -1,7 +1,6 @@
 package com.procurement.clarification.model.dto;
 
 import com.fasterxml.jackson.annotation.*;
-import java.net.URI;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,14 +36,14 @@ public class ContactPointDto {
 
     @JsonProperty("url")
     @JsonPropertyDescription("A web address for the contact point/person.")
-    private final URI url;
+    private final String url;
 
     @JsonCreator
     public ContactPointDto(@JsonProperty("name") final String name,
                            @JsonProperty("email") final String email,
                            @JsonProperty("telephone") final String telephone,
                            @JsonProperty("faxNumber") final String faxNumber,
-                           @JsonProperty("url") final URI url) {
+                           @JsonProperty("url") final String url) {
         this.name = name;
         this.email = email;
         this.telephone = telephone;

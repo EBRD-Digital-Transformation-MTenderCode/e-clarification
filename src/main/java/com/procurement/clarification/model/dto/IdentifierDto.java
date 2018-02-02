@@ -1,7 +1,6 @@
 package com.procurement.clarification.model.dto;
 
 import com.fasterxml.jackson.annotation.*;
-import java.net.URI;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,7 +29,7 @@ public class IdentifierDto {
             "(http://www.opencorporates.com) or some other relevant URI provider. This is not for listing the website" +
             " of " +
             "the organization: that can be done through the URL field of the Organization contact point.")
-    private final URI uri;
+    private final String uri;
     @JsonProperty("id")
     @JsonPropertyDescription("The identifier of the organization in the selected scheme.")
     private String id;
@@ -39,7 +38,7 @@ public class IdentifierDto {
     public IdentifierDto(@JsonProperty("scheme") final String scheme,
                          @JsonProperty("id") final String id,
                          @JsonProperty("legalName") final String legalName,
-                         @JsonProperty("uri") final URI uri) {
+                         @JsonProperty("uri") final String uri) {
         this.id = id;
         this.scheme = scheme;
         this.legalName = legalName;

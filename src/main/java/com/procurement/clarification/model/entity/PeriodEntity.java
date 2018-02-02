@@ -20,6 +20,9 @@ public class PeriodEntity {
     @PrimaryKeyColumn(name = "stage", type = PrimaryKeyType.CLUSTERED)
     private String stage;
 
+    @PrimaryKeyColumn(name = "owner")
+    private String owner;
+
     @Column(value = "start_date")
     private Date startDate;
 

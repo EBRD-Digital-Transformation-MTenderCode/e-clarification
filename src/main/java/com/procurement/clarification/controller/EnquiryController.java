@@ -1,10 +1,10 @@
 package com.procurement.clarification.controller;
 
 import com.procurement.clarification.model.dto.CreateEnquiryDto;
-import com.procurement.clarification.model.dto.params.CreateEnquiryParams;
 import com.procurement.clarification.model.dto.UpdateEnquiryDto;
-import com.procurement.clarification.model.dto.params.UpdateEnquiryParams;
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
+import com.procurement.clarification.model.dto.params.CreateEnquiryParams;
+import com.procurement.clarification.model.dto.params.UpdateEnquiryParams;
 import com.procurement.clarification.service.EnquiryService;
 import java.time.LocalDateTime;
 import javax.validation.Valid;
@@ -28,9 +28,9 @@ public class EnquiryController {
     @PostMapping
     public ResponseEntity<ResponseDto> createEnquiry(@RequestParam(value = "cpid") final String cpId,
                                                      @RequestParam(value = "stage") final String stage,
+                                                     @RequestParam(value = "owner") final String owner,
                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                                                      @RequestParam(value = "date") final LocalDateTime date,
-                                                     @RequestParam(value = "owner") final String owner,
                                                      @Valid @RequestBody final CreateEnquiryDto dataDto) {
         CreateEnquiryParams params = new CreateEnquiryParams(cpId, stage, date, owner, dataDto);
         return new ResponseEntity<>(enquiryService.saveEnquiry(params), HttpStatus.CREATED);
@@ -40,9 +40,9 @@ public class EnquiryController {
     public ResponseEntity<ResponseDto> updateEnquiry(@RequestParam(value = "cpId") final String cpId,
                                                      @RequestParam(value = "stage") final String stage,
                                                      @RequestParam(value = "token") final String token,
+                                                     @RequestParam(value = "owner") final String owner,
                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                                                      @RequestParam(value = "date") final LocalDateTime date,
-                                                     @RequestParam(value = "owner") final String owner,
                                                      @Valid @RequestBody final UpdateEnquiryDto dataDto) {
         UpdateEnquiryParams params = new UpdateEnquiryParams(cpId, stage, token, date, owner, dataDto);
         return new ResponseEntity<>(enquiryService.updateEnquiry(params), HttpStatus.OK);
@@ -50,7 +50,8 @@ public class EnquiryController {
 
     @GetMapping
     public ResponseEntity<ResponseDto> checkEnquiries(@RequestParam(value = "cpId") final String cpId,
-                                                      @RequestParam(value = "stage") final String stage) {
-        return new ResponseEntity<>(enquiryService.checkEnquiries(cpId, stage), HttpStatus.OK);
+                                                      @RequestParam(value = "stage") final String stage,
+                                                      @RequestParam(value = "owner") final String owner) {
+        return new ResponseEntity<>(enquiryService.checkEnquiries(cpId, stage, owner), HttpStatus.OK);
     }
 }

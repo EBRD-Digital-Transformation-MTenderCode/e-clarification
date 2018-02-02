@@ -15,6 +15,7 @@ INSERT INTO ocds.clarification_rules (country, method, parameter, value) VALUES 
 CREATE TABLE IF NOT EXISTS  ocds.clarification_period (
     cp_id text,
     stage text,
+    owner text,
     start_date timestamp,
     end_date timestamp,
     primary key(cp_id, stage)

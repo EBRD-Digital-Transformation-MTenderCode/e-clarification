@@ -37,6 +37,7 @@ public class PeriodServiceImpl implements PeriodService {
             final PeriodEntity periodEntity = new PeriodEntity();
             periodEntity.setCpId(params.getCpId());
             periodEntity.setStage(params.getStage());
+            periodEntity.setOwner(params.getOwner());
             periodEntity.setStartDate(dateUtil.localToDate(params.getStartDate()));
             periodEntity.setEndDate(dateUtil.localToDate(enquiryPeriodEndDate));
             periodRepository.save(periodEntity);
@@ -47,9 +48,12 @@ public class PeriodServiceImpl implements PeriodService {
 
 
     @Override
-    public void checkDateInPeriod(final LocalDateTime localDateTime, final String cpId, final String stage) {
+    public void checkDateInPeriod(final LocalDateTime localDateTime,
+                                  final String cpId,
+                                  final String stage,
+                                  final String owner) {
         final LocalDateTime localDateTimeNow = dateUtil.localNowUTC();
-        final PeriodEntity periodEntity = getPeriod(cpId, stage);
+        final PeriodEntity periodEntity = getPeriod(cpId, stage, owner);
         final boolean localDateTimeBefore = localDateTimeNow.isBefore(periodEntity.getEndDate());
         final boolean localDateTimeAfter = localDateTimeNow.isAfter(periodEntity.getStartDate());
         if (!localDateTimeBefore || !localDateTimeAfter) {
@@ -58,10 +62,12 @@ public class PeriodServiceImpl implements PeriodService {
     }
 
     @Override
-    public PeriodEntity getPeriod(final String cpId, final String stage) {
+    public PeriodEntity getPeriod(final String cpId, final String stage, final String owner) {
         final Optional<PeriodEntity> entityOptional = periodRepository.getByCpIdAndStage(cpId, stage);
         if (entityOptional.isPresent()) {
-            return entityOptional.get();
+            PeriodEntity entity = entityOptional.get();
+            if (!entity.getOwner().equals(owner)) throw new ErrorException("Invalid owner.");
+            return entity;
         } else {
             throw new ErrorException("Period not found");
         }

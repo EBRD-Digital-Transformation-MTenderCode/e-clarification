@@ -60,8 +60,8 @@ public class EnquiryServiceImpl implements EnquiryService {
         entity.setIsAnswered(true);
         entity.setJsonData(jsonUtil.toJson(enquiryDto));
         enquiryRepository.save(entity);
-        final Boolean isAllAnswered = isAllAnsweredAfterEndPeriod(params.getCpId(), params.getStage(), params.getOwner());
-        return new ResponseDto<>(true, null, new UpdateEnquiryResponseDto(isAllAnswered, enquiryDto));
+        final Boolean allAnswered = checkAllAnsweredAfterEndPeriod(params.getCpId(), params.getStage(), params.getOwner());
+        return new ResponseDto<>(true, null, new UpdateEnquiryResponseDto(allAnswered, enquiryDto));
     }
 
     @Override
@@ -69,10 +69,10 @@ public class EnquiryServiceImpl implements EnquiryService {
         final PeriodEntity periodEntity = periodService.getPeriod(cpId, stage, owner);
         final LocalDateTime endDate = periodEntity.getEndDate();
         if (dateUtil.localNowUTC().isBefore(endDate)) {
-            return new ResponseDto<>(true, null, new CheckEnquiresResponseDto(endDate, null));
+            return new ResponseDto<>(true, null, new CheckEnquiresResponseDto(null, endDate));
         } else {
             return new ResponseDto<>(true, null,
-                    new CheckEnquiresResponseDto(null, isAllAnswered(cpId, stage)));
+                    new CheckEnquiresResponseDto(checkAllAnswered(cpId, stage), null));
         }
     }
 
@@ -85,15 +85,15 @@ public class EnquiryServiceImpl implements EnquiryService {
         }
     }
 
-    private Boolean isAllAnswered(final String cpId, final String stage) {
+    private Boolean checkAllAnswered(final String cpId, final String stage) {
         return (enquiryRepository.getCountByCpIdAndStageAndIsAnswered(cpId, stage) == 0) ? true : false;
     }
 
-    private Boolean isAllAnsweredAfterEndPeriod(final String cpId, final String stage, final String owner) {
+    private Boolean checkAllAnsweredAfterEndPeriod(final String cpId, final String stage, final String owner) {
         final PeriodEntity periodEntity = periodService.getPeriod(cpId, stage, owner);
         final LocalDateTime endDate = periodEntity.getEndDate();
         if (dateUtil.localNowUTC().isAfter(endDate)) {
-            return isAllAnswered(cpId, stage);
+            return checkAllAnswered(cpId, stage);
         } else {
             return false;
         }

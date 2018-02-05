@@ -26,7 +26,7 @@ public class UpdateEnquiryResponseDto {
 
     @JsonCreator
     public UpdateEnquiryResponseDto(
-            @JsonProperty("allAnswers") final Boolean allAnswered,
+            @JsonProperty("allAnswered") final Boolean allAnswered,
             @JsonProperty("enquiry") final EnquiryDto enquiry) {
         this.allAnswered = allAnswered;
         this.enquiry = enquiry;

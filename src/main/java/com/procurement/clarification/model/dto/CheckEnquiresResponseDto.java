@@ -14,22 +14,24 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonPropertyOrder({
-        "tenderPeriodEndDate",
-        "allAnswers"})
+        "allAnswered",
+        "tenderPeriodEndDate"
+})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CheckEnquiresResponseDto {
+
+
+    @JsonProperty("allAnswered")
+    private final Boolean allAnswered;
 
     @JsonProperty("tenderPeriodEndDate")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private final LocalDateTime tenderPeriodEndDate;
 
-    @JsonProperty("allAnswers")
-    private final Boolean allAnswers;
-
-    public CheckEnquiresResponseDto(@JsonProperty("tenderPeriodEndDate") final LocalDateTime tenderPeriodEndDate,
-                                    @JsonProperty("allAnswers") final Boolean allAnswers) {
+    public CheckEnquiresResponseDto(@JsonProperty("allAnswered") final Boolean allAnswered,
+                                    @JsonProperty("tenderPeriodEndDate") final LocalDateTime tenderPeriodEndDate) {
+        this.allAnswered = allAnswered;
         this.tenderPeriodEndDate = tenderPeriodEndDate;
-        this.allAnswers = allAnswers;
     }
 }

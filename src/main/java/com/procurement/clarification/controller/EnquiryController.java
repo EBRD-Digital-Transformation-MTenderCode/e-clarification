@@ -48,8 +48,7 @@ public class EnquiryController {
 
     @GetMapping
     public ResponseEntity<ResponseDto> checkEnquiries(final String cpId,
-                                                      final String stage,
-                                                      final String owner) {
-        return new ResponseEntity<>(enquiryService.checkEnquiries(cpId, stage, owner), HttpStatus.OK);
+                                                      final String stage) {
+        return new ResponseEntity<>(enquiryService.checkEnquiries(cpId, stage), HttpStatus.OK);
     }
 }

@@ -50,23 +50,20 @@ public class PeriodServiceImpl implements PeriodService {
     @Override
     public void checkDateInPeriod(final LocalDateTime localDateTime,
                                   final String cpId,
-                                  final String stage,
-                                  final String owner) {
-        final LocalDateTime localDateTimeNow = dateUtil.localNowUTC();
-        final PeriodEntity periodEntity = getPeriod(cpId, stage, owner);
-        final boolean localDateTimeBefore = localDateTimeNow.isBefore(periodEntity.getEndDate());
-        final boolean localDateTimeAfter = localDateTimeNow.isAfter(periodEntity.getStartDate());
+                                  final String stage) {
+        final PeriodEntity periodEntity = getPeriod(cpId, stage);
+        final boolean localDateTimeBefore = localDateTime.isBefore(periodEntity.getEndDate());
+        final boolean localDateTimeAfter = localDateTime.isAfter(periodEntity.getStartDate());
         if (!localDateTimeBefore || !localDateTimeAfter) {
             throw new ErrorException("Date does not match period.");
         }
     }
 
     @Override
-    public PeriodEntity getPeriod(final String cpId, final String stage, final String owner) {
+    public PeriodEntity getPeriod(final String cpId, final String stage) {
         final Optional<PeriodEntity> entityOptional = periodRepository.getByCpIdAndStage(cpId, stage);
         if (entityOptional.isPresent()) {
             PeriodEntity entity = entityOptional.get();
-            if (!entity.getOwner().equals(owner)) throw new ErrorException("Invalid owner.");
             return entity;
         } else {
             throw new ErrorException("Period not found");

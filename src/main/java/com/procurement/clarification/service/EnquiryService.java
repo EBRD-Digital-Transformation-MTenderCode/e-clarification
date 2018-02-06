@@ -12,5 +12,5 @@ public interface EnquiryService {
 
     ResponseDto updateEnquiry(UpdateEnquiryParams params);
 
-    ResponseDto checkEnquiries(String cpId, String stage, String owner);
+    ResponseDto checkEnquiries(String cpId, String stage);
 }

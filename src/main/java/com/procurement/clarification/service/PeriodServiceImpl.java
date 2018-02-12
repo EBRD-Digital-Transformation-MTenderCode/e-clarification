@@ -4,6 +4,7 @@ import com.procurement.clarification.exception.ErrorException;
 import com.procurement.clarification.model.dto.EnquiryPeriodDto;
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
 import com.procurement.clarification.model.dto.params.PeriodEnquiryParams;
+import com.procurement.clarification.model.entity.EnquiryEntity;
 import com.procurement.clarification.model.entity.PeriodEntity;
 import com.procurement.clarification.repository.PeriodRepository;
 import com.procurement.clarification.utils.DateUtil;
@@ -61,13 +62,9 @@ public class PeriodServiceImpl implements PeriodService {
 
     @Override
     public PeriodEntity getPeriod(final String cpId, final String stage) {
-        final Optional<PeriodEntity> entityOptional = periodRepository.getByCpIdAndStage(cpId, stage);
-        if (entityOptional.isPresent()) {
-            PeriodEntity entity = entityOptional.get();
-            return entity;
-        } else {
-            throw new ErrorException("Period not found");
-        }
+        return Optional.ofNullable(
+                periodRepository.getByCpIdAndStage(cpId, stage))
+                .orElseThrow(() -> new ErrorException("Period not found."));
     }
 
     private Boolean checkInterval(final LocalDateTime startDate, final LocalDateTime endDate, final int interval) {

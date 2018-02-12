@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.procurement.clarification.databind.LocalDateTimeDeserializer;
+import com.procurement.clarification.databind.LocalDateTimeSerializer;
 import java.time.LocalDateTime;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -29,6 +31,7 @@ public class EnquiryDto {
     @JsonProperty("id")
     private String id;
     @JsonProperty("date")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime date;
     @JsonProperty("author")

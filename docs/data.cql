@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS  ocds.clarification_period (
 CREATE TABLE IF NOT EXISTS  ocds.clarification_enquiry (
     cp_id text,
     stage text,
-    token_entity text,
+    token_entity uuid,
     owner text,
     json_data text,
     is_answered boolean,

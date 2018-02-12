@@ -1,5 +1,6 @@
 package com.procurement.clarification.model.entity;
 
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
@@ -18,7 +19,7 @@ public class EnquiryEntity {
     private String stage;
 
     @PrimaryKeyColumn(value = "token_entity", type = PrimaryKeyType.CLUSTERED)
-    private String token;
+    private UUID token;
 
     @PrimaryKeyColumn(name = "owner")
     private String owner;

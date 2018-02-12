@@ -2,7 +2,10 @@ package com.procurement.clarification.service;
 
 import com.datastax.driver.core.utils.UUIDs;
 import com.procurement.clarification.exception.ErrorException;
-import com.procurement.clarification.model.dto.*;
+import com.procurement.clarification.model.dto.CheckEnquiresResponseDto;
+import com.procurement.clarification.model.dto.CreateEnquiryResponseDto;
+import com.procurement.clarification.model.dto.EnquiryDto;
+import com.procurement.clarification.model.dto.UpdateEnquiryResponseDto;
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
 import com.procurement.clarification.model.dto.params.CreateEnquiryParams;
 import com.procurement.clarification.model.dto.params.UpdateEnquiryParams;
@@ -13,6 +16,7 @@ import com.procurement.clarification.utils.DateUtil;
 import com.procurement.clarification.utils.JsonUtil;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,19 +45,23 @@ public class EnquiryServiceImpl implements EnquiryService {
         enquiryDto.setDate(params.getDate());
         final EnquiryEntity entity = new EnquiryEntity();
         entity.setCpId(params.getCpId());
-        entity.setToken(UUIDs.timeBased().toString());
+        entity.setToken(UUIDs.timeBased());
         entity.setStage(params.getStage());
         entity.setIsAnswered(false);
         entity.setOwner(params.getOwner());
         entity.setJsonData(jsonUtil.toJson(enquiryDto));
         enquiryRepository.save(entity);
-        return new ResponseDto<>(true, null, new CreateEnquiryResponseDto(entity.getToken(), enquiryDto));
+        return new ResponseDto<>(true, null,
+                new CreateEnquiryResponseDto(entity.getToken().toString(), enquiryDto));
     }
 
     @Override
     public ResponseDto updateEnquiry(final UpdateEnquiryParams params) {
         final EnquiryEntity entity = Optional.ofNullable(
-                enquiryRepository.getByCpIdAndStageAndToken(params.getCpId(), params.getStage(), params.getToken()))
+                enquiryRepository.getByCpIdAndStageAndToken(
+                        params.getCpId(),
+                        params.getStage(),
+                        UUID.fromString(params.getToken())))
                 .orElseThrow(() -> new ErrorException("Enquiry not found."));
         checkEnquiry(entity, params);
         final EnquiryDto enquiryDto = jsonUtil.toObject(EnquiryDto.class, entity.getJsonData());

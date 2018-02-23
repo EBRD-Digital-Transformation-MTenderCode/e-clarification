@@ -13,10 +13,12 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 @Service
 public class PeriodServiceImpl implements PeriodService {
 
+    private static final String TEST_PARAM = "test";
     private final PeriodRepository periodRepository;
     private final RulesService rulesService;
     private final DateUtil dateUtil;
@@ -33,18 +35,26 @@ public class PeriodServiceImpl implements PeriodService {
     public ResponseDto calculateAndSavePeriod(final PeriodEnquiryParams params) {
         final int offset = rulesService.getOffset(params.getCountry(), params.getPmd());
         final int interval = rulesService.getInterval(params.getCountry(), params.getPmd());
-        final LocalDateTime enquiryPeriodEndDate = params.getEndDate().minusDays(offset);
-        if (checkInterval(params.getStartDate(), enquiryPeriodEndDate, interval)) {
-            final PeriodEntity periodEntity = new PeriodEntity();
-            periodEntity.setCpId(params.getCpId());
-            periodEntity.setStage(params.getStage());
-            periodEntity.setOwner(params.getOwner());
-            periodEntity.setStartDate(dateUtil.localToDate(params.getStartDate()));
-            periodEntity.setEndDate(dateUtil.localToDate(enquiryPeriodEndDate));
-            periodRepository.save(periodEntity);
+        final LocalDateTime startDate = params.getStartDate();
+        final LocalDateTime endDate;
+        if (TEST_PARAM.equals(params.getCountry()) && TEST_PARAM.equals(params.getPmd())) {
+            endDate = params.getEndDate().minusMinutes(offset);
+            final long minutes = MINUTES.between(startDate, endDate);
+            if (minutes < interval) throw new ErrorException("Period invalid.");
+        } else {
+            endDate = params.getEndDate().minusDays(offset);
+            final Long days = DAYS.between(startDate, endDate);
+            if (days < interval) throw new ErrorException("Period invalid.");
         }
+        final PeriodEntity periodEntity = new PeriodEntity();
+        periodEntity.setCpId(params.getCpId());
+        periodEntity.setStage(params.getStage());
+        periodEntity.setOwner(params.getOwner());
+        periodEntity.setStartDate(dateUtil.localToDate(startDate));
+        periodEntity.setEndDate(dateUtil.localToDate(endDate));
+        periodRepository.save(periodEntity);
         return new ResponseDto<>(true, null,
-                new EnquiryPeriodDto(params.getStartDate(), enquiryPeriodEndDate));
+                new EnquiryPeriodDto(startDate, endDate));
     }
 
 
@@ -65,11 +75,5 @@ public class PeriodServiceImpl implements PeriodService {
         return Optional.ofNullable(
                 periodRepository.getByCpIdAndStage(cpId, stage))
                 .orElseThrow(() -> new ErrorException("Period not found."));
-    }
-
-    private Boolean checkInterval(final LocalDateTime startDate, final LocalDateTime endDate, final int interval) {
-        final Long days = DAYS.between(startDate.toLocalDate(), endDate.toLocalDate());
-        if (days < interval) throw new ErrorException("Period invalid.");
-        return true;
     }
 }

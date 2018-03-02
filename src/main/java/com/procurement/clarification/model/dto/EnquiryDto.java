@@ -1,9 +1,6 @@
 package com.procurement.clarification.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.procurement.clarification.databind.LocalDateTimeDeserializer;
@@ -23,6 +20,8 @@ import lombok.Setter;
         "author",
         "title",
         "description",
+        "answer",
+        "dateAnswered",
         "relatedItem",
         "relatedLot"
 })
@@ -46,15 +45,19 @@ public class EnquiryDto {
     @NotNull
     @Size(min = 1, max = 2500)
     private final String description;
+    @JsonProperty("answer")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String answer;
+    @JsonProperty("dateAnswered")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonPropertyDescription("The date the answer to the question was provided.")
+    private LocalDateTime dateAnswered;
     @JsonProperty("relatedItem")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String relatedItem;
     @JsonProperty("relatedLot")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String relatedLot;
-    @JsonProperty("answer")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String answer;
 
     @JsonCreator
     public EnquiryDto(
@@ -63,6 +66,7 @@ public class EnquiryDto {
             @JsonProperty("author") final OrganizationReferenceDto author,
             @JsonProperty("title") final String title,
             @JsonProperty("description") final String description,
+            @JsonProperty("dateAnswered") final LocalDateTime dateAnswered,
             @JsonProperty("relatedItem") final String relatedItem,
             @JsonProperty("relatedLot") final String relatedLot,
             @JsonProperty("answer") final String answer) {
@@ -72,8 +76,10 @@ public class EnquiryDto {
         this.author = author;
         this.title = title;
         this.description = description;
+        this.answer = answer;
+        this.dateAnswered = dateAnswered;
         this.relatedItem = relatedItem;
         this.relatedLot = relatedLot;
-        this.answer = answer;
+
     }
 }

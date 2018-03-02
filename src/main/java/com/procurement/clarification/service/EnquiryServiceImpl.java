@@ -2,10 +2,7 @@ package com.procurement.clarification.service;
 
 import com.datastax.driver.core.utils.UUIDs;
 import com.procurement.clarification.exception.ErrorException;
-import com.procurement.clarification.model.dto.CheckEnquiresResponseDto;
-import com.procurement.clarification.model.dto.CreateEnquiryResponseDto;
-import com.procurement.clarification.model.dto.EnquiryDto;
-import com.procurement.clarification.model.dto.UpdateEnquiryResponseDto;
+import com.procurement.clarification.model.dto.*;
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
 import com.procurement.clarification.model.dto.params.CreateEnquiryParams;
 import com.procurement.clarification.model.dto.params.UpdateEnquiryParams;
@@ -15,6 +12,7 @@ import com.procurement.clarification.repository.EnquiryRepository;
 import com.procurement.clarification.utils.DateUtil;
 import com.procurement.clarification.utils.JsonUtil;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -43,6 +41,7 @@ public class EnquiryServiceImpl implements EnquiryService {
         final EnquiryDto enquiryDto = params.getDataDto().getEnquiry();
         enquiryDto.setId(UUIDs.timeBased().toString());
         enquiryDto.setDate(params.getDate());
+        processAuthor(enquiryDto);
         final EnquiryEntity entity = new EnquiryEntity();
         entity.setCpId(params.getCpId());
         entity.setToken(UUIDs.timeBased());
@@ -66,6 +65,7 @@ public class EnquiryServiceImpl implements EnquiryService {
         checkEnquiry(entity, params);
         final EnquiryDto enquiryDto = jsonUtil.toObject(EnquiryDto.class, entity.getJsonData());
         enquiryDto.setAnswer(params.getDataDto().getEnquiry().getAnswer());
+        enquiryDto.setDateAnswered(params.getDate());
         entity.setIsAnswered(true);
         entity.setJsonData(jsonUtil.toJson(enquiryDto));
         enquiryRepository.save(entity);
@@ -83,6 +83,12 @@ public class EnquiryServiceImpl implements EnquiryService {
             return new ResponseDto<>(true, null,
                     new CheckEnquiresResponseDto(checkAllAnswered(cpId, stage), null));
         }
+    }
+
+    private void processAuthor(final EnquiryDto enquiryDto) {
+        final OrganizationReferenceDto author = enquiryDto.getAuthor();
+        if (Objects.nonNull(author))
+            author.setId(author.getIdentifier().getScheme() + "-" + author.getIdentifier().getId());
     }
 
     private void checkEnquiry(final EnquiryEntity entity, final UpdateEnquiryParams params) {

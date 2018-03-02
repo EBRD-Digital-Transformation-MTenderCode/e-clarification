@@ -12,7 +12,7 @@ public interface EnquiryRepository extends CassandraRepository<EnquiryEntity, St
     @Query(value = "select * from clarification_enquiry where cp_id=?0 and stage=?1 and token_entity=?2 LIMIT 1")
     EnquiryEntity getByCpIdAndStageAndToken(String tenderId, String stage, UUID token);
 
-    @Query(value = "select COUNT(*) from clarification_enquiry where cp_id=?0 stage=?1 and is_answered=false " +
+    @Query(value = "select COUNT(*) from clarification_enquiry where cp_id=?0 and stage=?1 and is_answered=false " +
             "ALLOW FILTERING")
-    long getCountByCpIdAndStageAndIsAnswered(String cpId, String stage);
+    long getCountOfUnanswered(String cpId, String stage);
 }

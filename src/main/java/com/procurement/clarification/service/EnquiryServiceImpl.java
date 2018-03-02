@@ -69,7 +69,7 @@ public class EnquiryServiceImpl implements EnquiryService {
         entity.setIsAnswered(true);
         entity.setJsonData(jsonUtil.toJson(enquiryDto));
         enquiryRepository.save(entity);
-        final Boolean allAnswered = checkAllAnsweredAfterEndPeriod(params.getCpId(), params.getStage(), params.getDate());
+        final Boolean allAnswered = checkIsAllAnsweredAfterEndPeriod(params.getCpId(), params.getStage(), params.getDate());
         return new ResponseDto<>(true, null, new UpdateEnquiryResponseDto(allAnswered, enquiryDto));
     }
 
@@ -81,7 +81,7 @@ public class EnquiryServiceImpl implements EnquiryService {
             return new ResponseDto<>(true, null, new CheckEnquiresResponseDto(null, endDate));
         } else {
             return new ResponseDto<>(true, null,
-                    new CheckEnquiresResponseDto(checkAllAnswered(cpId, stage), null));
+                    new CheckEnquiresResponseDto(checkIsAllAnswered(cpId, stage), null));
         }
     }
 
@@ -100,15 +100,17 @@ public class EnquiryServiceImpl implements EnquiryService {
         }
     }
 
-    private Boolean checkAllAnswered(final String cpId, final String stage) {
-        return (enquiryRepository.getCountByCpIdAndStageAndIsAnswered(cpId, stage) == 0) ? true : false;
+    private Boolean checkIsAllAnswered(final String cpId, final String stage) {
+        return (enquiryRepository.getCountOfUnanswered(cpId, stage) == 0) ? true : false;
     }
 
-    private Boolean checkAllAnsweredAfterEndPeriod(final String cpId, final String stage, final LocalDateTime dateTime) {
+    private Boolean checkIsAllAnsweredAfterEndPeriod(final String cpId,
+                                                     final String stage,
+                                                     final LocalDateTime dateTime) {
         final PeriodEntity periodEntity = periodService.getPeriod(cpId, stage);
         final LocalDateTime endDate = periodEntity.getEndDate();
         if (dateTime.isAfter(endDate)) {
-            return checkAllAnswered(cpId, stage);
+            return checkIsAllAnswered(cpId, stage);
         } else {
             return false;
         }

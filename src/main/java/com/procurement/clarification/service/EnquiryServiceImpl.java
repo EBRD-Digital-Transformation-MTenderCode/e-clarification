@@ -67,6 +67,7 @@ public class EnquiryServiceImpl implements EnquiryService {
         if (!enquiryDto.getId().equals(params.getDataDto().getEnquiry().getId()))
             throw new ErrorException("Invalid enquiry id.");
         enquiryDto.setAnswer(params.getDataDto().getEnquiry().getAnswer());
+        enquiryDto.setDate(params.getDate());
         enquiryDto.setDateAnswered(params.getDate());
         entity.setIsAnswered(true);
         entity.setJsonData(jsonUtil.toJson(enquiryDto));

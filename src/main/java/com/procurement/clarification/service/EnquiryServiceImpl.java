@@ -113,7 +113,7 @@ public class EnquiryServiceImpl implements EnquiryService {
         if (dateTime.isAfter(tenderEndDate)) {
             return checkAllAnswered(cpId, stage);
         } else {
-            return null;
+            return false;
         }
     }
 

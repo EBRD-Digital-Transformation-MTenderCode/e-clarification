@@ -11,13 +11,13 @@ CREATE TABLE IF NOT EXISTS  ocds.clarification_rules (
 INSERT INTO ocds.clarification_rules (country, method, parameter, value) VALUES ('UA', 'micro', 'offset', '3');
 INSERT INTO ocds.clarification_rules (country, method, parameter, value) VALUES ('UA', 'micro', 'interval', '3');
 
-
 CREATE TABLE IF NOT EXISTS  ocds.clarification_period (
     cp_id text,
     stage text,
     owner text,
     start_date timestamp,
-    end_date timestamp,
+    enquiry_end_date timestamp,
+    tender_end_date timestamp,
     primary key(cp_id, stage)
 );
 

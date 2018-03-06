@@ -36,14 +36,15 @@ public class PeriodServiceImpl implements PeriodService {
         final int offset = rulesService.getOffset(params.getCountry(), params.getPmd());
         final int interval = rulesService.getInterval(params.getCountry(), params.getPmd());
         final LocalDateTime startDate = params.getStartDate();
-        final LocalDateTime endDate;
+        final LocalDateTime enquiryEndDate;
+        final LocalDateTime tenderEndDate = params.getEndDate();
         if (TEST_PARAM.equals(params.getCountry()) && TEST_PARAM.equals(params.getPmd())) {
-            endDate = params.getEndDate().minusMinutes(offset);
-            final long minutes = MINUTES.between(startDate, endDate);
+            enquiryEndDate = params.getEndDate().minusMinutes(offset);
+            final long minutes = MINUTES.between(startDate, enquiryEndDate);
             if (minutes < interval) throw new ErrorException("Period invalid.");
         } else {
-            endDate = params.getEndDate().minusDays(offset);
-            final Long days = DAYS.between(startDate, endDate);
+            enquiryEndDate = params.getEndDate().minusDays(offset);
+            final Long days = DAYS.between(startDate, enquiryEndDate);
             if (days < interval) throw new ErrorException("Period invalid.");
         }
         final PeriodEntity periodEntity = new PeriodEntity();
@@ -51,19 +52,31 @@ public class PeriodServiceImpl implements PeriodService {
         periodEntity.setStage(params.getStage());
         periodEntity.setOwner(params.getOwner());
         periodEntity.setStartDate(dateUtil.localToDate(startDate));
-        periodEntity.setEndDate(dateUtil.localToDate(endDate));
+        periodEntity.setEnquiryEndDate(dateUtil.localToDate(enquiryEndDate));
+        periodEntity.setTenderEndDate(dateUtil.localToDate(tenderEndDate));
         periodRepository.save(periodEntity);
         return new ResponseDto<>(true, null,
-                new EnquiryPeriodDto(startDate, endDate));
+                new EnquiryPeriodDto(startDate, enquiryEndDate));
     }
 
-
     @Override
-    public void checkDateInPeriod(final LocalDateTime localDateTime,
+    public void checkDateInTenderPeriod(final LocalDateTime localDateTime,
                                   final String cpId,
                                   final String stage) {
         final PeriodEntity periodEntity = getPeriod(cpId, stage);
-        final boolean localDateTimeBefore = localDateTime.isBefore(periodEntity.getEndDate());
+        final boolean localDateTimeBefore = localDateTime.isBefore(periodEntity.getTenderEndDate());
+        final boolean localDateTimeAfter = localDateTime.isAfter(periodEntity.getStartDate());
+        if (!localDateTimeBefore || !localDateTimeAfter) {
+            throw new ErrorException("Date does not match period.");
+        }
+    }
+
+    @Override
+    public void checkDateInEnquiryPeriod(final LocalDateTime localDateTime,
+                                  final String cpId,
+                                  final String stage) {
+        final PeriodEntity periodEntity = getPeriod(cpId, stage);
+        final boolean localDateTimeBefore = localDateTime.isBefore(periodEntity.getEnquiryEndDate());
         final boolean localDateTimeAfter = localDateTime.isAfter(periodEntity.getStartDate());
         if (!localDateTimeBefore || !localDateTimeAfter) {
             throw new ErrorException("Date does not match period.");

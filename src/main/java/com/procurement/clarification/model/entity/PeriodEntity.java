@@ -26,14 +26,21 @@ public class PeriodEntity {
     @Column(value = "start_date")
     private Date startDate;
 
-    @Column(value = "end_date")
-    private Date endDate;
+    @Column(value = "enquiry_end_date")
+    private Date enquiryEndDate;
+
+    @Column(value = "tender_end_date")
+    private Date tenderEndDate;
 
     public LocalDateTime getStartDate() {
         return LocalDateTime.ofInstant(startDate.toInstant(), ZoneOffset.UTC);
     }
 
-    public LocalDateTime getEndDate() {
-        return LocalDateTime.ofInstant(endDate.toInstant(), ZoneOffset.UTC);
+    public LocalDateTime getEnquiryEndDate() {
+        return LocalDateTime.ofInstant(enquiryEndDate.toInstant(), ZoneOffset.UTC);
+    }
+
+    public LocalDateTime getTenderEndDate() {
+        return LocalDateTime.ofInstant(tenderEndDate.toInstant(), ZoneOffset.UTC);
     }
 }

@@ -44,7 +44,7 @@ public class EnquiryServiceImpl implements EnquiryService {
         processAuthor(enquiryDto);
         final EnquiryEntity entity = new EnquiryEntity();
         entity.setCpId(params.getCpId());
-        entity.setToken(UUIDs.timeBased());
+        entity.setToken(UUIDs.random());
         entity.setStage(params.getStage());
         entity.setIsAnswered(false);
         entity.setOwner(params.getOwner());

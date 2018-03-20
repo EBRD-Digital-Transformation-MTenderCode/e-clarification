@@ -37,14 +37,14 @@ public class EnquiryServiceImpl implements EnquiryService {
 
     @Override
     public ResponseDto saveEnquiry(final CreateEnquiryParams params) {
-        periodService.checkDateInPeriod(params.getDate(), params.getCpId(), params.getStage());
+        periodService.checkDateInEnquiryPeriod(params.getDate(), params.getCpId(), params.getStage());
         final EnquiryDto enquiryDto = params.getDataDto().getEnquiry();
         enquiryDto.setId(UUIDs.timeBased().toString());
         enquiryDto.setDate(params.getDate());
         processAuthor(enquiryDto);
         final EnquiryEntity entity = new EnquiryEntity();
         entity.setCpId(params.getCpId());
-        entity.setToken(UUIDs.timeBased());
+        entity.setToken(UUIDs.random());
         entity.setStage(params.getStage());
         entity.setIsAnswered(false);
         entity.setOwner(params.getOwner());
@@ -55,7 +55,7 @@ public class EnquiryServiceImpl implements EnquiryService {
     }
 
     @Override
-    public ResponseDto updateEnquiry(final UpdateEnquiryParams params) {
+    public ResponseDto createAnswer(final UpdateEnquiryParams params) {
         final EnquiryEntity entity = Optional.ofNullable(
                 enquiryRepository.getByCpIdAndStageAndToken(
                         params.getCpId(),
@@ -64,7 +64,10 @@ public class EnquiryServiceImpl implements EnquiryService {
                 .orElseThrow(() -> new ErrorException("Enquiry not found."));
         checkEnquiry(entity, params);
         final EnquiryDto enquiryDto = jsonUtil.toObject(EnquiryDto.class, entity.getJsonData());
+        if (!enquiryDto.getId().equals(params.getDataDto().getEnquiry().getId()))
+            throw new ErrorException("Invalid enquiry id.");
         enquiryDto.setAnswer(params.getDataDto().getEnquiry().getAnswer());
+        enquiryDto.setDate(params.getDate());
         enquiryDto.setDateAnswered(params.getDate());
         entity.setIsAnswered(true);
         entity.setJsonData(jsonUtil.toJson(enquiryDto));
@@ -76,12 +79,13 @@ public class EnquiryServiceImpl implements EnquiryService {
     @Override
     public ResponseDto checkEnquiries(final String cpId, final String stage) {
         final PeriodEntity periodEntity = periodService.getPeriod(cpId, stage);
-        final LocalDateTime endDate = periodEntity.getEndDate();
-        if (dateUtil.localNowUTC().isBefore(endDate)) {
-            return new ResponseDto<>(true, null, new CheckEnquiresResponseDto(null, endDate));
-        } else {
+        final LocalDateTime tenderEndDate = periodEntity.getTenderEndDate();
+        if (dateUtil.localNowUTC().isAfter(tenderEndDate)) {
             return new ResponseDto<>(true, null,
                     new CheckEnquiresResponseDto(checkAllAnswered(cpId, stage), null));
+        } else {
+            return new ResponseDto<>(true, null,
+                    new CheckEnquiresResponseDto(null, tenderEndDate));
         }
     }
 
@@ -101,13 +105,13 @@ public class EnquiryServiceImpl implements EnquiryService {
     }
 
     private Boolean checkAllAnswered(final String cpId, final String stage) {
-        return (enquiryRepository.getCountByCpIdAndStageAndIsAnswered(cpId, stage) == 0) ? true : false;
+        return (enquiryRepository.getCountOfUnanswered(cpId, stage) == 0) ? true : false;
     }
 
     private Boolean checkAllAnsweredAfterEndPeriod(final String cpId, final String stage, final LocalDateTime dateTime) {
         final PeriodEntity periodEntity = periodService.getPeriod(cpId, stage);
-        final LocalDateTime endDate = periodEntity.getEndDate();
-        if (dateTime.isAfter(endDate)) {
+        final LocalDateTime tenderEndDate = periodEntity.getTenderEndDate();
+        if (dateTime.isAfter(tenderEndDate)) {
             return checkAllAnswered(cpId, stage);
         } else {
             return false;

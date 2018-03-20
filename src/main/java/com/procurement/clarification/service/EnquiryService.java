@@ -10,7 +10,7 @@ public interface EnquiryService {
 
     ResponseDto saveEnquiry(CreateEnquiryParams params);
 
-    ResponseDto updateEnquiry(UpdateEnquiryParams params);
+    ResponseDto createAnswer(UpdateEnquiryParams params);
 
     ResponseDto checkEnquiries(String cpId, String stage);
 }

@@ -37,7 +37,7 @@ public class EnquiryController {
     }
 
     @PutMapping
-    public ResponseEntity<ResponseDto> updateEnquiry(@RequestParam final String cpId,
+    public ResponseEntity<ResponseDto> createAnswer(@RequestParam final String cpId,
                                                      @RequestParam final String stage,
                                                      @RequestParam final String token,
                                                      @RequestParam final String owner,
@@ -45,7 +45,7 @@ public class EnquiryController {
                                                      @RequestParam final LocalDateTime date,
                                                      @Valid @RequestBody final UpdateEnquiryDto dataDto) {
         UpdateEnquiryParams params = new UpdateEnquiryParams(cpId, stage, token, date, owner, dataDto);
-        return new ResponseEntity<>(enquiryService.updateEnquiry(params), HttpStatus.OK);
+        return new ResponseEntity<>(enquiryService.createAnswer(params), HttpStatus.OK);
     }
 
     @GetMapping

@@ -11,7 +11,9 @@ public interface PeriodService {
 
     ResponseDto calculateAndSavePeriod(PeriodEnquiryParams params);
 
-    void checkDateInPeriod(LocalDateTime localDateTime, String cpId, String stage);
+    void checkDateInTenderPeriod(LocalDateTime localDateTime, String cpId, String stage);
+
+    void checkDateInEnquiryPeriod(LocalDateTime localDateTime, String cpId, String stage);
 
     PeriodEntity getPeriod(String cpId, String stage);
 }

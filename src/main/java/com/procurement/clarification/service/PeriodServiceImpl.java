@@ -34,18 +34,13 @@ public class PeriodServiceImpl implements PeriodService {
     @Override
     public ResponseDto calculateAndSavePeriod(final PeriodEnquiryParams params) {
         final int offset = rulesService.getOffset(params.getCountry(), params.getPmd());
-        final int interval = rulesService.getInterval(params.getCountry(), params.getPmd());
         final LocalDateTime startDate = params.getStartDate();
         final LocalDateTime enquiryEndDate;
         final LocalDateTime tenderEndDate = params.getEndDate();
         if (TEST_PARAM.equals(params.getCountry()) && TEST_PARAM.equals(params.getPmd())) {
             enquiryEndDate = params.getEndDate().minusMinutes(offset);
-            final long minutes = MINUTES.between(startDate, enquiryEndDate);
-            if (minutes < interval) throw new ErrorException("Period invalid.");
         } else {
             enquiryEndDate = params.getEndDate().minusDays(offset);
-            final Long days = DAYS.between(startDate, enquiryEndDate);
-            if (days < interval) throw new ErrorException("Period invalid.");
         }
         final PeriodEntity periodEntity = new PeriodEntity();
         periodEntity.setCpId(params.getCpId());

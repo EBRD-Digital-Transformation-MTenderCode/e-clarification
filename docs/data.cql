@@ -2,14 +2,17 @@ CREATE KEYSPACE IF NOT EXISTS ocds WITH replication = {'class':'SimpleStrategy',
 
 CREATE TABLE IF NOT EXISTS  ocds.clarification_rules (
     country text,
-    method text,
+    pmd text,
     parameter text,
     value text,
     primary key(country, method, parameter)
 );
 
-INSERT INTO ocds.clarification_rules (country, method, parameter, value) VALUES ('UA', 'micro', 'offset', '3');
-INSERT INTO ocds.clarification_rules (country, method, parameter, value) VALUES ('UA', 'micro', 'interval', '3');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'RT', 'offset', '3');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('test', 'test', 'offset', '1');
+
+
+
 
 CREATE TABLE IF NOT EXISTS  ocds.clarification_period (
     cp_id text,

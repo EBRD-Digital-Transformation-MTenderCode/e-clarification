@@ -12,3 +12,7 @@ spring:
       port: 9042
       username: caclient
       password: brT4Kn27RQs
+
+eureka:
+  client:
+    enabled: false

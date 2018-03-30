@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PeriodEnquiryParams {
+public class PeriodParams {
 
     private final String cpId;
     private final String stage;
@@ -16,13 +16,13 @@ public class PeriodEnquiryParams {
     private final LocalDateTime startDate;
     private final LocalDateTime endDate;
 
-    public PeriodEnquiryParams(final String cpId,
-                               final String stage,
-                               final String owner,
-                               final String country,
-                               final String pmd,
-                                final LocalDateTime startDate,
-                               final LocalDateTime endDate) {
+    public PeriodParams(final String cpId,
+                        final String stage,
+                        final String owner,
+                        final String country,
+                        final String pmd,
+                        final LocalDateTime startDate,
+                        final LocalDateTime endDate) {
         this.cpId = cpId;
         this.stage = stage;
         this.owner = owner;

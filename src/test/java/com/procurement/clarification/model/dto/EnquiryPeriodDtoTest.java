@@ -9,6 +9,6 @@ class EnquiryPeriodDtoTest extends AbstractDomainObjectTest {
 //    @Test
 //    @DisplayName("Testing mapping json to EnquiryPeriodDtoTest and to json")
 //    public void testJsonToEnquiryPeriodDtoToJson() {
-//        compare(EnquiryPeriodDto.class, "json/enquiry-period.json");
+//        compare(Period.class, "json/enquiry-period.json");
 //    }
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateEnquiryParams {
+
     private final String cpId;
     private final String stage;
     private final String owner;

@@ -7,6 +7,4 @@ public interface RulesService {
 
     int getOffset(String country, String method);
 
-    int getInterval(String country, String method);
-
 }

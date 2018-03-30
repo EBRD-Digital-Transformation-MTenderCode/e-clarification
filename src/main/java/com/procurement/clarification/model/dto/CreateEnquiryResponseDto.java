@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.procurement.clarification.model.dto.ocds.Enquiry;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
@@ -20,12 +21,11 @@ public class CreateEnquiryResponseDto {
 
     @NotNull
     @JsonProperty("enquiry")
-    private final EnquiryDto enquiry;
+    private final Enquiry enquiry;
 
     @JsonCreator
-    public CreateEnquiryResponseDto(
-            @JsonProperty("token") final String token,
-            @JsonProperty("enquiry") final EnquiryDto enquiry) {
+    public CreateEnquiryResponseDto(@JsonProperty("token") final String token,
+                                    @JsonProperty("enquiry") final Enquiry enquiry) {
         this.token = token;
         this.enquiry = enquiry;
     }

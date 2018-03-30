@@ -1,4 +1,4 @@
-package com.procurement.clarification.model.dto;
+package com.procurement.clarification.model.dto.ocds;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,7 +15,8 @@ import lombok.Data;
         "startDate",
         "endDate"
 })
-public class EnquiryPeriodDto {
+public class Period {
+
     @JsonProperty("startDate")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -27,8 +28,8 @@ public class EnquiryPeriodDto {
     private LocalDateTime endDate;
 
     @JsonCreator
-    public EnquiryPeriodDto(@JsonProperty("startDate") final LocalDateTime startDate,
-                            @JsonProperty("endDate") final LocalDateTime endDate) {
+    public Period(@JsonProperty("startDate") final LocalDateTime startDate,
+                  @JsonProperty("endDate") final LocalDateTime endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
     }

@@ -2,28 +2,20 @@ package com.procurement.clarification.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-@JsonPropertyOrder(
-    "enquiry")
 public class UpdateEnquiryDto {
-    @NotNull
+
     @Valid
+    @NotNull
     @JsonProperty("enquiry")
     private final EnquiryAnswerDto enquiry;
 
     @JsonCreator
-    public UpdateEnquiryDto(
-
-        @NotEmpty
-        @Valid
-        @JsonProperty("enquiry") final EnquiryAnswerDto enquiry) {
-
+    public UpdateEnquiryDto(@JsonProperty("enquiry") final EnquiryAnswerDto enquiry) {
         this.enquiry = enquiry;
     }
 }

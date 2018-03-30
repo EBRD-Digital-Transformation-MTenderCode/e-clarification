@@ -18,7 +18,6 @@ import lombok.Setter;
 })
 public class CheckEnquiresResponseDto {
 
-
     @JsonProperty("allAnswered")
     private final Boolean allAnswered;
 

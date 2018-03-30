@@ -10,8 +10,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonPropertyOrder({
-    "id",
-    "answer"
+        "id",
+        "answer"
 })
 public class EnquiryAnswerDto {
 
@@ -26,7 +26,6 @@ public class EnquiryAnswerDto {
     @JsonCreator
     public EnquiryAnswerDto(@JsonProperty("id") final String id,
                             @JsonProperty("answer") final String answer) {
-
         this.id = id;
         this.answer = answer;
     }

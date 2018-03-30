@@ -1,7 +1,7 @@
 package com.procurement.clarification.controller;
 
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
-import com.procurement.clarification.model.dto.params.PeriodEnquiryParams;
+import com.procurement.clarification.model.dto.params.PeriodParams;
 import com.procurement.clarification.service.PeriodService;
 import java.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,16 +23,16 @@ public class PeriodController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<ResponseDto> savePeriod(@RequestParam final String cpId,
-                                                  @RequestParam final String country,
-                                                  @RequestParam final String stage,
-                                                  @RequestParam final String owner,
-                                                  @RequestParam final String pmd,
+    public ResponseEntity<ResponseDto> savePeriod(@RequestParam("identifier") final String cpId,
+                                                  @RequestParam("country") final String country,
+                                                  @RequestParam("stage") final String stage,
+                                                  @RequestParam("owner") final String owner,
+                                                  @RequestParam("pmd") final String pmd,
                                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                                                  @RequestParam final LocalDateTime startDate,
+                                                  @RequestParam("startDate") final LocalDateTime startDate,
                                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                                                  @RequestParam final LocalDateTime endDate) {
-        PeriodEnquiryParams params = new PeriodEnquiryParams(cpId, stage,  owner, country, pmd, startDate, endDate);
+                                                  @RequestParam("endDate") final LocalDateTime endDate) {
+        final PeriodParams params = new PeriodParams(cpId, stage, owner, country, pmd, startDate, endDate);
         return new ResponseEntity<>(periodService.calculateAndSavePeriod(params), HttpStatus.CREATED);
     }
 }

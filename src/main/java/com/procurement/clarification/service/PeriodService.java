@@ -1,7 +1,7 @@
 package com.procurement.clarification.service;
 
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
-import com.procurement.clarification.model.dto.params.PeriodEnquiryParams;
+import com.procurement.clarification.model.dto.params.PeriodParams;
 import com.procurement.clarification.model.entity.PeriodEntity;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
@@ -9,11 +9,9 @@ import org.springframework.stereotype.Service;
 @Service
 public interface PeriodService {
 
-    ResponseDto calculateAndSavePeriod(PeriodEnquiryParams params);
+    ResponseDto calculateAndSavePeriod(PeriodParams params);
 
-    void checkDateInTenderPeriod(LocalDateTime localDateTime, String cpId, String stage);
-
-    void checkDateInEnquiryPeriod(LocalDateTime localDateTime, String cpId, String stage);
+    void checkDateInPeriod(LocalDateTime localDateTime, String cpId, String stage);
 
     PeriodEntity getPeriod(String cpId, String stage);
 }

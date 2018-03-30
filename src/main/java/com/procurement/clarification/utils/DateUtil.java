@@ -9,29 +9,20 @@ import java.util.Date;
 
 public class DateUtil {
 
-    private final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder()
-            .parseCaseInsensitive()
-            .append(DateTimeFormatter.ISO_LOCAL_DATE)
-            .appendLiteral('T')
-            .append(DateTimeFormatter.ISO_LOCAL_TIME)
-            .appendLiteral('Z')
-            .toFormatter();
-
-    public Date dateNowUTC() {
-        return localToDate(LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC));
+    public Date nowDateTime() {
+        return localToDate(nowUTCLocalDateTime());
     }
 
-    public LocalDateTime localNowUTC() {
+    public LocalDateTime nowUTCLocalDateTime() {
         return LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC);
     }
 
-    public long getMilliUTC(final LocalDateTime localDateTime) {
-        return localDateTime.toInstant(ZoneOffset.UTC)
-                .toEpochMilli();
+    public long milliNowUTC() {
+        return nowUTCLocalDateTime().toInstant(ZoneOffset.UTC).toEpochMilli();
     }
 
-    public LocalDateTime stringToLocal(final String dateTime) {
-        return LocalDateTime.parse(dateTime, FORMATTER);
+    public long milliUTCfromLocalDateTime(final LocalDateTime localDateTime) {
+        return localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
     }
 
     public LocalDateTime dateToLocal(final Date date) {

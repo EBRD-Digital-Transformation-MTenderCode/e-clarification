@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.procurement.clarification.model.dto.ocds.Enquiry;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,12 +23,11 @@ public class UpdateEnquiryResponseDto {
 
     @NotNull
     @JsonProperty("enquiry")
-    private final EnquiryDto enquiry;
+    private final Enquiry enquiry;
 
     @JsonCreator
-    public UpdateEnquiryResponseDto(
-            @JsonProperty("allAnswered") final Boolean allAnswered,
-            @JsonProperty("enquiry") final EnquiryDto enquiry) {
+    public UpdateEnquiryResponseDto(@JsonProperty("allAnswered") final Boolean allAnswered,
+                                    @JsonProperty("enquiry") final Enquiry enquiry) {
         this.allAnswered = allAnswered;
         this.enquiry = enquiry;
     }

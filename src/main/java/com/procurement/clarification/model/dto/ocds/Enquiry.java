@@ -1,4 +1,4 @@
-package com.procurement.clarification.model.dto;
+package com.procurement.clarification.model.dto.ocds;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -8,12 +8,14 @@ import com.procurement.clarification.databind.LocalDateTimeSerializer;
 import java.time.LocalDateTime;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "id",
         "date",
@@ -25,45 +27,47 @@ import lombok.Setter;
         "relatedItem",
         "relatedLot"
 })
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class EnquiryDto {
+public class Enquiry {
+
     @JsonProperty("id")
     private String id;
-    @JsonProperty("date")
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonProperty("date")
     private LocalDateTime date;
-    @JsonProperty("author")
-    @NotNull
+
     @Valid
-    private final OrganizationReferenceDto author;
+    @NotNull
+    @JsonProperty("author")
+    private final OrganizationReference author;
+
+    @NotNull
     @JsonProperty("title")
-    @NotNull
-    @Size(min = 1, max = 100)
     private final String title;
-    @JsonProperty("description")
+
     @NotNull
-    @Size(min = 1, max = 2500)
+    @JsonProperty("description")
     private final String description;
+
     @JsonProperty("answer")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String answer;
+
     @JsonProperty("dateAnswered")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonPropertyDescription("The date the answer to the question was provided.")
     private LocalDateTime dateAnswered;
+
     @JsonProperty("relatedItem")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String relatedItem;
+
     @JsonProperty("relatedLot")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String relatedLot;
 
     @JsonCreator
-    public EnquiryDto(
+    public Enquiry(
             @JsonProperty("id") final String id,
             @JsonProperty("date") final LocalDateTime date,
-            @JsonProperty("author") final OrganizationReferenceDto author,
+            @JsonProperty("author") final OrganizationReference author,
             @JsonProperty("title") final String title,
             @JsonProperty("description") final String description,
             @JsonProperty("dateAnswered") final LocalDateTime dateAnswered,
@@ -81,5 +85,42 @@ public class EnquiryDto {
         this.relatedItem = relatedItem;
         this.relatedLot = relatedLot;
 
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(id)
+                .append(date)
+                .append(author)
+                .append(title)
+                .append(description)
+                .append(answer)
+                .append(dateAnswered)
+                .append(relatedItem)
+                .append(relatedLot)
+                .toHashCode();
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (other == this) {
+            return true;
+        }
+        if (!(other instanceof Enquiry)) {
+            return false;
+        }
+        final Enquiry rhs = (Enquiry) other;
+        return new EqualsBuilder()
+                .append(id, rhs.id)
+                .append(date, rhs.date)
+                .append(author, rhs.author)
+                .append(title, rhs.title)
+                .append(description, rhs.description)
+                .append(answer, rhs.answer)
+                .append(dateAnswered, rhs.dateAnswered)
+                .append(relatedItem, rhs.relatedItem)
+                .append(relatedLot, rhs.relatedLot)
+                .isEquals();
     }
 }

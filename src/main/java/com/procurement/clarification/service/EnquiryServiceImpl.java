@@ -2,8 +2,13 @@ package com.procurement.clarification.service;
 
 import com.datastax.driver.core.utils.UUIDs;
 import com.procurement.clarification.exception.ErrorException;
-import com.procurement.clarification.model.dto.*;
+import com.procurement.clarification.exception.ErrorType;
+import com.procurement.clarification.model.dto.CheckEnquiresResponseDto;
+import com.procurement.clarification.model.dto.CreateEnquiryResponseDto;
+import com.procurement.clarification.model.dto.UpdateEnquiryResponseDto;
 import com.procurement.clarification.model.dto.bpe.ResponseDto;
+import com.procurement.clarification.model.dto.ocds.Enquiry;
+import com.procurement.clarification.model.dto.ocds.OrganizationReference;
 import com.procurement.clarification.model.dto.params.CreateEnquiryParams;
 import com.procurement.clarification.model.dto.params.UpdateEnquiryParams;
 import com.procurement.clarification.model.entity.EnquiryEntity;
@@ -37,8 +42,8 @@ public class EnquiryServiceImpl implements EnquiryService {
 
     @Override
     public ResponseDto saveEnquiry(final CreateEnquiryParams params) {
-        periodService.checkDateInEnquiryPeriod(params.getDate(), params.getCpId(), params.getStage());
-        final EnquiryDto enquiryDto = params.getDataDto().getEnquiry();
+        periodService.checkDateInPeriod(params.getDate(), params.getCpId(), params.getStage());
+        final Enquiry enquiryDto = params.getDataDto().getEnquiry();
         enquiryDto.setId(UUIDs.timeBased().toString());
         enquiryDto.setDate(params.getDate());
         processAuthor(enquiryDto);
@@ -61,11 +66,11 @@ public class EnquiryServiceImpl implements EnquiryService {
                         params.getCpId(),
                         params.getStage(),
                         UUID.fromString(params.getToken())))
-                .orElseThrow(() -> new ErrorException("Enquiry not found."));
+                .orElseThrow(() -> new ErrorException(ErrorType.DATA_NOT_FOUND));
         checkEnquiry(entity, params);
-        final EnquiryDto enquiryDto = jsonUtil.toObject(EnquiryDto.class, entity.getJsonData());
+        final Enquiry enquiryDto = jsonUtil.toObject(Enquiry.class, entity.getJsonData());
         if (!enquiryDto.getId().equals(params.getDataDto().getEnquiry().getId()))
-            throw new ErrorException("Invalid enquiry id.");
+            throw new ErrorException(ErrorType.INVALID_ID);
         enquiryDto.setAnswer(params.getDataDto().getEnquiry().getAnswer());
         enquiryDto.setDate(params.getDate());
         enquiryDto.setDateAnswered(params.getDate());
@@ -80,7 +85,7 @@ public class EnquiryServiceImpl implements EnquiryService {
     public ResponseDto checkEnquiries(final String cpId, final String stage) {
         final PeriodEntity periodEntity = periodService.getPeriod(cpId, stage);
         final LocalDateTime tenderEndDate = periodEntity.getTenderEndDate();
-        if (dateUtil.localNowUTC().isAfter(tenderEndDate)) {
+        if (dateUtil.nowUTCLocalDateTime().isAfter(tenderEndDate)) {
             return new ResponseDto<>(true, null,
                     new CheckEnquiresResponseDto(checkAllAnswered(cpId, stage), null));
         } else {
@@ -89,23 +94,23 @@ public class EnquiryServiceImpl implements EnquiryService {
         }
     }
 
-    private void processAuthor(final EnquiryDto enquiryDto) {
-        final OrganizationReferenceDto author = enquiryDto.getAuthor();
+    private void processAuthor(final Enquiry enquiryDto) {
+        final OrganizationReference author = enquiryDto.getAuthor();
         if (Objects.nonNull(author))
             author.setId(author.getIdentifier().getScheme() + "-" + author.getIdentifier().getId());
     }
 
     private void checkEnquiry(final EnquiryEntity entity, final UpdateEnquiryParams params) {
         if (!entity.getOwner().equals(params.getOwner())) {
-            throw new ErrorException("Invalid owner.");
+            throw new ErrorException(ErrorType.INVALID_OWNER);
         }
         if (entity.getIsAnswered()) {
-            throw new ErrorException("The enquiry already has an answer.");
+            throw new ErrorException(ErrorType.ALREADY_HAS_ANSWER);
         }
     }
 
     private Boolean checkAllAnswered(final String cpId, final String stage) {
-        return (enquiryRepository.getCountOfUnanswered(cpId, stage) == 0) ? true : false;
+        return enquiryRepository.getCountOfUnanswered(cpId, stage) == 0;
     }
 
     private Boolean checkAllAnsweredAfterEndPeriod(final String cpId, final String stage, final LocalDateTime dateTime) {

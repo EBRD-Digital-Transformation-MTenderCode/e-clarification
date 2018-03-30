@@ -31,8 +31,8 @@ public class EnquiryController {
                                                      @RequestParam("owner") final String owner,
                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                                                      @RequestParam("date") final LocalDateTime dateTime,
-                                                     @Valid @RequestBody final CreateEnquiryDto dataDto) {
-        final CreateEnquiryParams params = new CreateEnquiryParams(cpId, stage, dateTime, owner, dataDto);
+                                                     @Valid @RequestBody final CreateEnquiryDto data) {
+        final CreateEnquiryParams params = new CreateEnquiryParams(cpId, stage, dateTime, owner, data);
         return new ResponseEntity<>(enquiryService.saveEnquiry(params), HttpStatus.CREATED);
     }
 
@@ -43,8 +43,8 @@ public class EnquiryController {
                                                      @RequestParam("owner") final String owner,
                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                                                      @RequestParam("date") final LocalDateTime dateTime,
-                                                     @Valid @RequestBody final UpdateEnquiryDto dataDto) {
-        final UpdateEnquiryParams params = new UpdateEnquiryParams(cpId, stage, token, dateTime, owner, dataDto);
+                                                     @Valid @RequestBody final UpdateEnquiryDto data) {
+        final UpdateEnquiryParams params = new UpdateEnquiryParams(cpId, stage, token, dateTime, owner, data);
         return new ResponseEntity<>(enquiryService.createAnswer(params), HttpStatus.OK);
     }
 

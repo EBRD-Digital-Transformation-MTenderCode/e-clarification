@@ -41,7 +41,7 @@ public class EnquiryServiceImpl implements EnquiryService {
     }
 
     @Override
-    public ResponseDto saveEnquiry(final CreateEnquiryParams params) {
+    public ResponseDto createEnquiry(final CreateEnquiryParams params) {
         periodService.checkDateInPeriod(params.getDate(), params.getCpId(), params.getStage());
         final Enquiry enquiryDto = params.getDataDto().getEnquiry();
         enquiryDto.setId(UUIDs.timeBased().toString());

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface EnquiryService {
 
-    ResponseDto saveEnquiry(CreateEnquiryParams params);
+    ResponseDto createEnquiry(CreateEnquiryParams params);
 
     ResponseDto createAnswer(UpdateEnquiryParams params);
 

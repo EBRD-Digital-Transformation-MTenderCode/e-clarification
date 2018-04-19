@@ -33,7 +33,7 @@ public class EnquiryController {
                                                      @RequestParam("date") final LocalDateTime dateTime,
                                                      @Valid @RequestBody final CreateEnquiryDto data) {
         final CreateEnquiryParams params = new CreateEnquiryParams(cpId, stage, dateTime, owner, data);
-        return new ResponseEntity<>(enquiryService.saveEnquiry(params), HttpStatus.CREATED);
+        return new ResponseEntity<>(enquiryService.createEnquiry(params), HttpStatus.CREATED);
     }
 
     @PutMapping

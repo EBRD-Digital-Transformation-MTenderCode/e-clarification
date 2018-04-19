@@ -86,11 +86,9 @@ public class EnquiryServiceImpl implements EnquiryService {
         final PeriodEntity periodEntity = periodService.getPeriod(cpId, stage);
         final LocalDateTime tenderEndDate = periodEntity.getTenderEndDate();
         if (dateUtil.nowUTCLocalDateTime().isAfter(tenderEndDate)) {
-            return new ResponseDto<>(true, null,
-                    new CheckEnquiresResponseDto(checkAllAnswered(cpId, stage), null));
+            return new ResponseDto<>(true, null, new CheckEnquiresResponseDto(checkAllAnswered(cpId, stage), null));
         } else {
-            return new ResponseDto<>(true, null,
-                    new CheckEnquiresResponseDto(null, tenderEndDate));
+            return new ResponseDto<>(true, null, new CheckEnquiresResponseDto(null, tenderEndDate));
         }
     }
 

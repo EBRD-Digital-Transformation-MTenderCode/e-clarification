@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS  ocds.clarification_rules (
     primary key(country, method, parameter)
 );
 
-INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'RT', 'offset', '3');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'RT', 'offset', '6');
 INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('TEST', 'TEST', 'offset', '1');
 
 

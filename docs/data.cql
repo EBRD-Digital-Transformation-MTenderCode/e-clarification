@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS  ocds.clarification_rules (
 );
 
 INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'RT', 'offset', '6');
-INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('TEST', 'TEST', 'offset', '1');
-
-
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'offset', '6');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('TEST', 'TEST_RT', 'offset', '1');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('TEST', 'TEST_OT', 'offset', '1');
 
 
 CREATE TABLE IF NOT EXISTS  ocds.clarification_period (

@@ -34,7 +34,7 @@ public class PeriodServiceImpl implements PeriodService {
         final LocalDateTime startDate = params.getStartDate();
         final LocalDateTime enquiryEndDate;
         final LocalDateTime tenderEndDate = params.getEndDate();
-        if (TEST_PARAM.equals(params.getCountry()) && TEST_PARAM.equals(params.getPmd())) {
+        if (TEST_PARAM.equals(params.getCountry())) {
             enquiryEndDate = params.getEndDate().minusMinutes(offset);
         } else {
             enquiryEndDate = params.getEndDate().minusDays(offset);

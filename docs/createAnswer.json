@@ -1,14 +1,42 @@
 {
-  "enquiry":
-  {
-    "author":
-    {
-      "name":"name",
-      "id":"id"
+  "allAnswered": true,
+  "enquiry": {
+    "id": "fffa20f0-4ec0-11e8-8ee0-1b82752b946a",
+    "date": "2018-05-03T11:15:50Z",
+    "author": {
+      "id": "Scheme*-1",
+      "name": "Maritanchyk",
+      "identifier": {
+        "id": "1",
+        "scheme": "Scheme*",
+        "legalName": "Legal Name*",
+        "uri": "URI*"
+      },
+      "address": {
+        "streetAddress": "adress",
+        "locality": "locality",
+        "region": "region",
+        "countryName": "Moldova - strana chudova"
+      },
+      "additionalIdentifiers": [
+        {
+          "id": "12362254",
+          "scheme": "Scheme*",
+          "legalName": "Legal Name*",
+          "uri": "URI*"
+        }
+      ],
+      "contactPoint": {
+        "name": "Name",
+        "email": "e-mail",
+        "telephone": "456951123",
+        "url": "URL*"
+      }
     },
-    "title":"title",
-    "description":"description",
-    "--relatedItem":"",
-    "--relatedLot":""
+    "title": "TITLE of the question",
+    "description": "Chomu iavliaeshsia u sni?",
+    "answer": "Hoch znaesh znaesh znaesh dobre znaesh",
+    "dateAnswered": "2018-05-03T11:15:50Z",
+    "relatedItem": "item1"
   }
 }

@@ -14,12 +14,12 @@ import javax.validation.constraints.NotNull
 data class Enquiry(
 
         @JsonProperty("id")
-        val id: String?,
+        var id: String?,
 
-        @JsonProperty("date")
+        @JsonProperty("dateTime")
         @JsonSerialize(using = JsonDateSerializer::class)
         @JsonDeserialize(using = JsonDateDeserializer::class)
-        val date: LocalDateTime?,
+        var date: LocalDateTime?,
 
         @JsonProperty("author") @Valid @NotNull
         val author: OrganizationReference,
@@ -32,7 +32,7 @@ data class Enquiry(
 
         @JsonProperty("dateAnswered")
         @JsonSerialize(using = JsonDateSerializer::class)
-        val dateAnswered: LocalDateTime?,
+        var dateAnswered: LocalDateTime?,
 
         @JsonProperty("relatedItem")
         val relatedItem: String?,
@@ -41,5 +41,5 @@ data class Enquiry(
         val relatedLot: String?,
 
         @JsonProperty("answer")
-        val answer: String?
+        var answer: String?
 )

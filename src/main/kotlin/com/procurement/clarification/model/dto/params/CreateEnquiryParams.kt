@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 data class CreateEnquiryParams(
         val cpId: String,
         val stage: String,
-        val date: LocalDateTime,
+        val dateTime: LocalDateTime,
         val owner: String,
-        val dataDto: CreateEnquiryDto
+        val data: CreateEnquiryDto
 )

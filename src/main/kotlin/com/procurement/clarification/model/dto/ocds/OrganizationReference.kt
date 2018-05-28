@@ -12,7 +12,7 @@ data class OrganizationReference(
         val name: String,
 
         @JsonProperty("id")
-        val id: String?,
+        var id: String?,
 
         @JsonProperty("identifier") @Valid @NotNull
         val identifier: Identifier,

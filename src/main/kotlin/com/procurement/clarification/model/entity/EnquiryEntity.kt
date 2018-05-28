@@ -6,9 +6,9 @@ data class EnquiryEntity(
 
         val cpId: String,
 
-        val stage: String,
-
         val token: UUID,
+
+        val stage: String,
 
         val owner: String,
 

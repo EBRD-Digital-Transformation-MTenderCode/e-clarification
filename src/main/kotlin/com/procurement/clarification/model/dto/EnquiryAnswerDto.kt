@@ -1,7 +1,6 @@
 package com.procurement.clarification.model.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import javax.validation.constraints.NotNull
 
 
 data class EnquiryAnswerDto(

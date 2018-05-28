@@ -2,6 +2,8 @@ package com.procurement.clarification.dao
 
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.querybuilder.QueryBuilder.*
+import com.procurement.clarification.exception.ErrorException
+import com.procurement.clarification.exception.ErrorType
 import com.procurement.clarification.model.entity.PeriodEntity
 import org.springframework.stereotype.Service
 
@@ -9,7 +11,7 @@ interface PeriodDao {
 
     fun save(entity: PeriodEntity)
 
-    fun getByCpIdAndStage(cpId: String, stage: String): PeriodEntity?
+    fun getByCpIdAndStage(cpId: String, stage: String): PeriodEntity
 
 }
 
@@ -27,7 +29,7 @@ class PeriodDaoImpl(private val session: Session) : PeriodDao {
         session.execute(insert)
     }
 
-    override fun getByCpIdAndStage(cpId: String, stage: String): PeriodEntity? {
+    override fun getByCpIdAndStage(cpId: String, stage: String): PeriodEntity {
         val query = select()
                 .all()
                 .from(PERIOD_TABLE)
@@ -42,7 +44,7 @@ class PeriodDaoImpl(private val session: Session) : PeriodDao {
                     endDate = row.getTimestamp(END_DATE),
                     tenderEndDate = row.getTimestamp(TENDER_END_DATE)
             )
-        else null
+        else throw ErrorException(ErrorType.PERIOD_NOT_FOUND)
     }
 
     companion object {

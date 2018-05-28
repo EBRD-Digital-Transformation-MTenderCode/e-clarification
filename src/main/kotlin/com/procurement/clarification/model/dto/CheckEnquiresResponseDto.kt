@@ -12,10 +12,10 @@ data class CheckEnquiresResponseDto(
 
         @JsonProperty("allAnswered")
         @get: JsonProperty("allAnswered")
-        val allAnswered: Boolean,
+        val allAnswered: Boolean?,
 
         @JsonProperty("tenderPeriodEndDate")
         @JsonDeserialize(using = JsonDateDeserializer::class)
         @JsonSerialize(using = JsonDateSerializer::class)
-        val tenderPeriodEndDate: LocalDateTime
+        val tenderPeriodEndDate: LocalDateTime?
 )

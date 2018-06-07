@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS  ocds.clarification_rules (
     pmd text,
     parameter text,
     value text,
-    primary key(country, method, parameter)
+    primary key(country, pmd, parameter)
 );
 
 INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'RT', 'offset', '6');

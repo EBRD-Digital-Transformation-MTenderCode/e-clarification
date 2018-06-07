@@ -15,16 +15,4 @@ docker network create \
 #****************************************#
 
 mvn clean package docker:build
-docker login https://docker-registry.eprocurement.systems
-Username: docker
-Password: 3FFcKYtMxzmwFMa
-docker push docker-registry.eprocurement.systems/e-clarification:17.12.1
-
-docker run -d --name=clarification-1 \
-  --env __PROP_spring_cloud_config_uri=http://config-server-1:8700 \
-  --env __PROP_spring_profiles_active=default \
-  --env __PROP_spring_cloud_config_label=d737f79 \
-  --publish 9071:8080 \
-  --network ocds-network \
-  --dns 10.0.10.115 \
-  docker-registry.eprocurement.systems/e-clarification:17.12.1
+docker push dev.docker-registry.eprocurement.systems/e-clarification:18.06.1

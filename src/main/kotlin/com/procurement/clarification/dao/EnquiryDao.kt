@@ -62,7 +62,7 @@ class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
                 .and(eq(IS_ANSWERED, false))
                 .allowFiltering()
         val row = session.execute(query).one()
-        return if (row != null) return row.getLong(0)
+        if (row != null) return row.getLong(0)
         else throw ErrorException(ErrorType.DATA_NOT_FOUND)
     }
 

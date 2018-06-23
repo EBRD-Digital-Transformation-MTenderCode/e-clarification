@@ -24,7 +24,7 @@ class EnquiryController(private val enquiryService: EnquiryService) {
                       @RequestParam("stage") stage: String,
                       @RequestParam("owner") owner: String,
                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                      @RequestParam("dateTime") dateTime: LocalDateTime,
+                      @RequestParam("date") dateTime: LocalDateTime,
                       @Valid @RequestBody data: CreateEnquiryDto): ResponseEntity<ResponseDto<*>> {
         val params = CreateEnquiryParams(
                 cpId = cpId,
@@ -43,7 +43,7 @@ class EnquiryController(private val enquiryService: EnquiryService) {
                      @RequestParam("token") token: String,
                      @RequestParam("owner") owner: String,
                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                     @RequestParam("dateTime") dateTime: LocalDateTime,
+                     @RequestParam("date") dateTime: LocalDateTime,
                      @Valid @RequestBody data: UpdateEnquiryDto): ResponseEntity<ResponseDto<*>> {
         val params = UpdateEnquiryParams(
                 cpId = cpId,

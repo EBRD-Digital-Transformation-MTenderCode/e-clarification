@@ -1,13 +1,11 @@
 package com.procurement.clarification.model.dto
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonCreator
 
 
-data class EnquiryAnswerDto(
+data class EnquiryAnswerDto @JsonCreator constructor(
 
-        @JsonProperty("id")
         val id: String,
 
-        @JsonProperty("answer")
         val answer: String
 )

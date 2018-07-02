@@ -1,11 +1,12 @@
 package com.procurement.clarification.model.dto
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonCreator
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
-data class UpdateEnquiryDto(
+data class UpdateEnquiryDto @JsonCreator constructor(
 
-        @JsonProperty("enquiry") @Valid @NotNull
+        @field:Valid
+        @field:NotNull
         val enquiry: EnquiryAnswerDto
 )

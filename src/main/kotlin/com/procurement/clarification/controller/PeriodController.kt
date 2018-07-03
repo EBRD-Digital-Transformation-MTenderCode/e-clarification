@@ -25,7 +25,7 @@ class PeriodController(private val periodService: PeriodService) {
                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                    @RequestParam("startDate") startDate: LocalDateTime,
                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                   @RequestParam("endDate") endDate: LocalDateTime): ResponseEntity<ResponseDto<*>> {
+                   @RequestParam("endDate") endDate: LocalDateTime): ResponseEntity<ResponseDto> {
         val params = PeriodParams(
                 cpId = cpId,
                 stage = stage,

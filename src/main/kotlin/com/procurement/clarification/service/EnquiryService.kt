@@ -21,11 +21,11 @@ import java.util.*
 
 interface EnquiryService {
 
-    fun createEnquiry(params: CreateEnquiryParams): ResponseDto<*>
+    fun createEnquiry(params: CreateEnquiryParams): ResponseDto
 
-    fun createAnswer(params: UpdateEnquiryParams): ResponseDto<*>
+    fun createAnswer(params: UpdateEnquiryParams): ResponseDto
 
-    fun checkEnquiries(cpId: String, stage: String): ResponseDto<*>
+    fun checkEnquiries(cpId: String, stage: String): ResponseDto
 }
 
 @Service
@@ -33,7 +33,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
                          private val enquiryDao: EnquiryDao,
                          private val periodService: PeriodService) : EnquiryService {
 
-    override fun createEnquiry(params: CreateEnquiryParams): ResponseDto<*> {
+    override fun createEnquiry(params: CreateEnquiryParams): ResponseDto {
         periodService.checkDateInPeriod(params.dateTime, params.cpId, params.stage)
         val enquiry = params.data.enquiry
         enquiry.apply {
@@ -54,7 +54,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
                 CreateEnquiryResponseDto(entity.token.toString(), enquiry))
     }
 
-    override fun createAnswer(params: UpdateEnquiryParams): ResponseDto<*> {
+    override fun createAnswer(params: UpdateEnquiryParams): ResponseDto {
         val entity = enquiryDao.getByCpIdAndStageAndToken(params.cpId, params.stage, UUID.fromString(params.token))
         if (entity.owner != params.owner) throw ErrorException(ErrorType.INVALID_OWNER)
         if (entity.isAnswered) throw ErrorException(ErrorType.ALREADY_HAS_ANSWER)
@@ -79,7 +79,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         return ResponseDto(true, null, UpdateEnquiryResponseDto(allAnswered, enquiry))
     }
 
-    override fun checkEnquiries(cpId: String, stage: String): ResponseDto<*> {
+    override fun checkEnquiries(cpId: String, stage: String): ResponseDto {
         val tenderEndDate = periodService.getPeriod(cpId, stage).tenderEndDate
         return if (tenderEndDate.toLocal().isBefore(localNowUTC())) {
             val isAllAnswered = checkIsAllAnswered(cpId, stage)

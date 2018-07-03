@@ -15,7 +15,7 @@ import java.util.*
 
 interface PeriodService {
 
-    fun calculateAndSavePeriod(params: PeriodParams): ResponseDto<*>
+    fun calculateAndSavePeriod(params: PeriodParams): ResponseDto
 
     fun checkDateInPeriod(localDateTime: LocalDateTime, cpId: String, stage: String)
 
@@ -26,7 +26,7 @@ interface PeriodService {
 class PeriodServiceImpl(private val periodDao: PeriodDao,
                         private val rulesService: RulesService) : PeriodService {
 
-    override fun calculateAndSavePeriod(params: PeriodParams): ResponseDto<*> {
+    override fun calculateAndSavePeriod(params: PeriodParams): ResponseDto {
         val offset = rulesService.getOffset(params.country, params.pmd)
         val enquiryEndDate = when (params.country) {
             TEST_PARAM -> params.endDate.minusMinutes(offset)

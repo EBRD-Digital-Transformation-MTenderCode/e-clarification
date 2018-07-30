@@ -20,6 +20,6 @@ class RulesServiceImpl(private val rulesDao: RulesDao) : RulesService {
     }
 
     companion object {
-        private val PARAMETER_OFFSET = "offset"
+        private const val PARAMETER_OFFSET = "offset"
     }
 }

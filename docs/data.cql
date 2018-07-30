@@ -8,10 +8,13 @@ CREATE TABLE IF NOT EXISTS  ocds.clarification_rules (
     primary key(country, pmd, parameter)
 );
 
-INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'RT', 'offset', '6');
-INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'offset', '6');
-INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('TEST', 'TEST_RT', 'offset', '1');
-INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('TEST', 'TEST_OT', 'offset', '1');
+//86400sec(day) * 6 = 518400
+//60 sec (min)
+
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'RT', 'offset', '518400');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'offset', '518400');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_RT', 'offset', '60');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_OT', 'offset', '60');
 
 
 CREATE TABLE IF NOT EXISTS  ocds.clarification_period (

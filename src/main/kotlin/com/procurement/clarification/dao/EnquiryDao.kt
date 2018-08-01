@@ -25,7 +25,7 @@ class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
         val insert =
                 insertInto(CLARIFICATION_TABLE)
                         .value(CP_ID, entity.cpId)
-                        .value(TOKEN, entity.token)
+                        .value(TOKEN, entity.token_entity)
                         .value(STAGE, entity.stage)
                         .value(OWNER, entity.owner)
                         .value(IS_ANSWERED, entity.isAnswered)
@@ -45,7 +45,7 @@ class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
         return if (row != null)
             EnquiryEntity(
                     cpId = row.getString(CP_ID),
-                    token = row.getUUID(TOKEN),
+                    token_entity = row.getUUID(TOKEN),
                     stage = row.getString(STAGE),
                     owner = row.getString(OWNER),
                     isAnswered = row.getBool(IS_ANSWERED),

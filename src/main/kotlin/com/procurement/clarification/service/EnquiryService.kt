@@ -51,7 +51,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         )
         enquiryDao.save(entity)
         return ResponseDto(true, null,
-                CreateEnquiryResponseDto(entity.token.toString(), enquiry))
+                CreateEnquiryResponseDto(entity.token_entity.toString(), enquiry))
     }
 
     override fun createAnswer(params: UpdateEnquiryParams): ResponseDto {
@@ -68,7 +68,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         }
         val newEntity = getEntity(
                 cpId = entity.cpId,
-                token = entity.token,
+                token = entity.token_entity,
                 stage = entity.stage,
                 owner = entity.owner,
                 isAnswered = false,
@@ -111,7 +111,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
                           enquiry: Enquiry): EnquiryEntity {
         return EnquiryEntity(
                 cpId = cpId,
-                token = token,
+                token_entity = token,
                 stage = stage,
                 owner = owner,
                 jsonData = toJson(enquiry),

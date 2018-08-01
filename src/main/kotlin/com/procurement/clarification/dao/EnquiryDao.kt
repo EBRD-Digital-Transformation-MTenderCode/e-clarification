@@ -38,7 +38,7 @@ class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
                 .all()
                 .from(CLARIFICATION_TABLE)
                 .where(eq(CP_ID, cpId))
-                .and(eq(STAGE, String))
+                .and(eq(STAGE, stage))
                 .and(eq(TOKEN, token))
                 .limit(1)
         val row = session.execute(query).one()

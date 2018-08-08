@@ -8,6 +8,7 @@ data class UpdateEnquiryParams(
         val cpId: String,
         val stage: String,
         val token: String,
+        val enquiryId: String,
         val dateTime: LocalDateTime,
         val owner: String,
         val data: UpdateEnquiryDto

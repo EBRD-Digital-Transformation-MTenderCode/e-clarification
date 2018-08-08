@@ -60,7 +60,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         if (entity.isAnswered) throw ErrorException(ErrorType.ALREADY_HAS_ANSWER)
         val enquiryDto = params.data.enquiry
         val enquiry = toObject(Enquiry::class.java, entity.jsonData)
-        if (enquiryDto.id != enquiry.id) throw ErrorException(ErrorType.INVALID_ID)
+        if (params.enquiryId != enquiry.id) throw ErrorException(ErrorType.INVALID_ID)
         enquiry.apply {
             date = params.dateTime
             answer = enquiryDto.answer

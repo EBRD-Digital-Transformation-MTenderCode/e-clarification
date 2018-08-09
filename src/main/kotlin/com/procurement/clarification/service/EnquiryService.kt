@@ -61,6 +61,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         val enquiryDto = params.data.enquiry
         val enquiry = toObject(Enquiry::class.java, entity.jsonData)
         if (params.enquiryId != enquiry.id) throw ErrorException(ErrorType.INVALID_ID)
+        if (enquiryDto.answer.isBlank()) throw ErrorException(ErrorType.INVALID_ANSWER)
         enquiry.apply {
             date = params.dateTime
             answer = enquiryDto.answer
@@ -71,7 +72,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
                 token = entity.token_entity,
                 stage = entity.stage,
                 owner = entity.owner,
-                isAnswered = false,
+                isAnswered = true,
                 enquiry = enquiry
         )
         enquiryDao.save(newEntity)

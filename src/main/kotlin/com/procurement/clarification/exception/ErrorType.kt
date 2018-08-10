@@ -3,7 +3,7 @@ package com.procurement.clarification.exception
 enum class ErrorType constructor(val code: String, val message: String) {
     INVALID_JSON_TYPE("00.00", "Invalid type: "),
     DATA_NOT_FOUND("00.01", "Enquiry not found."),
-    PERIOD_NOT_FOUND("00.02", "Period not period."),
+    PERIOD_NOT_FOUND("00.02", "Period not found."),
     INVALID_OWNER("00.03", "Invalid owner."),
     INVALID_ID("00.04", "Invalid enquiry id."),
     INVALID_PERIOD("01.02", "Invalid period."),

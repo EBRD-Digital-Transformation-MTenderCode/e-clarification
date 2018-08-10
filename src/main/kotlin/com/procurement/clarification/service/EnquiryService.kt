@@ -81,7 +81,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
     }
 
     override fun checkEnquiries(cpId: String, stage: String): ResponseDto {
-        val tenderEndDate = periodService.getPeriod(cpId, stage).tenderEndDate
+        val tenderEndDate = periodService.getPeriodEntity(cpId, stage).tenderEndDate
         return if (tenderEndDate.toLocal().isBefore(localNowUTC())) {
             val isAllAnswered = checkIsAllAnswered(cpId, stage)
             ResponseDto(true, null, CheckEnquiresResponseDto(isAllAnswered, null))
@@ -96,7 +96,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
     }
 
     private fun checkIsAllAnsweredAfterEndPeriod(cpId: String, stage: String, dateTime: LocalDateTime): Boolean {
-        val tenderEndDate = periodService.getPeriod(cpId, stage).tenderEndDate
+        val tenderEndDate = periodService.getPeriodEntity(cpId, stage).tenderEndDate
         return if (dateTime.isAfter(tenderEndDate.toLocal())) {
             checkIsAllAnswered(cpId, stage)
         } else {

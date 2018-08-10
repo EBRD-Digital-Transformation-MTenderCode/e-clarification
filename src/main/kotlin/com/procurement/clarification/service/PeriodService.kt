@@ -44,8 +44,7 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
                 tenderEndDate = params.endDate.toDate()
         )
         periodDao.save(periodEntity)
-        return ResponseDto(true, null,
-                Period(periodEntity.startDate.toLocal(), periodEntity.endDate.toLocal()))
+        return ResponseDto(true, null, Period(periodEntity.startDate.toLocal(), periodEntity.endDate.toLocal()))
     }
 
     override fun getPeriod(cpId: String, stage: String): ResponseDto {

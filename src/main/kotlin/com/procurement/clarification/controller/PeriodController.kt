@@ -22,7 +22,8 @@ class PeriodController(private val periodService: PeriodService) {
                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                    @RequestParam("startDate") startDate: LocalDateTime,
                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                   @RequestParam("endDate") endDate: LocalDateTime): ResponseEntity<ResponseDto> {
+                   @RequestParam("endDate") endDate: LocalDateTime,
+                   @RequestParam("setExtendedPeriod") setExtendedPeriod: Boolean): ResponseEntity<ResponseDto> {
         val params = PeriodParams(
                 cpId = cpId,
                 stage = stage,
@@ -30,7 +31,8 @@ class PeriodController(private val periodService: PeriodService) {
                 country = country,
                 pmd = pmd,
                 startDate = startDate,
-                endDate = endDate)
+                endDate = endDate,
+                setExtendedPeriod = setExtendedPeriod)
         return ResponseEntity(
                 periodService.calculateAndSavePeriod(params),
                 HttpStatus.CREATED)

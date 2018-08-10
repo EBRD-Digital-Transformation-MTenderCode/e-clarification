@@ -29,7 +29,6 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
                         private val rulesService: RulesService) : PeriodService {
 
     override fun calculateAndSavePeriod(params: PeriodParams): ResponseDto {
-
         val offset = if (params.setExtendedPeriod) {
             rulesService.getOffsetExtended(params.country, params.pmd)
         } else {

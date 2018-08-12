@@ -59,7 +59,10 @@ class EnquiryController(private val enquiryService: EnquiryService) {
 
     @GetMapping
     fun checkEnquiries(@RequestParam("identifier") cpId: String,
-                       @RequestParam("stage") stage: String): ResponseEntity<ResponseDto> {
-        return ResponseEntity(enquiryService.checkEnquiries(cpId, stage), HttpStatus.OK)
+                       @RequestParam("stage") stage: String): ResponseEntity<ResponseDto>
+    {
+        return ResponseEntity(
+                enquiryService.checkEnquiries(cpId = cpId, stage = stage),
+                HttpStatus.OK)
     }
 }

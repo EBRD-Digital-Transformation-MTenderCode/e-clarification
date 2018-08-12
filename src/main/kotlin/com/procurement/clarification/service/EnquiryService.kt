@@ -11,7 +11,6 @@ import com.procurement.clarification.model.dto.ocds.Enquiry
 import com.procurement.clarification.model.dto.params.CreateEnquiryParams
 import com.procurement.clarification.model.dto.params.UpdateEnquiryParams
 import com.procurement.clarification.model.entity.EnquiryEntity
-import com.procurement.clarification.utils.localNowUTC
 import com.procurement.clarification.utils.toJson
 import com.procurement.clarification.utils.toLocal
 import com.procurement.clarification.utils.toObject
@@ -81,13 +80,8 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
     }
 
     override fun checkEnquiries(cpId: String, stage: String): ResponseDto {
-        val tenderEndDate = periodService.getPeriodEntity(cpId, stage).tenderEndDate
-        return if (tenderEndDate.toLocal().isBefore(localNowUTC())) {
-            val isAllAnswered = checkIsAllAnswered(cpId, stage)
-            ResponseDto(true, null, CheckEnquiresResponseDto(isAllAnswered, null))
-        } else {
-            ResponseDto(true, null, CheckEnquiresResponseDto(null, tenderEndDate.toLocal()))
-        }
+        val isAllAnswered = checkIsAllAnswered(cpId, stage)
+        return ResponseDto(true, null, CheckEnquiresResponseDto(isAllAnswered))
     }
 
     private fun checkIsAllAnswered(cpId: String, stage: String): Boolean {

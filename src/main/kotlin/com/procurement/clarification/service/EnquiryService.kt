@@ -80,7 +80,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
     }
 
     override fun checkEnquiries(cpId: String, stage: String, dateTime: LocalDateTime): ResponseDto {
-        val tenderPeriodEndDate = periodService.getPeriodEntity(cpId, stage).endDate.toLocal()
+        val tenderPeriodEndDate = periodService.getPeriodEntity(cpId, stage).tenderEndDate.toLocal()
         val isTenderPeriodExpired = (dateTime >= tenderPeriodEndDate)
         val isAllAnswered = checkIsAllAnswered(cpId, stage)
         return ResponseDto(true, null,

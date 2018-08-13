@@ -9,6 +9,8 @@ interface RulesService {
 
     fun getOffset(country: String, method: String): Long
 
+    fun getOffsetExtended(country: String, method: String): Long
+
 }
 
 @Service
@@ -19,7 +21,13 @@ class RulesServiceImpl(private val rulesDao: RulesDao) : RulesService {
                 ?: throw ErrorException(ErrorType.OFFSET_RULES_NOT_FOUND)
     }
 
+    override fun getOffsetExtended(country: String, method: String): Long {
+        return rulesDao.getValue(country, method, PARAMETER_OFFSET_EXTENDED)?.toLongOrNull()
+                ?: throw ErrorException(ErrorType.OFFSET_RULES_NOT_FOUND)
+    }
+
     companion object {
         private const val PARAMETER_OFFSET = "offset"
+        private const val PARAMETER_OFFSET_EXTENDED = "offsetExtended"
     }
 }

@@ -9,5 +9,6 @@ data class PeriodParams(
         val country: String,
         val pmd: String,
         val startDate: LocalDateTime,
-        val endDate: LocalDateTime
+        val endDate: LocalDateTime,
+        val setExtendedPeriod: Boolean
 )

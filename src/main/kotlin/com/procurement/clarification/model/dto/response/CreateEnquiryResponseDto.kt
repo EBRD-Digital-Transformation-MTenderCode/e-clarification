@@ -1,4 +1,4 @@
-package com.procurement.clarification.model.dto
+package com.procurement.clarification.model.dto.response
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.procurement.clarification.model.dto.ocds.Enquiry
@@ -7,6 +7,8 @@ import com.procurement.clarification.model.dto.ocds.Enquiry
 data class CreateEnquiryResponseDto(
 
         val token: String?,
+
+        val ownerCA :String,
 
         val enquiry: Enquiry
 )

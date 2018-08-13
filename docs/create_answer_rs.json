@@ -1,0 +1,69 @@
+{
+  "--allAnswers":true,
+  "enquiry":
+  {
+    "id":"",
+    "date":"2017-01-22T14:55:00Z",
+    "author":
+    {
+      "name":"",
+      "id":"",
+      "identifier":
+      {
+        "scheme": "",
+        "id": "",
+        "legalName": "",
+        "--uri": ""
+      },
+      "--additionalIdentifiers":
+    [{
+      "scheme": "",
+      "id": "",
+      "legalName": "",
+      "uri": ""
+    }],
+      "address": {
+        "streetAddress": "",
+        "--postalCode": "",
+        "addressDetails": {
+          "country": {
+            "scheme": "",
+            "id": "",
+            "description": "",
+            "uri": ""
+          },
+          "region": {
+            "scheme": "",
+            "id": "",
+            "description": "",
+            "uri": ""
+          },
+          "locality": {
+            "scheme": "",
+            "id": "",
+            "description": "",
+            "--uri": ""
+          }
+        }
+      },
+      "details":
+      {
+        "scale": ""
+      },
+      "contactPoint":
+      {
+        "name": "",
+        "email": "",
+        "telephone": "",
+        "--faxNumber": "",
+        "url": ""
+      }
+    },
+    "title":"",
+    "description":"",
+    "dateAnswered":"2017-02-05T09:00:00Z",
+    "answer":"",
+    "--relatedItem":"",
+    "--relatedLot":""
+  }
+}

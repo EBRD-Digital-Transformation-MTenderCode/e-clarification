@@ -30,6 +30,7 @@ INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('M
 CREATE TABLE IF NOT EXISTS  ocds.clarification_period (
     cp_id text,
     stage text,
+    owner text,
     start_date timestamp,
     end_date timestamp,
     tender_end_date timestamp,
@@ -40,7 +41,6 @@ CREATE TABLE IF NOT EXISTS  ocds.clarification_enquiry (
     cp_id text,
     stage text,
     token_entity uuid,
-    owner text,
     json_data text,
     is_answered boolean,
     primary key(cp_id, stage, token_entity)

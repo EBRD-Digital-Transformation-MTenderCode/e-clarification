@@ -1,6 +1,7 @@
-package com.procurement.clarification.model.dto
+package com.procurement.clarification.model.dto.request
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.procurement.clarification.model.dto.request.EnquiryAnswerDto
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 

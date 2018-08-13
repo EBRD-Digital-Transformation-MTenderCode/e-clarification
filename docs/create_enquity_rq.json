@@ -1,0 +1,63 @@
+{
+  "enquiry":
+  {
+    "author":
+    {
+      "name":"",
+      "identifier":
+      {
+        "scheme": "",
+        "id": "",
+        "legalName": "",
+        "--uri": ""
+      },
+      "--additionalIdentifiers":
+    [{
+      "scheme": "",
+      "id": "",
+      "legalName": "",
+      "uri": ""
+    }],
+      "address": {
+        "streetAddress": "",
+        "--postalCode": "",
+        "addressDetails": {
+          "country": {
+            "scheme": "",
+            "id": "",
+            "description": "",
+            "uri": ""
+          },
+          "region": {
+            "scheme": "",
+            "id": "",
+            "description": "",
+            "uri": ""
+          },
+          "locality": {
+            "scheme": "",
+            "id": "",
+            "description": "",
+            "--uri": ""
+          }
+        }
+      },
+      "details":
+      {
+        "scale": ""
+      },
+      "contactPoint":
+      {
+        "name": "",
+        "email": "",
+        "telephone": "",
+        "--faxNumber": "",
+        "url": ""
+      }
+    },
+    "title":"",
+    "description":"",
+    "--relatedItem":"",
+    "--relatedLot":""
+  }
+}

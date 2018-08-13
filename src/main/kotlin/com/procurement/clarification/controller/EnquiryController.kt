@@ -20,7 +20,7 @@ import javax.validation.Valid
 class EnquiryController(private val enquiryService: EnquiryService) {
 
     @PostMapping
-    fun createEnquiry(@RequestParam("identifier") cpId: String,
+    fun createEnquiry(@RequestParam("cpid") cpId: String,
                       @RequestParam("stage") stage: String,
                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                       @RequestParam("date") dateTime: LocalDateTime,
@@ -36,7 +36,7 @@ class EnquiryController(private val enquiryService: EnquiryService) {
     }
 
     @PutMapping
-    fun createAnswer(@RequestParam("identifier") cpId: String,
+    fun createAnswer(@RequestParam("cpid") cpId: String,
                      @RequestParam("stage") stage: String,
                      @RequestParam("token") token: String,
                      @RequestParam("owner") owner: String,
@@ -56,7 +56,7 @@ class EnquiryController(private val enquiryService: EnquiryService) {
     }
 
     @GetMapping
-    fun checkEnquiries(@RequestParam("identifier") cpId: String,
+    fun checkEnquiries(@RequestParam("cpid") cpId: String,
                        @RequestParam("stage") stage: String,
                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                        @RequestParam("date") dateTime: LocalDateTime): ResponseEntity<ResponseDto>

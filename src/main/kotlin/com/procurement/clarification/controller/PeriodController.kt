@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 class PeriodController(private val periodService: PeriodService) {
 
     @PostMapping("/save")
-    fun savePeriod(@RequestParam("identifier") cpId: String,
+    fun savePeriod(@RequestParam("cpid") cpId: String,
                    @RequestParam("country") country: String,
                    @RequestParam("stage") stage: String,
                    @RequestParam("owner") owner: String,

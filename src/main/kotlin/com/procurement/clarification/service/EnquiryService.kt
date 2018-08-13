@@ -42,25 +42,19 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
     override fun createEnquiry(params: CreateEnquiryParams): ResponseDto {
         periodService.checkDateInPeriod(params.dateTime, params.cpId, params.stage)
         val enquiryRequest = params.data.enquiry
-
-        val periodEntity = periodDao.getByCpIdAndStage(params.cpId,params.stage)
-
+        val periodEntity = periodDao.getByCpIdAndStage(params.cpId, params.stage)
         val owner = periodEntity.owner
-
-        val identifier = converterIdentifierCreateToEdintifier(enquiryRequest.author.identifier)
-
-        val author =  converterOrganizationReferenceCreateToOrganizationReference(enquiryRequest.author,identifier)
-
+        val author = converterOrganizationReferenceCreateToOrganizationReference(enquiryRequest.author)
         val enquiry = Enquiry(
-            generationService.generateTimeBasedUUID().toString(),
-            params.dateTime,
-            author,
-            enquiryRequest.title,
-            enquiryRequest.description,
-            null,
-            enquiryRequest.relatedItem,
-            enquiryRequest.relatedLot,
-            null
+                id = generationService.generateTimeBasedUUID().toString(),
+                date = params.dateTime,
+                author = author,
+                title = enquiryRequest.title,
+                description = enquiryRequest.description,
+                answer = null,
+                relatedItem = enquiryRequest.relatedItem,
+                relatedLot = enquiryRequest.relatedLot,
+                dateAnswered = null
         )
 
         val entity = getEntity(
@@ -72,17 +66,18 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         )
         enquiryDao.save(entity)
         return ResponseDto(true, null,
-            CreateEnquiryResponseDto(entity.token_entity.toString(),owner, enquiry))
+                CreateEnquiryResponseDto(entity.token_entity.toString(), owner, enquiry))
     }
 
     override fun createAnswer(params: UpdateEnquiryParams): ResponseDto {
         val entity = enquiryDao.getByCpIdAndStageAndToken(params.cpId, params.stage, UUID.fromString(params.token))
-        val periodEntity = periodDao.getByCpIdAndStage(params.cpId,params.stage)
+        val periodEntity = periodDao.getByCpIdAndStage(params.cpId, params.stage)
         if (periodEntity.owner != params.owner) throw ErrorException(ErrorType.INVALID_OWNER)
         if (entity.isAnswered) throw ErrorException(ErrorType.ALREADY_HAS_ANSWER)
         val enquiryDto = params.data.enquiry
         val enquiry = toObject(Enquiry::class.java, entity.jsonData)
         if (params.enquiryId != enquiry.id) throw ErrorException(ErrorType.INVALID_ID)
+        if (enquiryDto.answer.isBlank()) throw ErrorException(ErrorType.INVALID_ANSWER)
         enquiry.apply {
             date = params.dateTime
             answer = enquiryDto.answer
@@ -110,23 +105,23 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         }
     }
 
-    private fun converterOrganizationReferenceCreateToOrganizationReference(author:OrganizationReferenceCreate, identifier: Identifier): OrganizationReference{
-       return OrganizationReference(
-            author.name,
-            author.identifier.scheme + "-" + author.identifier.id,
-            identifier,
-            author.address,
-            author.additionalIdentifiers,
-            author.contactPoint
+    private fun converterOrganizationReferenceCreateToOrganizationReference(author: OrganizationReferenceCreate): OrganizationReference {
+        return OrganizationReference(
+                name = author.name,
+                id = author.identifier.scheme + "-" + author.identifier.id,
+                identifier = converterIdentifierCreateToIdentifier(author.identifier),
+                address = author.address,
+                additionalIdentifiers = author.additionalIdentifiers,
+                contactPoint = author.contactPoint
         )
     }
 
-    private fun converterIdentifierCreateToEdintifier(identifier: IdentifierCreate):Identifier {
+    private fun converterIdentifierCreateToIdentifier(identifier: IdentifierCreate): Identifier {
         return Identifier(
-            identifier.scheme,
-            identifier.id,
-            identifier.legalName,
-            identifier.uri.orEmpty())
+                scheme = identifier.scheme,
+                id = identifier.id,
+                legalName = identifier.legalName,
+                uri = identifier.uri.orEmpty())
     }
 
     private fun checkIsAllAnswered(cpId: String, stage: String): Boolean {

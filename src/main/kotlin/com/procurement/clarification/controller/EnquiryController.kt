@@ -1,7 +1,7 @@
 package com.procurement.clarification.controller
 
-import com.procurement.clarification.model.dto.CreateEnquiryDto
-import com.procurement.clarification.model.dto.UpdateEnquiryDto
+import com.procurement.clarification.model.dto.request.CreateEnquiryDto
+import com.procurement.clarification.model.dto.request.UpdateEnquiryDto
 import com.procurement.clarification.model.dto.bpe.ResponseDto
 import com.procurement.clarification.model.dto.params.CreateEnquiryParams
 import com.procurement.clarification.model.dto.params.UpdateEnquiryParams
@@ -22,7 +22,6 @@ class EnquiryController(private val enquiryService: EnquiryService) {
     @PostMapping
     fun createEnquiry(@RequestParam("identifier") cpId: String,
                       @RequestParam("stage") stage: String,
-                      @RequestParam("owner") owner: String,
                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                       @RequestParam("date") dateTime: LocalDateTime,
                       @Valid @RequestBody data: CreateEnquiryDto): ResponseEntity<ResponseDto> {
@@ -30,7 +29,6 @@ class EnquiryController(private val enquiryService: EnquiryService) {
                 cpId = cpId,
                 stage = stage,
                 dateTime = dateTime,
-                owner = owner,
                 data = data)
         return ResponseEntity(
                 enquiryService.createEnquiry(params),
@@ -44,6 +42,7 @@ class EnquiryController(private val enquiryService: EnquiryService) {
                      @RequestParam("owner") owner: String,
                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                      @RequestParam("date") dateTime: LocalDateTime,
+                     @RequestParam("enquiryId") enquiryId:String,
                      @Valid @RequestBody data: UpdateEnquiryDto): ResponseEntity<ResponseDto> {
         val params = UpdateEnquiryParams(
                 cpId = cpId,

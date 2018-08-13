@@ -8,6 +8,8 @@ data class PeriodEntity(
 
         val stage: String,
 
+        val owner:String,
+
         val startDate: Date,
 
         val endDate: Date,

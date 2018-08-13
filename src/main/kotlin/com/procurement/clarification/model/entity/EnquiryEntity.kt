@@ -10,8 +10,6 @@ data class EnquiryEntity(
 
     val stage: String,
 
-    val owner: String,
-
     val jsonData: String,
 
     val isAnswered: Boolean

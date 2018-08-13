@@ -27,7 +27,6 @@ class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
                         .value(CP_ID, entity.cpId)
                         .value(TOKEN, entity.token_entity)
                         .value(STAGE, entity.stage)
-                        .value(OWNER, entity.owner)
                         .value(IS_ANSWERED, entity.isAnswered)
                         .value(JSON_DATA, entity.jsonData)
         session.execute(insert)
@@ -47,7 +46,6 @@ class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
                     cpId = row.getString(CP_ID),
                     token_entity = row.getUUID(TOKEN),
                     stage = row.getString(STAGE),
-                    owner = row.getString(OWNER),
                     isAnswered = row.getBool(IS_ANSWERED),
                     jsonData = row.getString(JSON_DATA))
         else throw ErrorException(ErrorType.DATA_NOT_FOUND)
@@ -71,7 +69,6 @@ class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
         private val CP_ID = "cp_id"
         private val TOKEN = "token_entity"
         private val STAGE = "stage"
-        private val OWNER = "owner"
         private val IS_ANSWERED = "is_answered"
         private val JSON_DATA = "json_data"
     }

@@ -32,6 +32,7 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
         val periodEntity = getEntity(
                 cpId = params.cpId,
                 stage = params.stage,
+                owner = params.owner,
                 startDate = params.startDate.toDate(),
                 endDate = enquiryEndDate.toDate(),
                 tenderEndDate = params.endDate.toDate()
@@ -58,12 +59,14 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
 
     private fun getEntity(cpId: String,
                           stage: String,
+                          owner :String,
                           startDate: Date,
                           endDate: Date,
                           tenderEndDate: Date): PeriodEntity {
         return PeriodEntity(
                 cpId = cpId,
                 stage = stage,
+                owner = owner,
                 startDate = startDate,
                 endDate = endDate,
                 tenderEndDate = tenderEndDate

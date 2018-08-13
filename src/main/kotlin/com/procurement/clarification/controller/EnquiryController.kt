@@ -39,10 +39,10 @@ class EnquiryController(private val enquiryService: EnquiryService) {
     fun createAnswer(@RequestParam("cpid") cpId: String,
                      @RequestParam("stage") stage: String,
                      @RequestParam("token") token: String,
+                     @RequestParam("enquiryId") enquiryId: String,
                      @RequestParam("owner") owner: String,
                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                      @RequestParam("date") dateTime: LocalDateTime,
-                     @RequestParam("enquiryId") enquiryId: String,
                      @Valid @RequestBody data: UpdateEnquiryDto): ResponseEntity<ResponseDto> {
         val params = UpdateEnquiryParams(
                 cpId = cpId,

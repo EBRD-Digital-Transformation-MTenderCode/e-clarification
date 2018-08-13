@@ -24,7 +24,7 @@ interface EnquiryService {
 
     fun createAnswer(params: UpdateEnquiryParams): ResponseDto
 
-    fun checkEnquiries(cpId: String, stage: String): ResponseDto
+    fun checkEnquiries(cpId: String, stage: String, dateTime: LocalDateTime): ResponseDto
 }
 
 @Service
@@ -79,9 +79,15 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         return ResponseDto(true, null, UpdateEnquiryResponseDto(allAnswered, enquiry))
     }
 
-    override fun checkEnquiries(cpId: String, stage: String): ResponseDto {
+    override fun checkEnquiries(cpId: String, stage: String, dateTime: LocalDateTime): ResponseDto {
+        val tenderPeriodEndDate = periodService.getPeriodEntity(cpId, stage).endDate.toLocal()
+        val isTenderPeriodExpired = (dateTime >= tenderPeriodEndDate)
         val isAllAnswered = checkIsAllAnswered(cpId, stage)
-        return ResponseDto(true, null, CheckEnquiresResponseDto(isAllAnswered))
+        return ResponseDto(true, null,
+                CheckEnquiresResponseDto(
+                        isTenderPeriodExpired = isTenderPeriodExpired,
+                        tenderPeriodEndDate = tenderPeriodEndDate,
+                        allAnswered = isAllAnswered))
     }
 
     private fun checkIsAllAnswered(cpId: String, stage: String): Boolean {

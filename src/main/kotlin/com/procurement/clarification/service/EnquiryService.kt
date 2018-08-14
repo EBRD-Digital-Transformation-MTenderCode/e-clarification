@@ -113,7 +113,8 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
                 identifier = converterIdentifierCreateToIdentifier(author.identifier),
                 address = author.address,
                 additionalIdentifiers = author.additionalIdentifiers,
-                contactPoint = author.contactPoint
+                contactPoint = author.contactPoint,
+                details = author.details
         )
     }
 

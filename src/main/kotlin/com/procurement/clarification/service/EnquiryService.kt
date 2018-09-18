@@ -4,8 +4,6 @@ import com.procurement.clarification.dao.EnquiryDao
 import com.procurement.clarification.dao.PeriodDao
 import com.procurement.clarification.exception.ErrorException
 import com.procurement.clarification.exception.ErrorType.*
-import com.procurement.clarification.model.dto.CheckEnquiresResponseDto
-import com.procurement.clarification.model.dto.UpdateEnquiryResponseDto
 import com.procurement.clarification.model.dto.bpe.CommandMessage
 import com.procurement.clarification.model.dto.bpe.ResponseDto
 import com.procurement.clarification.model.dto.ocds.Enquiry
@@ -15,7 +13,9 @@ import com.procurement.clarification.model.dto.request.CreateEnquiryRq
 import com.procurement.clarification.model.dto.request.IdentifierCreate
 import com.procurement.clarification.model.dto.request.OrganizationReferenceCreate
 import com.procurement.clarification.model.dto.request.UpdateEnquiryRq
+import com.procurement.clarification.model.dto.response.CheckEnquiresRs
 import com.procurement.clarification.model.dto.response.CreateEnquiryRs
+import com.procurement.clarification.model.dto.response.UpdateEnquiryRs
 import com.procurement.clarification.model.entity.EnquiryEntity
 import com.procurement.clarification.utils.toJson
 import com.procurement.clarification.utils.toLocal
@@ -105,7 +105,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         )
         enquiryDao.save(newEntity)
         val allAnswered = checkIsAllAnsweredAfterEndPeriod(cpId, stage, dateTime)
-        return ResponseDto(data = UpdateEnquiryResponseDto(allAnswered, enquiry))
+        return ResponseDto(data = UpdateEnquiryRs(allAnswered, enquiry))
     }
 
     override fun checkEnquiries(cm: CommandMessage): ResponseDto {
@@ -116,7 +116,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         val tenderPeriodEndDate = periodService.getPeriodEntity(cpId, stage).tenderEndDate.toLocal()
         val isTenderPeriodExpired = (dateTime >= tenderPeriodEndDate)
         val isAllAnswered = checkIsAllAnswered(cpId, stage)
-        return ResponseDto(data = CheckEnquiresResponseDto(
+        return ResponseDto(data = CheckEnquiresRs(
                 isTenderPeriodExpired = isTenderPeriodExpired,
                 tenderPeriodEndDate = tenderPeriodEndDate,
                 allAnswered = isAllAnswered))

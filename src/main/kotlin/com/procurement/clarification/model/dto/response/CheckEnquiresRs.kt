@@ -1,9 +1,9 @@
-package com.procurement.clarification.model.dto
+package com.procurement.clarification.model.dto.response
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime
 
-data class CheckEnquiresResponseDto(
+data class CheckEnquiresRs(
 
         @get:JsonProperty("isTenderPeriodExpired")
         val isTenderPeriodExpired: Boolean?,

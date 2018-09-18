@@ -8,7 +8,7 @@ import com.procurement.clarification.model.dto.ocds.Identifier
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
-data class CreateEnquiryDto @JsonCreator constructor(
+data class CreateEnquiryRq @JsonCreator constructor(
 
         @field:Valid
         @field:NotNull

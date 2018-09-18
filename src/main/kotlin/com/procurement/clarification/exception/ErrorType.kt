@@ -10,5 +10,6 @@ enum class ErrorType constructor(val code: String, val message: String) {
     INVALID_DATE("01.03", "Date does not match the period."),
     INVALID_ANSWER("01.04", "The answer should not be empty."),
     ALREADY_HAS_ANSWER("02.01", "The enquiry already has an answer."),
-    OFFSET_RULES_NOT_FOUND("03.01", "Offset rules not found");
+    OFFSET_RULES_NOT_FOUND("03.01", "Offset rules not found"),
+    CONTEXT("20.01", "Context parameter not found.");
 }

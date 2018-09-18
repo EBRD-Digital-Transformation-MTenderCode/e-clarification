@@ -4,13 +4,13 @@ import java.util.*
 
 data class EnquiryEntity(
 
-    val cpId: String,
+        val cpId: String,
 
-    val token_entity: UUID,
+        val token_entity: UUID,
 
-    val stage: String,
+        val stage: String,
 
-    val jsonData: String,
+        val jsonData: String,
 
-    val isAnswered: Boolean
+        val isAnswered: Boolean
 )

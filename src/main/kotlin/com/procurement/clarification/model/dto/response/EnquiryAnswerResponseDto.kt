@@ -6,8 +6,8 @@ import com.procurement.clarification.model.dto.ocds.Enquiry
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class EnquiryAnswerResponseDto(
 
-    val allAnswers: Boolean,
+        val allAnswers: Boolean,
 
-    val enquiry: Enquiry
+        val enquiry: Enquiry
 )
 

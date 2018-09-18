@@ -1,28 +1,26 @@
 {
-  "token":"",
-  "ownerCA":"",
-  "enquiry":
-  {
-    "id":"",
-    "date":"2017-01-22T14:55:00Z",
-    "author":
-    {
-      "name":"",
-      "id":"",
-      "identifier":
-      {
+  "token": "",
+  "ownerCA": "",
+  "enquiry": {
+    "id": "",
+    "date": "2017-01-22T14:55:00Z",
+    "author": {
+      "name": "",
+      "id": "",
+      "identifier": {
         "scheme": "",
         "id": "",
         "legalName": "",
         "--uri": ""
       },
-      "--additionalIdentifiers":
-    [{
-      "scheme": "",
-      "id": "",
-      "legalName": "",
-      "uri": ""
-    }],
+      "--additionalIdentifiers": [
+        {
+          "scheme": "",
+          "id": "",
+          "legalName": "",
+          "uri": ""
+        }
+      ],
       "address": {
         "streetAddress": "",
         "--postalCode": "",
@@ -47,12 +45,10 @@
           }
         }
       },
-      "details":
-      {
+      "details": {
         "scale": ""
       },
-      "contactPoint":
-      {
+      "contactPoint": {
         "name": "",
         "email": "",
         "telephone": "",
@@ -60,9 +56,9 @@
         "url": ""
       }
     },
-    "title":"",
-    "description":"",
-    "--relatedItem":"",
-    "--relatedLot":""
+    "title": "",
+    "description": "",
+    "--relatedItem": "",
+    "--relatedLot": ""
   }
 }

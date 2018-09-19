@@ -62,7 +62,7 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
                 endDate = endDate.toDate(),
                 tenderEndDate = endDate.toDate())
         periodDao.save(period)
-        return ResponseDto(data = "Period is saved.")
+        return ResponseDto(data = Period(period.startDate.toLocal(), period.endDate.toLocal()))
     }
 
     override fun calculateAndSavePeriod(cm: CommandMessage): ResponseDto {

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service
 
 interface RulesService {
 
+    fun getInterval(country: String, method: String): Long
+
     fun getOffset(country: String, method: String): Long
 
     fun getOffsetExtended(country: String, method: String): Long
@@ -15,6 +17,11 @@ interface RulesService {
 
 @Service
 class RulesServiceImpl(private val rulesDao: RulesDao) : RulesService {
+
+    override fun getInterval(country: String, method: String): Long {
+        return rulesDao.getValue(country, method, PARAMETER_INTERVAL)?.toLongOrNull()
+                ?: throw ErrorException(ErrorType.INTERVAL_RULES_NOT_FOUND)
+    }
 
     override fun getOffset(country: String, method: String): Long {
         return rulesDao.getValue(country, method, PARAMETER_OFFSET)?.toLongOrNull()
@@ -27,6 +34,7 @@ class RulesServiceImpl(private val rulesDao: RulesDao) : RulesService {
     }
 
     companion object {
+        private const val PARAMETER_INTERVAL = "interval"
         private const val PARAMETER_OFFSET = "offset"
         private const val PARAMETER_OFFSET_EXTENDED = "offsetExtended"
     }

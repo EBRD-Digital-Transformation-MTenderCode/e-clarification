@@ -27,7 +27,7 @@ class CommandController(private val enquiryService: EnquiryService,
             CommandType.CREATE_ANSWER -> enquiryService.createAnswer(cm)
             CommandType.CHECK_ENQUIRIES -> enquiryService.checkEnquiries(cm)
             CommandType.GET_PERIOD -> periodService.getPeriod(cm)
-            CommandType.SAVE_PERIOD -> periodService.calculateAndSavePeriod(cm)
+            CommandType.CALCULATE_SAVE_PERIOD -> periodService.calculateAndSavePeriod(cm)
         }
     }
 

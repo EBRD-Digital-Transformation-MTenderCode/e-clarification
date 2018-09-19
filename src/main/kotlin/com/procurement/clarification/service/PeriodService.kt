@@ -6,14 +6,21 @@ import com.procurement.clarification.exception.ErrorType
 import com.procurement.clarification.model.dto.bpe.CommandMessage
 import com.procurement.clarification.model.dto.bpe.ResponseDto
 import com.procurement.clarification.model.dto.ocds.Period
+import com.procurement.clarification.model.dto.request.PeriodRq
 import com.procurement.clarification.model.entity.PeriodEntity
 import com.procurement.clarification.utils.toDate
 import com.procurement.clarification.utils.toLocal
+import com.procurement.clarification.utils.toObject
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 interface PeriodService {
+
+    fun periodValidation(cm: CommandMessage): ResponseDto
+
+    fun savePeriod(cm: CommandMessage): ResponseDto
 
     fun calculateAndSavePeriod(cm: CommandMessage): ResponseDto
 
@@ -27,6 +34,36 @@ interface PeriodService {
 @Service
 class PeriodServiceImpl(private val periodDao: PeriodDao,
                         private val rulesService: RulesService) : PeriodService {
+
+    override fun periodValidation(cm: CommandMessage): ResponseDto {
+        val country = cm.context.country ?: throw ErrorException(ErrorType.CONTEXT)
+        val pmd = cm.context.pmd ?: throw ErrorException(ErrorType.CONTEXT)
+        val enquiryPeriod = toObject(PeriodRq::class.java, cm.data).enquiryPeriod
+        val startDate = enquiryPeriod.startDate ?: throw ErrorException(ErrorType.INVALID_PERIOD)
+        val endDate = enquiryPeriod.endDate ?: throw ErrorException(ErrorType.INVALID_PERIOD)
+
+        if (!checkInterval(country, pmd, startDate, endDate)) throw ErrorException(ErrorType.INVALID_PERIOD)
+        return ResponseDto(data = "Period is valid.")
+    }
+
+    override fun savePeriod(cm: CommandMessage): ResponseDto {
+        val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
+        val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
+        val owner = cm.context.owner ?: throw ErrorException(ErrorType.CONTEXT)
+        val enquiryPeriod = toObject(PeriodRq::class.java, cm.data).enquiryPeriod
+        val startDate = enquiryPeriod.startDate ?: throw ErrorException(ErrorType.INVALID_PERIOD)
+        val endDate = enquiryPeriod.endDate ?: throw ErrorException(ErrorType.INVALID_PERIOD)
+
+        val period = getEntity(
+                cpId = cpId,
+                stage = stage,
+                owner = owner,
+                startDate = startDate.toDate(),
+                endDate = endDate.toDate(),
+                tenderEndDate = endDate.toDate())
+        periodDao.save(period)
+        return ResponseDto(data = "Period is saved.")
+    }
 
     override fun calculateAndSavePeriod(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
@@ -76,6 +113,16 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
 
     override fun getPeriodEntity(cpId: String, stage: String): PeriodEntity {
         return periodDao.getByCpIdAndStage(cpId, stage)
+    }
+
+
+    private fun checkInterval(country: String,
+                              pmd: String,
+                              startDate: LocalDateTime,
+                              endDate: LocalDateTime): Boolean {
+        val interval = rulesService.getInterval(country, pmd)
+        val sec = ChronoUnit.SECONDS.between(startDate, endDate)
+        return sec >= interval
     }
 
     private fun getEntity(cpId: String,

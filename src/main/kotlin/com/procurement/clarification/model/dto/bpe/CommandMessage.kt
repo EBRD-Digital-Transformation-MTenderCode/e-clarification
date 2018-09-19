@@ -17,7 +17,7 @@ data class CommandMessage @JsonCreator constructor(
 )
 
 data class Context @JsonCreator constructor(
-        val operationId: String?,
+        val operationId: String,
         val requestId: String?,
         val cpid: String?,
         val ocid: String?,
@@ -43,7 +43,9 @@ enum class CommandType(private val value: String) {
     CREATE_ANSWER("createAnswer"),
     CHECK_ENQUIRIES("checkEnquiries"),
     GET_PERIOD("getPeriod"),
-    SAVE_PERIOD("savePeriod");
+    SAVE_PERIOD("savePeriod"),
+    VALIDATE_PERIOD("validatePeriod"),
+    CALCULATE_SAVE_PERIOD("calculateSavePeriod");
 
     @JsonValue
     fun value(): String {

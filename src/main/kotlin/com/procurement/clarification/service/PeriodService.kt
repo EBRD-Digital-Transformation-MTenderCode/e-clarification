@@ -60,7 +60,7 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
                 owner = owner,
                 startDate = startDate.toDate(),
                 endDate = endDate.toDate(),
-                tenderEndDate = endDate.toDate())
+                tenderEndDate = null)
         periodDao.save(period)
         return ResponseDto(data = Period(period.startDate.toLocal(), period.endDate.toLocal()))
     }
@@ -131,7 +131,7 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
                           owner: String,
                           startDate: Date,
                           endDate: Date,
-                          tenderEndDate: Date): PeriodEntity {
+                          tenderEndDate: Date?): PeriodEntity {
         return PeriodEntity(
                 cpId = cpId,
                 stage = stage,

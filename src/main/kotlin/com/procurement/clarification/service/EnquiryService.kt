@@ -113,7 +113,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocal() ?: throw ErrorException(CONTEXT)
 
-        val tenderPeriodEndDate = periodService.getPeriodEntity(cpId, stage).tenderEndDate.toLocal()
+        val tenderPeriodEndDate = periodService.getPeriodEntity(cpId, stage).tenderEndDate?.toLocal()
         val isTenderPeriodExpired = (dateTime >= tenderPeriodEndDate)
         val isAllAnswered = checkIsAllAnswered(cpId, stage)
         return ResponseDto(data = CheckEnquiresRs(
@@ -150,7 +150,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
 
     private fun checkIsAllAnsweredAfterEndPeriod(cpId: String, stage: String, dateTime: LocalDateTime): Boolean {
         val tenderEndDate = periodService.getPeriodEntity(cpId, stage).tenderEndDate
-        return if (dateTime.isAfter(tenderEndDate.toLocal())) {
+        return if (dateTime.isAfter(tenderEndDate?.toLocal())) {
             checkIsAllAnswered(cpId, stage)
         } else {
             false

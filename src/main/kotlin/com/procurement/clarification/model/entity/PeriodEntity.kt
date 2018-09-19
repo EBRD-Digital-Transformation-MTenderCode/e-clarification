@@ -14,5 +14,5 @@ data class PeriodEntity(
 
         val endDate: Date,
 
-        val tenderEndDate: Date
+        val tenderEndDate: Date?
 )

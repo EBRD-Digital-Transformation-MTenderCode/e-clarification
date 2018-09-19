@@ -96,6 +96,7 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
     override fun getPeriod(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
+
         val entity = getPeriodEntity(cpId, stage)
         return ResponseDto(data = Period(entity.startDate.toLocal(), entity.endDate.toLocal()))
     }

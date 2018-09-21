@@ -109,8 +109,9 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
         val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
         val country = cm.context.country ?: throw ErrorException(ErrorType.CONTEXT)
         val pmd = cm.context.pmd ?: throw ErrorException(ErrorType.CONTEXT)
-        val startDateRq = cm.context.startDate?.toLocal() ?: throw ErrorException(ErrorType.CONTEXT)
-        val endDateRq = cm.context.endDate?.toLocal() ?: throw ErrorException(ErrorType.CONTEXT)
+
+        val startDateRq: LocalDateTime // from payload
+        val endDateRq: LocalDateTime // from payload
 
         val intervalBefore = rulesService.getIntervalBefore(country, pmd)
         val periodEntity = getPeriodEntity(cpId, stage)
@@ -124,14 +125,14 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
             if (endDateRq == endDateDb) {
                 return getResponse(
                         setExtendedPeriod = false,
-                        isEnquiryPeriodChange = false,
+                        isEnquiryPeriodChanged = false,
                         startDate = startDateDb,
                         endDate = endDateDb)
             }
             if (endDateDb < endDateRq) {
                 return getResponse(
                         setExtendedPeriod = false,
-                        isEnquiryPeriodChange = true,
+                        isEnquiryPeriodChanged = true,
                         startDate = startDateDb,
                         endDate = endDateRq)
             }
@@ -142,7 +143,7 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
                 val newEndDate = startDateRq.plusSeconds(intervalBefore)
                 return getResponse(
                         setExtendedPeriod = true,
-                        isEnquiryPeriodChange = true,
+                        isEnquiryPeriodChanged = true,
                         startDate = startDateDb,
                         endDate = newEndDate)
             }
@@ -151,12 +152,12 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
                 if (endDateRq <= newEndDate) throw ErrorException(ErrorType.INVALID_PERIOD)
                 return getResponse(
                         setExtendedPeriod = true,
-                        isEnquiryPeriodChange = true,
+                        isEnquiryPeriodChanged = true,
                         startDate = startDateDb,
                         endDate = endDateRq)
             }
         }
-        return getResponse(setExtendedPeriod = false, isEnquiryPeriodChange = false, startDate = null, endDate = null)
+        return getResponse(setExtendedPeriod = false, isEnquiryPeriodChanged = false, startDate = null, endDate = null)
     }
 
     override fun checkDateInPeriod(localDateTime: LocalDateTime,
@@ -185,10 +186,10 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
     }
 
     fun getResponse(setExtendedPeriod: Boolean,
-                    isEnquiryPeriodChange: Boolean,
+                    isEnquiryPeriodChanged: Boolean,
                     startDate: LocalDateTime?,
                     endDate: LocalDateTime?): ResponseDto {
-        return ResponseDto(data = CheckPeriodRs(setExtendedPeriod, isEnquiryPeriodChange, Period(startDate, endDate)))
+        return ResponseDto(data = CheckPeriodRs(setExtendedPeriod, isEnquiryPeriodChanged, Period(startDate, endDate)))
     }
 
     private fun getEntity(cpId: String,

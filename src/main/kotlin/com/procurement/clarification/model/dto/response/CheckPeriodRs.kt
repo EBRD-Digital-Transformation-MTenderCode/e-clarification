@@ -10,8 +10,8 @@ data class CheckPeriodRs @JsonCreator constructor(
         @get:JsonProperty("setExtendedPeriod")
         val setExtendedPeriod: Boolean?,
 
-        @get:JsonProperty("isEnquiryPeriodChange")
-        val isEnquiryPeriodChange: Boolean?,
+        @get:JsonProperty("isEnquiryPeriodChanged")
+        val isEnquiryPeriodChanged: Boolean?,
 
-        val enquiryPeriodEndDate: Period
+        val enquiryPeriod: Period
 )

@@ -9,12 +9,14 @@ import com.procurement.clarification.model.dto.bpe.ResponseDto
 import com.procurement.clarification.model.dto.ocds.Enquiry
 import com.procurement.clarification.model.dto.ocds.Identifier
 import com.procurement.clarification.model.dto.ocds.OrganizationReference
+import com.procurement.clarification.model.dto.ocds.Period
 import com.procurement.clarification.model.dto.request.CreateEnquiryRq
 import com.procurement.clarification.model.dto.request.IdentifierCreate
 import com.procurement.clarification.model.dto.request.OrganizationReferenceCreate
 import com.procurement.clarification.model.dto.request.UpdateEnquiryRq
 import com.procurement.clarification.model.dto.response.CheckEnquiresRs
 import com.procurement.clarification.model.dto.response.CreateEnquiryRs
+import com.procurement.clarification.model.dto.response.Tender
 import com.procurement.clarification.model.dto.response.UpdateEnquiryRs
 import com.procurement.clarification.model.entity.EnquiryEntity
 import com.procurement.clarification.utils.toJson
@@ -112,12 +114,14 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocal() ?: throw ErrorException(CONTEXT)
-        val enquiryPeriodEndDate = periodService.getPeriodEntity(cpId, stage).endDate.toLocal()
-        val isEnquiryPeriodExpired = (dateTime >= enquiryPeriodEndDate)
+        val enquiryPeriod = periodService.getPeriodEntity(cpId, stage)
+        val startDate = enquiryPeriod.startDate.toLocal()
+        val endDate = enquiryPeriod.endDate.toLocal()
+        val isEnquiryPeriodExpired = (dateTime >= endDate)
         val isAllAnswered = checkIsAllAnswered(cpId, stage)
         return ResponseDto(data = CheckEnquiresRs(
                 isEnquiryPeriodExpired = isEnquiryPeriodExpired,
-                enquiryPeriodEndDate = enquiryPeriodEndDate,
+                tender = Tender(Period(startDate, endDate)),
                 allAnswered = isAllAnswered))
     }
 

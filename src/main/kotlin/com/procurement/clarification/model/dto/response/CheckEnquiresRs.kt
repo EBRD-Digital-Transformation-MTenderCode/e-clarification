@@ -5,10 +5,10 @@ import java.time.LocalDateTime
 
 data class CheckEnquiresRs(
 
-        @get:JsonProperty("isTenderPeriodExpired")
-        val isTenderPeriodExpired: Boolean?,
+        @get:JsonProperty("isEnquiryPeriodExpired")
+        val isEnquiryPeriodExpired: Boolean?,
 
-        val tenderPeriodEndDate: LocalDateTime?,
+        val enquiryPeriodEndDate: LocalDateTime?,
 
         @get: JsonProperty("allAnswered")
         val allAnswered: Boolean

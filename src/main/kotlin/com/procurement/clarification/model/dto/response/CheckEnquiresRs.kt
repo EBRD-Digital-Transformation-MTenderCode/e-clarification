@@ -1,7 +1,7 @@
 package com.procurement.clarification.model.dto.response
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.procurement.clarification.model.dto.ocds.Period
+import com.procurement.clarification.model.dto.ocds.Tender
 
 data class CheckEnquiresRs(
 
@@ -12,10 +12,4 @@ data class CheckEnquiresRs(
 
         @get: JsonProperty("allAnswered")
         val allAnswered: Boolean
-)
-
-data class Tender(
-
-        val enquiryPeriod: Period
-
 )

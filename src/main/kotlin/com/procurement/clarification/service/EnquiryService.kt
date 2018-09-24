@@ -30,7 +30,7 @@ interface EnquiryService {
 
     fun createEnquiry(cm: CommandMessage): ResponseDto
 
-    fun createAnswer(cm: CommandMessage): ResponseDto
+    fun addAnswer(cm: CommandMessage): ResponseDto
 
     fun checkEnquiries(cm: CommandMessage): ResponseDto
 }
@@ -75,7 +75,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         return ResponseDto(data = CreateEnquiryRs(entity.token_entity.toString(), owner, enquiry))
     }
 
-    override fun createAnswer(cm: CommandMessage): ResponseDto {
+    override fun addAnswer(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
@@ -106,8 +106,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
                 enquiry = enquiry
         )
         enquiryDao.save(newEntity)
-        val allAnswered = checkIsAllAnsweredAfterEndPeriod(cpId, stage, dateTime)
-        return ResponseDto(data = UpdateEnquiryRs(allAnswered, enquiry))
+        return ResponseDto(data = UpdateEnquiryRs(enquiry))
     }
 
     override fun checkEnquiries(cm: CommandMessage): ResponseDto {

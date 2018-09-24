@@ -8,8 +8,5 @@ import com.procurement.clarification.model.dto.ocds.Enquiry
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class UpdateEnquiryRs(
 
-        @get:JsonProperty("allAnswered")
-        val allAnswered: Boolean?,
-
         val enquiry: Enquiry
 )

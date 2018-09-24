@@ -109,9 +109,9 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
         val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
         val country = cm.context.country ?: throw ErrorException(ErrorType.CONTEXT)
         val pmd = cm.context.pmd ?: throw ErrorException(ErrorType.CONTEXT)
-
-        val startDateRq: LocalDateTime // from payload
-        val endDateRq: LocalDateTime // from payload
+        val dto = toObject(PeriodRq::class.java, cm.data)
+        val startDateRq = dto.enquiryPeriod.startDate ?: throw ErrorException(ErrorType.INVALID_PERIOD) // from payload
+        val endDateRq = dto.enquiryPeriod.endDate ?: throw ErrorException(ErrorType.INVALID_PERIOD)// from payload
 
         val intervalBefore = rulesService.getIntervalBefore(country, pmd)
         val periodEntity = getPeriodEntity(cpId, stage)

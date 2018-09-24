@@ -13,6 +13,8 @@ interface RulesService {
 
     fun getOffsetExtended(country: String, method: String): Long
 
+    fun getIntervalBefore(country: String, pmd: String): Long
+
 }
 
 @Service
@@ -31,6 +33,10 @@ class RulesServiceImpl(private val rulesDao: RulesDao) : RulesService {
     override fun getOffsetExtended(country: String, method: String): Long {
         return rulesDao.getValue(country, method, PARAMETER_OFFSET_EXTENDED)?.toLongOrNull()
                 ?: throw ErrorException(ErrorType.OFFSET_RULES_NOT_FOUND)
+    }
+
+    override fun getIntervalBefore(country: String, pmd: String): Long {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     companion object {

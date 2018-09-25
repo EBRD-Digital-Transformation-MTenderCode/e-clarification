@@ -118,9 +118,9 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         val endDate = periodEntity.endDate.toLocal()
         val isEnquiryPeriodExpired = (dateTime >= endDate)
         val isAllAnswered = checkIsAllAnswered(cpId, stage)
-        val setSuspended = isEnquiryPeriodExpired && isAllAnswered
+        val setUnsuspended = isEnquiryPeriodExpired && isAllAnswered
 
-        return ResponseDto(data = AddAnswerRs(setSuspended, enquiry))
+        return ResponseDto(data = AddAnswerRs(setUnsuspended, enquiry))
     }
 
     override fun removeAnswer(cm: CommandMessage): ResponseDto {

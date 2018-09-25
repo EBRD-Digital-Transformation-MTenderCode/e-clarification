@@ -12,6 +12,8 @@ interface EnquiryDao {
 
     fun save(entity: EnquiryEntity)
 
+    fun findAllByCpIdAndStage(cpId: String, stage: String): List<EnquiryEntity>
+
     fun getByCpIdAndStageAndToken(cpId: String, stage: String, token: UUID): EnquiryEntity
 
     fun getCountOfUnanswered(cpId: String, stage: String): Long
@@ -25,11 +27,29 @@ class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
         val insert =
                 insertInto(CLARIFICATION_TABLE)
                         .value(CP_ID, entity.cpId)
-                        .value(TOKEN, entity.token_entity)
+                        .value(TOKEN, entity.token)
                         .value(STAGE, entity.stage)
                         .value(IS_ANSWERED, entity.isAnswered)
                         .value(JSON_DATA, entity.jsonData)
         session.execute(insert)
+    }
+
+    override fun findAllByCpIdAndStage(cpId: String, stage: String): List<EnquiryEntity> {
+        val query = select().all()
+                .from(CLARIFICATION_TABLE)
+                .where(eq(CP_ID, cpId))
+                .and(eq(STAGE, stage))
+        val resultSet = session.execute(query)
+        val entities = ArrayList<EnquiryEntity>()
+        resultSet.forEach { row ->
+            entities.add(EnquiryEntity(
+                    cpId = row.getString(CP_ID),
+                    token = row.getUUID(TOKEN),
+                    stage = row.getString(STAGE),
+                    isAnswered = row.getBool(IS_ANSWERED),
+                    jsonData = row.getString(JSON_DATA)))
+        }
+        return entities
     }
 
     override fun getByCpIdAndStageAndToken(cpId: String, stage: String, token: UUID): EnquiryEntity {
@@ -44,7 +64,7 @@ class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
         return if (row != null)
             EnquiryEntity(
                     cpId = row.getString(CP_ID),
-                    token_entity = row.getUUID(TOKEN),
+                    token = row.getUUID(TOKEN),
                     stage = row.getString(STAGE),
                     isAnswered = row.getBool(IS_ANSWERED),
                     jsonData = row.getString(JSON_DATA))
@@ -65,11 +85,11 @@ class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
     }
 
     companion object {
-        private val CLARIFICATION_TABLE = "clarification_enquiry"
-        private val CP_ID = "cp_id"
-        private val TOKEN = "token_entity"
-        private val STAGE = "stage"
-        private val IS_ANSWERED = "is_answered"
-        private val JSON_DATA = "json_data"
+        private const val CLARIFICATION_TABLE = "clarification_enquiry"
+        private const val CP_ID = "cp_id"
+        private const val TOKEN = "token"
+        private const val STAGE = "stage"
+        private const val IS_ANSWERED = "is_answered"
+        private const val JSON_DATA = "json_data"
     }
 }

@@ -12,6 +12,7 @@ import com.procurement.clarification.model.dto.request.CreateEnquiryRq
 import com.procurement.clarification.model.dto.request.IdentifierCreate
 import com.procurement.clarification.model.dto.request.OrganizationReferenceCreate
 import com.procurement.clarification.model.dto.response.AddAnswerRs
+import com.procurement.clarification.model.dto.response.CheckAnswerRs
 import com.procurement.clarification.model.dto.response.CheckEnquiresRs
 import com.procurement.clarification.model.dto.response.CreateEnquiryRs
 import com.procurement.clarification.model.entity.EnquiryEntity
@@ -27,7 +28,7 @@ interface EnquiryService {
 
     fun addAnswer(cm: CommandMessage): ResponseDto
 
-    fun removeAnswer(cm: CommandMessage): ResponseDto
+    fun checkAnswer(cm: CommandMessage): ResponseDto
 
     fun checkEnquiries(cm: CommandMessage): ResponseDto
 }
@@ -69,7 +70,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
                 enquiry = enquiry
         )
         enquiryDao.save(entity)
-        return ResponseDto(data = CreateEnquiryRs(entity.token_entity.toString(), owner, enquiry))
+        return ResponseDto(data = CreateEnquiryRs(entity.token.toString(), owner, enquiry))
     }
 
     override fun checkEnquiries(cm: CommandMessage): ResponseDto {
@@ -120,28 +121,22 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         val isAllAnswered = checkIsAllAnswered(cpId, stage)
         val setUnsuspended = isEnquiryPeriodExpired && isAllAnswered
 
-        return ResponseDto(data = AddAnswerRs(setUnsuspended, enquiry))
+        return ResponseDto(data = AddAnswerRs(enquiry))
     }
 
-    override fun removeAnswer(cm: CommandMessage): ResponseDto {
+    override fun checkAnswer(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocal() ?: throw ErrorException(CONTEXT)
 
-        val entity = enquiryDao.getByCpIdAndStageAndToken(cpId, stage, UUID.fromString(token))
-        var enquiry = toObject(Enquiry::class.java, entity.jsonData)
-        enquiry.apply {
-            date = dateTime
-            answer = null
-            dateAnswered = null
-        }
-        entity.apply {
-            isAnswered = false
-            jsonData = toJson(enquiry)
-        }
-        enquiryDao.save(entity)
-        throw ErrorException(IS_NOT_SUSPENDED)
+        val entities = enquiryDao.findAllByCpIdAndStage(cpId, stage)
+        val isAllAnswered = !entities.any{(it.token != UUID.fromString(token) && !it.isAnswered)}
+        val periodEntity = periodDao.getByCpIdAndStage(cpId, stage)
+        val endDate = periodEntity.endDate.toLocal()
+        val isEnquiryPeriodExpired = (dateTime >= endDate)
+        val setUnsuspended = isEnquiryPeriodExpired && isAllAnswered
+        return ResponseDto(data = CheckAnswerRs(setUnsuspended))
     }
 
     private fun converterOrganizationReferenceCreateToOrganizationReference(author: OrganizationReferenceCreate): OrganizationReference {
@@ -176,7 +171,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
                           enquiry: Enquiry): EnquiryEntity {
         return EnquiryEntity(
                 cpId = cpId,
-                token_entity = token,
+                token = token,
                 stage = stage,
                 jsonData = toJson(enquiry),
                 isAnswered = isAnswered

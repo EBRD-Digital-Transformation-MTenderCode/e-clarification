@@ -141,7 +141,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
             jsonData = toJson(enquiry)
         }
         enquiryDao.save(entity)
-        throw ErrorException(INVALID_ANSWER)
+        throw ErrorException(IS_NOT_SUSPENDED)
     }
 
     private fun converterOrganizationReferenceCreateToOrganizationReference(author: OrganizationReferenceCreate): OrganizationReference {

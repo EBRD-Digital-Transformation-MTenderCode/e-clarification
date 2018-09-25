@@ -6,10 +6,11 @@ import com.procurement.clarification.model.dto.ocds.Tender
 data class CheckEnquiresRs(
 
         @get:JsonProperty("isEnquiryPeriodExpired")
-        val isEnquiryPeriodExpired: Boolean?,
+        val isEnquiryPeriodExpired: Boolean,
 
-        val tender: Tender?,
+        @get:JsonProperty("allAnswered")
+        val allAnswered: Boolean,
 
-        @get: JsonProperty("allAnswered")
-        val allAnswered: Boolean
+        val tender: Tender?
+
 )

@@ -7,10 +7,10 @@ import com.procurement.clarification.model.dto.ocds.Tender
 data class CheckPeriodRs @JsonCreator constructor(
 
         @get:JsonProperty("setExtendedPeriod")
-        val setExtendedPeriod: Boolean?,
+        val setExtendedPeriod: Boolean,
 
         @get:JsonProperty("isEnquiryPeriodChanged")
-        val isEnquiryPeriodChanged: Boolean?,
+        val isEnquiryPeriodChanged: Boolean,
 
         val tender: Tender?
 )

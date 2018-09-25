@@ -26,6 +26,8 @@ interface PeriodService {
 
     fun calculateAndSavePeriod(cm: CommandMessage): ResponseDto
 
+    fun saveNewPeriod(cm: CommandMessage): ResponseDto
+
     fun getPeriod(cm: CommandMessage): ResponseDto
 
     fun checkPeriod(cm: CommandMessage): ResponseDto
@@ -67,6 +69,27 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
                 tenderEndDate = null)
         periodDao.save(period)
         return ResponseDto(data = Period(period.startDate.toLocal(), period.endDate.toLocal()))
+    }
+
+    override fun saveNewPeriod(cm: CommandMessage): ResponseDto {
+        val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
+        val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
+        val owner = cm.context.owner ?: throw ErrorException(ErrorType.CONTEXT)
+        val country = cm.context.country ?: throw ErrorException(ErrorType.CONTEXT)
+        val pmd = cm.context.pmd ?: throw ErrorException(ErrorType.CONTEXT)
+        val startDate =  cm.context.startDate?.toLocal() ?: throw ErrorException(ErrorType.INVALID_PERIOD)
+
+        val offset = rulesService.getOffset(country, pmd)
+        val endDate = startDate.plusSeconds(offset)
+        val period = getEntity(
+                cpId = cpId,
+                stage = stage,
+                owner = owner,
+                startDate = startDate.toDate(),
+                endDate = endDate.toDate(),
+                tenderEndDate = null)
+        periodDao.save(period)
+        return ResponseDto(data = Tender(Period(period.startDate.toLocal(), period.endDate.toLocal())))
     }
 
     override fun calculateAndSavePeriod(cm: CommandMessage): ResponseDto {

@@ -27,9 +27,11 @@ class CommandServiceImpl(private val historyDao: HistoryDao,
         val response = when (cm.command) {
             CommandType.CREATE_ENQUIRY -> enquiryService.createEnquiry(cm)
             CommandType.ADD_ANSWER -> enquiryService.addAnswer(cm)
+            CommandType.REMOVE_ANSWER -> enquiryService.removeAnswer(cm)
             CommandType.CHECK_ENQUIRIES -> enquiryService.checkEnquiries(cm)
             CommandType.CHECK_PERIOD -> periodService.checkPeriod(cm)
             CommandType.SAVE_PERIOD -> periodService.savePeriod(cm)
+            CommandType.SAVE_NEW_PERIOD -> periodService.saveNewPeriod(cm)
             CommandType.VALIDATE_PERIOD -> periodService.periodValidation(cm)
             CommandType.CALCULATE_SAVE_PERIOD -> periodService.calculateAndSavePeriod(cm)
             CommandType.GET_PERIOD -> periodService.getPeriod(cm)

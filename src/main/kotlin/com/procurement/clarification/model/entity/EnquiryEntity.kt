@@ -10,7 +10,7 @@ data class EnquiryEntity(
 
         val stage: String,
 
-        val jsonData: String,
+        var jsonData: String,
 
-        val isAnswered: Boolean
+        var isAnswered: Boolean
 )

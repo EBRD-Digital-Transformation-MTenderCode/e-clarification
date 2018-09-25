@@ -6,24 +6,19 @@ import com.procurement.clarification.exception.ErrorException
 import com.procurement.clarification.exception.ErrorType.*
 import com.procurement.clarification.model.dto.bpe.CommandMessage
 import com.procurement.clarification.model.dto.bpe.ResponseDto
-import com.procurement.clarification.model.dto.ocds.Enquiry
-import com.procurement.clarification.model.dto.ocds.Identifier
-import com.procurement.clarification.model.dto.ocds.OrganizationReference
-import com.procurement.clarification.model.dto.ocds.Period
+import com.procurement.clarification.model.dto.ocds.*
+import com.procurement.clarification.model.dto.request.AddAnswerRq
 import com.procurement.clarification.model.dto.request.CreateEnquiryRq
 import com.procurement.clarification.model.dto.request.IdentifierCreate
 import com.procurement.clarification.model.dto.request.OrganizationReferenceCreate
-import com.procurement.clarification.model.dto.request.UpdateEnquiryRq
+import com.procurement.clarification.model.dto.response.AddAnswerRs
 import com.procurement.clarification.model.dto.response.CheckEnquiresRs
 import com.procurement.clarification.model.dto.response.CreateEnquiryRs
-import com.procurement.clarification.model.dto.response.Tender
-import com.procurement.clarification.model.dto.response.UpdateEnquiryRs
 import com.procurement.clarification.model.entity.EnquiryEntity
 import com.procurement.clarification.utils.toJson
 import com.procurement.clarification.utils.toLocal
 import com.procurement.clarification.utils.toObject
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 import java.util.*
 
 interface EnquiryService {
@@ -31,6 +26,8 @@ interface EnquiryService {
     fun createEnquiry(cm: CommandMessage): ResponseDto
 
     fun addAnswer(cm: CommandMessage): ResponseDto
+
+    fun removeAnswer(cm: CommandMessage): ResponseDto
 
     fun checkEnquiries(cm: CommandMessage): ResponseDto
 }
@@ -75,40 +72,6 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         return ResponseDto(data = CreateEnquiryRs(entity.token_entity.toString(), owner, enquiry))
     }
 
-    override fun addAnswer(cm: CommandMessage): ResponseDto {
-        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
-        val token = cm.context.token ?: throw ErrorException(CONTEXT)
-        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
-        val enquiryId = cm.context.id ?: throw ErrorException(CONTEXT)
-        val dateTime = cm.context.startDate?.toLocal() ?: throw ErrorException(CONTEXT)
-        val dto = toObject(UpdateEnquiryRq::class.java, cm.data)
-
-
-        val entity = enquiryDao.getByCpIdAndStageAndToken(cpId, stage, UUID.fromString(token))
-        val periodEntity = periodDao.getByCpIdAndStage(cpId, stage)
-        if (periodEntity.owner != owner) throw ErrorException(INVALID_OWNER)
-        if (entity.isAnswered) throw ErrorException(ALREADY_HAS_ANSWER)
-        val enquiryDto = dto.enquiry
-        val enquiry = toObject(Enquiry::class.java, entity.jsonData)
-        if (enquiryId != enquiry.id) throw ErrorException(INVALID_ID)
-        if (enquiryDto.answer.isBlank()) throw ErrorException(INVALID_ANSWER)
-        enquiry.apply {
-            date = dateTime
-            answer = enquiryDto.answer
-            dateAnswered = dateTime
-        }
-        val newEntity = getEntity(
-                cpId = entity.cpId,
-                token = entity.token_entity,
-                stage = entity.stage,
-                isAnswered = true,
-                enquiry = enquiry
-        )
-        enquiryDao.save(newEntity)
-        return ResponseDto(data = UpdateEnquiryRs(enquiry))
-    }
-
     override fun checkEnquiries(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
@@ -124,6 +87,62 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
                 allAnswered = isAllAnswered))
     }
 
+    override fun addAnswer(cm: CommandMessage): ResponseDto {
+        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
+        val token = cm.context.token ?: throw ErrorException(CONTEXT)
+        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
+        val enquiryId = cm.context.id ?: throw ErrorException(CONTEXT)
+        val dateTime = cm.context.startDate?.toLocal() ?: throw ErrorException(CONTEXT)
+        val dto = toObject(AddAnswerRq::class.java, cm.data)
+
+        val entity = enquiryDao.getByCpIdAndStageAndToken(cpId, stage, UUID.fromString(token))
+        val periodEntity = periodDao.getByCpIdAndStage(cpId, stage)
+        if (periodEntity.owner != owner) throw ErrorException(INVALID_OWNER)
+        if (entity.isAnswered) throw ErrorException(ALREADY_HAS_ANSWER)
+        val enquiryDto = dto.enquiry
+        val enquiry = toObject(Enquiry::class.java, entity.jsonData)
+        if (enquiryId != enquiry.id) throw ErrorException(INVALID_ID)
+        if (enquiryDto.answer.isBlank()) throw ErrorException(INVALID_ANSWER)
+        enquiry.apply {
+            date = dateTime
+            answer = enquiryDto.answer
+            dateAnswered = dateTime
+        }
+        entity.apply {
+            isAnswered = true
+            jsonData = toJson(enquiry)
+        }
+        enquiryDao.save(entity)
+
+        val endDate = periodEntity.endDate.toLocal()
+        val isEnquiryPeriodExpired = (dateTime >= endDate)
+        val isAllAnswered = checkIsAllAnswered(cpId, stage)
+        val setSuspended = isEnquiryPeriodExpired && isAllAnswered
+
+        return ResponseDto(data = AddAnswerRs(setSuspended, enquiry))
+    }
+
+    override fun removeAnswer(cm: CommandMessage): ResponseDto {
+        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
+        val token = cm.context.token ?: throw ErrorException(CONTEXT)
+        val dateTime = cm.context.startDate?.toLocal() ?: throw ErrorException(CONTEXT)
+
+        val entity = enquiryDao.getByCpIdAndStageAndToken(cpId, stage, UUID.fromString(token))
+        var enquiry = toObject(Enquiry::class.java, entity.jsonData)
+        enquiry.apply {
+            date = dateTime
+            answer = null
+            dateAnswered = null
+        }
+        entity.apply {
+            isAnswered = false
+            jsonData = toJson(enquiry)
+        }
+        enquiryDao.save(entity)
+        throw ErrorException(INVALID_ANSWER)
+    }
 
     private fun converterOrganizationReferenceCreateToOrganizationReference(author: OrganizationReferenceCreate): OrganizationReference {
         return OrganizationReference(
@@ -148,15 +167,6 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
     private fun checkIsAllAnswered(cpId: String, stage: String): Boolean {
         val isAllAnswered = enquiryDao.getCountOfUnanswered(cpId, stage)
         return isAllAnswered == 0L
-    }
-
-    private fun checkIsAllAnsweredAfterEndPeriod(cpId: String, stage: String, dateTime: LocalDateTime): Boolean {
-        val tenderEndDate = periodService.getPeriodEntity(cpId, stage).tenderEndDate
-        return if (dateTime.isAfter(tenderEndDate?.toLocal())) {
-            checkIsAllAnswered(cpId, stage)
-        } else {
-            false
-        }
     }
 
     private fun getEntity(cpId: String,

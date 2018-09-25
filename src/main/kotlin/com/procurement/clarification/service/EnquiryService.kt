@@ -116,11 +116,6 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         }
         enquiryDao.save(entity)
 
-        val endDate = periodEntity.endDate.toLocal()
-        val isEnquiryPeriodExpired = (dateTime >= endDate)
-        val isAllAnswered = checkIsAllAnswered(cpId, stage)
-        val setUnsuspended = isEnquiryPeriodExpired && isAllAnswered
-
         return ResponseDto(data = AddAnswerRs(enquiry))
     }
 

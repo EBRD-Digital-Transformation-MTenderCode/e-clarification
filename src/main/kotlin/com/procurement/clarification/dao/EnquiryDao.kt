@@ -87,7 +87,7 @@ class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
     companion object {
         private const val CLARIFICATION_TABLE = "clarification_enquiry"
         private const val CP_ID = "cp_id"
-        private const val TOKEN = "token"
+        private const val TOKEN = "token_entity"
         private const val STAGE = "stage"
         private const val IS_ANSWERED = "is_answered"
         private const val JSON_DATA = "json_data"

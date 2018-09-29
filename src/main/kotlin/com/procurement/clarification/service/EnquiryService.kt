@@ -100,7 +100,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         val entity = enquiryDao.getByCpIdAndStageAndToken(cpId, stage, UUID.fromString(token))
         val periodEntity = periodDao.getByCpIdAndStage(cpId, stage)
         if (periodEntity.owner != owner) throw ErrorException(INVALID_OWNER)
-//        if (entity.isAnswered) throw ErrorException(ALREADY_HAS_ANSWER)
+        if (entity.isAnswered) throw ErrorException(ALREADY_HAS_ANSWER)
         val enquiryDto = dto.enquiry
         val enquiry = toObject(Enquiry::class.java, entity.jsonData)
         if (enquiryId != enquiry.id) throw ErrorException(INVALID_ID)

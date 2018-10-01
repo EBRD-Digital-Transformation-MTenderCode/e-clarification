@@ -124,6 +124,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocal() ?: throw ErrorException(CONTEXT)
+        toObject(AddAnswerRq::class.java, cm.data)
 
         val entities = enquiryDao.findAllByCpIdAndStage(cpId, stage)
         val isAllAnswered = !entities.any{(it.token != UUID.fromString(token) && !it.isAnswered)}

@@ -39,7 +39,7 @@ data class OrganizationReferenceCreate @JsonCreator constructor(
 
         @field:Valid
         @field:NotNull
-        val identifier: IdentifierCreate,
+        val identifier: Identifier,
 
         @field:Valid
         @field:NotNull
@@ -55,20 +55,6 @@ data class OrganizationReferenceCreate @JsonCreator constructor(
         @field:Valid
         @field:NotNull
         var details: Details
-)
-
-data class IdentifierCreate @JsonCreator constructor(
-
-        @field:NotNull
-        val scheme: String,
-
-        @field:NotNull
-        val id: String,
-
-        @field:NotNull
-        val legalName: String,
-
-        val uri: String?
 )
 
 

@@ -9,7 +9,6 @@ import com.procurement.clarification.model.dto.bpe.ResponseDto
 import com.procurement.clarification.model.dto.ocds.*
 import com.procurement.clarification.model.dto.request.AddAnswerRq
 import com.procurement.clarification.model.dto.request.CreateEnquiryRq
-import com.procurement.clarification.model.dto.request.IdentifierCreate
 import com.procurement.clarification.model.dto.request.OrganizationReferenceCreate
 import com.procurement.clarification.model.dto.response.AddAnswerRs
 import com.procurement.clarification.model.dto.response.CheckAnswerRs
@@ -139,20 +138,12 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         return OrganizationReference(
                 name = author.name,
                 id = author.identifier.scheme + "-" + author.identifier.id,
-                identifier = converterIdentifierCreateToIdentifier(author.identifier),
+                identifier = author.identifier,
                 address = author.address,
                 additionalIdentifiers = author.additionalIdentifiers,
                 contactPoint = author.contactPoint,
                 details = author.details
         )
-    }
-
-    private fun converterIdentifierCreateToIdentifier(identifier: IdentifierCreate): Identifier {
-        return Identifier(
-                scheme = identifier.scheme,
-                id = identifier.id,
-                legalName = identifier.legalName,
-                uri = identifier.uri.orEmpty())
     }
 
     private fun checkIsAllAnswered(cpId: String, stage: String): Boolean {

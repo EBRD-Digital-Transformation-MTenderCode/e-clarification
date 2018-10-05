@@ -6,7 +6,6 @@ import com.procurement.clarification.exception.ErrorType
 import com.procurement.clarification.model.dto.bpe.CommandMessage
 import com.procurement.clarification.model.dto.bpe.ResponseDto
 import com.procurement.clarification.model.dto.ocds.Period
-import com.procurement.clarification.model.dto.ocds.Tender
 import com.procurement.clarification.model.dto.request.PeriodRq
 import com.procurement.clarification.model.dto.response.CheckPeriodRs
 import com.procurement.clarification.model.entity.PeriodEntity

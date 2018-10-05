@@ -127,7 +127,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         toObject(AddAnswerRq::class.java, cm.data)
 
         val entities = enquiryDao.findAllByCpIdAndStage(cpId, stage)
-        val isAllAnswered = !entities.any{(it.token != UUID.fromString(token) && !it.isAnswered)}
+        val isAllAnswered = !entities.any { (it.token != UUID.fromString(token) && !it.isAnswered) }
         val periodEntity = periodDao.getByCpIdAndStage(cpId, stage)
         val endDate = periodEntity.endDate.toLocal()
         val isEnquiryPeriodExpired = (dateTime >= endDate)

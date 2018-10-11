@@ -8,22 +8,10 @@ import com.procurement.clarification.model.entity.EnquiryEntity
 import org.springframework.stereotype.Service
 import java.util.*
 
-interface EnquiryDao {
-
-    fun save(entity: EnquiryEntity)
-
-    fun findAllByCpIdAndStage(cpId: String, stage: String): List<EnquiryEntity>
-
-    fun getByCpIdAndStageAndToken(cpId: String, stage: String, token: UUID): EnquiryEntity
-
-    fun getCountOfUnanswered(cpId: String, stage: String): Long
-
-}
-
 @Service
-class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
+class EnquiryDao(private val session: Session) {
 
-    override fun save(entity: EnquiryEntity) {
+    fun save(entity: EnquiryEntity) {
         val insert =
                 insertInto(CLARIFICATION_TABLE)
                         .value(CP_ID, entity.cpId)
@@ -34,7 +22,7 @@ class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
         session.execute(insert)
     }
 
-    override fun findAllByCpIdAndStage(cpId: String, stage: String): List<EnquiryEntity> {
+    fun findAllByCpIdAndStage(cpId: String, stage: String): List<EnquiryEntity> {
         val query = select().all()
                 .from(CLARIFICATION_TABLE)
                 .where(eq(CP_ID, cpId))
@@ -52,7 +40,7 @@ class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
         return entities
     }
 
-    override fun getByCpIdAndStageAndToken(cpId: String, stage: String, token: UUID): EnquiryEntity {
+    fun getByCpIdAndStageAndToken(cpId: String, stage: String, token: UUID): EnquiryEntity {
         val query = select()
                 .all()
                 .from(CLARIFICATION_TABLE)
@@ -71,7 +59,7 @@ class EnquiryDaoImpl(private val session: Session) : EnquiryDao {
         else throw ErrorException(ErrorType.DATA_NOT_FOUND)
     }
 
-    override fun getCountOfUnanswered(cpId: String, stage: String): Long {
+    fun getCountOfUnanswered(cpId: String, stage: String): Long {
         val query = select()
                 .countAll()
                 .from(CLARIFICATION_TABLE)

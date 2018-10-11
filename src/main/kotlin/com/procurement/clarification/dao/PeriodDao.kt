@@ -7,18 +7,10 @@ import com.procurement.clarification.exception.ErrorType
 import com.procurement.clarification.model.entity.PeriodEntity
 import org.springframework.stereotype.Service
 
-interface PeriodDao {
-
-    fun save(entity: PeriodEntity)
-
-    fun getByCpIdAndStage(cpId: String, stage: String): PeriodEntity
-
-}
-
 @Service
-class PeriodDaoImpl(private val session: Session) : PeriodDao {
+class PeriodDao(private val session: Session) {
 
-    override fun save(entity: PeriodEntity) {
+    fun save(entity: PeriodEntity) {
         val insert =
                 insertInto(PERIOD_TABLE)
                         .value(CP_ID, entity.cpId)
@@ -30,7 +22,7 @@ class PeriodDaoImpl(private val session: Session) : PeriodDao {
         session.execute(insert)
     }
 
-    override fun getByCpIdAndStage(cpId: String, stage: String): PeriodEntity {
+    fun getByCpIdAndStage(cpId: String, stage: String): PeriodEntity {
         val query = select()
                 .all()
                 .from(PERIOD_TABLE)
@@ -50,12 +42,12 @@ class PeriodDaoImpl(private val session: Session) : PeriodDao {
     }
 
     companion object {
-        private val PERIOD_TABLE = "clarification_period"
-        private val CP_ID = "cp_id"
-        private val STAGE = "stage"
-        private val OWNER = "owner"
-        private val START_DATE = "start_date"
-        private val END_DATE = "end_date"
-        private val TENDER_END_DATE = "tender_end_date"
+        private const val PERIOD_TABLE = "clarification_period"
+        private const val CP_ID = "cp_id"
+        private const val STAGE = "stage"
+        private const val OWNER = "owner"
+        private const val START_DATE = "start_date"
+        private const val END_DATE = "end_date"
+        private const val TENDER_END_DATE = "tender_end_date"
     }
 }

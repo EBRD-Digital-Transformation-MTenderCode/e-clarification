@@ -17,30 +17,11 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-interface PeriodService {
-
-    fun periodValidation(cm: CommandMessage): ResponseDto
-
-    fun savePeriod(cm: CommandMessage): ResponseDto
-
-    fun calculateAndSavePeriod(cm: CommandMessage): ResponseDto
-
-    fun saveNewPeriod(cm: CommandMessage): ResponseDto
-
-    fun getPeriod(cm: CommandMessage): ResponseDto
-
-    fun checkPeriod(cm: CommandMessage): ResponseDto
-
-    fun checkDateInPeriod(localDateTime: LocalDateTime, cpId: String, stage: String)
-
-    fun getPeriodEntity(cpId: String, stage: String): PeriodEntity
-}
-
 @Service
-class PeriodServiceImpl(private val periodDao: PeriodDao,
-                        private val rulesService: RulesService) : PeriodService {
+class PeriodService(private val periodDao: PeriodDao,
+                    private val rulesService: RulesService) {
 
-    override fun periodValidation(cm: CommandMessage): ResponseDto {
+    fun periodValidation(cm: CommandMessage): ResponseDto {
         val country = cm.context.country ?: throw ErrorException(ErrorType.CONTEXT)
         val pmd = cm.context.pmd ?: throw ErrorException(ErrorType.CONTEXT)
         val enquiryPeriod = toObject(PeriodRq::class.java, cm.data).enquiryPeriod
@@ -51,7 +32,7 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
         return ResponseDto(data = "Period is valid.")
     }
 
-    override fun savePeriod(cm: CommandMessage): ResponseDto {
+    fun savePeriod(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(ErrorType.CONTEXT)
@@ -70,7 +51,7 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
         return ResponseDto(data = Period(period.startDate.toLocal(), period.endDate.toLocal()))
     }
 
-    override fun saveNewPeriod(cm: CommandMessage): ResponseDto {
+    fun saveNewPeriod(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(ErrorType.CONTEXT)
@@ -91,7 +72,7 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
         return ResponseDto(data = Period(period.startDate.toLocal(), period.endDate.toLocal()))
     }
 
-    override fun calculateAndSavePeriod(cm: CommandMessage): ResponseDto {
+    fun calculateAndSavePeriod(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(ErrorType.CONTEXT)
@@ -119,7 +100,7 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
         return ResponseDto(data = Period(periodEntity.startDate.toLocal(), periodEntity.endDate.toLocal()))
     }
 
-    override fun getPeriod(cm: CommandMessage): ResponseDto {
+    fun getPeriod(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
 
@@ -127,7 +108,7 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
         return ResponseDto(data = Period(entity.startDate.toLocal(), entity.endDate.toLocal()))
     }
 
-    override fun checkPeriod(cm: CommandMessage): ResponseDto {
+    fun checkPeriod(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
         val country = cm.context.country ?: throw ErrorException(ErrorType.CONTEXT)
@@ -183,9 +164,9 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
         return ResponseDto(null)
     }
 
-    override fun checkDateInPeriod(localDateTime: LocalDateTime,
-                                   cpId: String,
-                                   stage: String) {
+    fun checkDateInPeriod(localDateTime: LocalDateTime,
+                          cpId: String,
+                          stage: String) {
         val periodEntity = getPeriodEntity(cpId, stage)
         val localDateTimeAfter = localDateTime.isAfter(periodEntity.startDate.toLocal())
                 || localDateTime == periodEntity.startDate.toLocal()
@@ -194,7 +175,7 @@ class PeriodServiceImpl(private val periodDao: PeriodDao,
         if (!localDateTimeBefore || !localDateTimeAfter) throw ErrorException(ErrorType.INVALID_DATE)
     }
 
-    override fun getPeriodEntity(cpId: String, stage: String): PeriodEntity {
+    fun getPeriodEntity(cpId: String, stage: String): PeriodEntity {
         return periodDao.getByCpIdAndStage(cpId, stage)
     }
 

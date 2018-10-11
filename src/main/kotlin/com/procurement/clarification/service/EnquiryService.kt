@@ -6,7 +6,10 @@ import com.procurement.clarification.exception.ErrorException
 import com.procurement.clarification.exception.ErrorType.*
 import com.procurement.clarification.model.dto.bpe.CommandMessage
 import com.procurement.clarification.model.dto.bpe.ResponseDto
-import com.procurement.clarification.model.dto.ocds.*
+import com.procurement.clarification.model.dto.ocds.Enquiry
+import com.procurement.clarification.model.dto.ocds.OrganizationReference
+import com.procurement.clarification.model.dto.ocds.Period
+import com.procurement.clarification.model.dto.ocds.Tender
 import com.procurement.clarification.model.dto.request.AddAnswerRq
 import com.procurement.clarification.model.dto.request.CreateEnquiryRq
 import com.procurement.clarification.model.dto.request.OrganizationReferenceCreate
@@ -21,24 +24,13 @@ import com.procurement.clarification.utils.toObject
 import org.springframework.stereotype.Service
 import java.util.*
 
-interface EnquiryService {
-
-    fun createEnquiry(cm: CommandMessage): ResponseDto
-
-    fun addAnswer(cm: CommandMessage): ResponseDto
-
-    fun checkAnswer(cm: CommandMessage): ResponseDto
-
-    fun checkEnquiries(cm: CommandMessage): ResponseDto
-}
-
 @Service
-class EnquiryServiceImpl(private val generationService: GenerationService,
-                         private val enquiryDao: EnquiryDao,
-                         private val periodDao: PeriodDao,
-                         private val periodService: PeriodService) : EnquiryService {
+class EnquiryService(private val generationService: GenerationService,
+                     private val enquiryDao: EnquiryDao,
+                     private val periodDao: PeriodDao,
+                     private val periodService: PeriodService) {
 
-    override fun createEnquiry(cm: CommandMessage): ResponseDto {
+    fun createEnquiry(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocal() ?: throw ErrorException(CONTEXT)
@@ -72,7 +64,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         return ResponseDto(data = CreateEnquiryRs(entity.token.toString(), owner, enquiry))
     }
 
-    override fun checkEnquiries(cm: CommandMessage): ResponseDto {
+    fun checkEnquiries(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocal() ?: throw ErrorException(CONTEXT)
@@ -87,7 +79,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
                 allAnswered = isAllAnswered))
     }
 
-    override fun addAnswer(cm: CommandMessage): ResponseDto {
+    fun addAnswer(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
@@ -118,7 +110,7 @@ class EnquiryServiceImpl(private val generationService: GenerationService,
         return ResponseDto(data = AddAnswerRs(enquiry))
     }
 
-    override fun checkAnswer(cm: CommandMessage): ResponseDto {
+    fun checkAnswer(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)

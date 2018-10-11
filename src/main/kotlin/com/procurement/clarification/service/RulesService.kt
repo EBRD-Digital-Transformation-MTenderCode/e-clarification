@@ -5,37 +5,25 @@ import com.procurement.clarification.exception.ErrorException
 import com.procurement.clarification.exception.ErrorType
 import org.springframework.stereotype.Service
 
-interface RulesService {
-
-    fun getInterval(country: String, pmd: String): Long
-
-    fun getOffset(country: String, pmd: String): Long
-
-    fun getOffsetExtended(country: String, pmd: String): Long
-
-    fun getIntervalBefore(country: String, pmd: String): Long
-
-}
-
 @Service
-class RulesServiceImpl(private val rulesDao: RulesDao) : RulesService {
+class RulesService(private val rulesDao: RulesDao) {
 
-    override fun getInterval(country: String, pmd: String): Long {
+    fun getInterval(country: String, pmd: String): Long {
         return rulesDao.getValue(country, pmd, PARAMETER_INTERVAL)?.toLongOrNull()
                 ?: throw ErrorException(ErrorType.INTERVAL_RULES_NOT_FOUND)
     }
 
-    override fun getOffset(country: String, pmd: String): Long {
+    fun getOffset(country: String, pmd: String): Long {
         return rulesDao.getValue(country, pmd, PARAMETER_OFFSET)?.toLongOrNull()
                 ?: throw ErrorException(ErrorType.OFFSET_RULES_NOT_FOUND)
     }
 
-    override fun getOffsetExtended(country: String, pmd: String): Long {
+    fun getOffsetExtended(country: String, pmd: String): Long {
         return rulesDao.getValue(country, pmd, PARAMETER_OFFSET_EXTENDED)?.toLongOrNull()
                 ?: throw ErrorException(ErrorType.OFFSET_RULES_NOT_FOUND)
     }
 
-    override fun getIntervalBefore(country: String, pmd: String): Long {
+    fun getIntervalBefore(country: String, pmd: String): Long {
         return rulesDao.getValue(country, pmd, PARAMETER_INTERVAL_BEFORE)?.toLongOrNull()
                 ?: throw ErrorException(ErrorType.INTERVAL_RULES_NOT_FOUND)
     }

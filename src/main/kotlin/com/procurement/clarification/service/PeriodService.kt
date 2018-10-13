@@ -54,22 +54,15 @@ class PeriodService(private val periodDao: PeriodDao,
     fun saveNewPeriod(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
-        val owner = cm.context.owner ?: throw ErrorException(ErrorType.CONTEXT)
         val country = cm.context.country ?: throw ErrorException(ErrorType.CONTEXT)
         val pmd = cm.context.pmd ?: throw ErrorException(ErrorType.CONTEXT)
-        val startDate = cm.context.startDate?.toLocal() ?: throw ErrorException(ErrorType.INVALID_PERIOD)
-
-        val offset = rulesService.getOffset(country, pmd)
-        val endDate = startDate.plusSeconds(offset)
-        val period = getEntity(
-                cpId = cpId,
-                stage = stage,
-                owner = owner,
-                startDate = startDate.toDate(),
-                endDate = endDate.toDate(),
-                tenderEndDate = null)
-        periodDao.save(period)
-        return ResponseDto(data = Period(period.startDate.toLocal(), period.endDate.toLocal()))
+        val startDateContext = cm.context.startDate?.toLocal() ?: throw ErrorException(ErrorType.INVALID_PERIOD)
+        val offsetExtended = rulesService.getOffsetExtended(country, pmd)
+        val newEndDate = startDateContext.plusSeconds(offsetExtended)
+        val oldPeriod = getPeriodEntity(cpId, stage)
+        val newPeriod = oldPeriod.copy(endDate = newEndDate.toDate())
+        periodDao.save(newPeriod)
+        return ResponseDto(data = Period(newPeriod.startDate.toLocal(), newPeriod.endDate.toLocal()))
     }
 
     fun calculateAndSavePeriod(cm: CommandMessage): ResponseDto {

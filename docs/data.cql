@@ -36,16 +36,24 @@ CREATE TABLE IF NOT EXISTS  ocds.clarification_history (
 );
 
 INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'interval', '518400');
-INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_OT', 'interval', '60');
 INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'interval_before', '172800');
-INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_OT', 'interval_before', '20');
 INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'offsetExtended', '172800');
-INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_OT', 'offsetExtended', '20');
-
 INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'offset', '518400');
+
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'SV', 'interval', '518400');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'SV', 'interval_before', '172800');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'SV', 'offsetExtended', '172800');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'SV', 'offset', '518400');
+
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_OT', 'interval', '60');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_OT', 'interval_before', '20');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_OT', 'offsetExtended', '20');
 INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_OT', 'offset', '60');
 
-
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_SV', 'interval', '60');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_SV', 'interval_before', '20');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_SV', 'offsetExtended', '20');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_SV', 'offset', '60');
 
 //86400sec(day) * 6 = 518400
 //60 sec (min)

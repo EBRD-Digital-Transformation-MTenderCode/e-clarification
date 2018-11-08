@@ -95,7 +95,7 @@ data class ResponseErrorDto(
 fun getExceptionResponseDto(exception: Exception): ResponseDto {
     return ResponseDto(
             errors = listOf(ResponseErrorDto(
-                    code = "400.04.00",
+                    code = "400.05.00",
                     description = exception.message
             )))
 }
@@ -103,7 +103,7 @@ fun getExceptionResponseDto(exception: Exception): ResponseDto {
 fun getErrorExceptionResponseDto(error: ErrorException, id: String? = null): ResponseDto {
     return ResponseDto(
             errors = listOf(ResponseErrorDto(
-                    code = "400.04." + error.code,
+                    code = "400.05." + error.code,
                     description = error.msg
             )),
             id = id)
@@ -112,7 +112,7 @@ fun getErrorExceptionResponseDto(error: ErrorException, id: String? = null): Res
 fun getEnumExceptionResponseDto(error: EnumException, id: String? = null): ResponseDto {
     return ResponseDto(
             errors = listOf(ResponseErrorDto(
-                    code = "400.04." + error.code,
+                    code = "400.05." + error.code,
                     description = error.msg
             )),
             id = id)

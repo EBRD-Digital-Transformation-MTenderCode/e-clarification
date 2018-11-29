@@ -114,12 +114,13 @@ class EnquiryService(private val generationService: GenerationService,
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
+        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocal() ?: throw ErrorException(CONTEXT)
         toObject(AddAnswerRq::class.java, cm.data)
-
         val entities = enquiryDao.findAllByCpIdAndStage(cpId, stage)
         val isAllAnswered = !entities.any { (it.token != UUID.fromString(token) && !it.isAnswered) }
         val periodEntity = periodDao.getByCpIdAndStage(cpId, stage)
+        if (periodEntity.owner != owner) throw ErrorException(INVALID_OWNER)
         val endDate = periodEntity.endDate.toLocal()
         val isEnquiryPeriodExpired = (dateTime >= endDate)
         val setUnsuspended = isEnquiryPeriodExpired && isAllAnswered

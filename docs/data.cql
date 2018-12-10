@@ -35,15 +35,15 @@ CREATE TABLE IF NOT EXISTS  ocds.clarification_history (
     primary key(operation_id, command)
 );
 
-INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'interval', '518400');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'interval', '777600');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'offset', '777600');
 INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'interval_before', '172800');
 INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'offsetExtended', '172800');
-INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'offset', '518400');
 
-INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'SV', 'interval', '518400');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'SV', 'interval', '345600');
+INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'SV', 'offset', '345600');
 INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'SV', 'interval_before', '172800');
 INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'SV', 'offsetExtended', '172800');
-INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'SV', 'offset', '518400');
 
 INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_OT', 'interval', '60');
 INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_OT', 'interval_before', '20');
@@ -66,3 +66,6 @@ INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('M
 
 //86400sec(day) * 2 = 172800
 //20 sec (min)
+
+//86400sec(day) * 9 = 777600 (OT)
+//86400sec(day) * 4 = 345600 (SV)

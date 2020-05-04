@@ -69,7 +69,8 @@ enum class CommandType(private val value: String) {
     SAVE_PERIOD("savePeriod"),
     SAVE_NEW_PERIOD("saveNewPeriod"),
     VALIDATE_PERIOD("validatePeriod"),
-    CALCULATE_SAVE_PERIOD("calculateSavePeriod");
+    CALCULATE_SAVE_PERIOD("calculateSavePeriod"),
+    CREATE_PERIOD("createPeriod");
 
     @JsonValue
     fun value(): String {

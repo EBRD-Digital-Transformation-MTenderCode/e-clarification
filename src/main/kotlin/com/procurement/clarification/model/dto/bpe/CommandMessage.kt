@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.exception.EnumException
 import com.procurement.clarification.exception.ErrorException
+import com.procurement.clarification.exception.ErrorType
 
 data class CommandMessage @JsonCreator constructor(
 
@@ -37,6 +38,26 @@ data class Context @JsonCreator constructor(
         val id: String?,
         val setExtendedPeriod: Boolean?
 )
+
+val CommandMessage.owner: String
+    get() = this.context.owner
+        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'owner' attribute in context.")
+
+val CommandMessage.cpid: String
+    get() = this.context.cpid
+        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'cpid' attribute in context.")
+
+val CommandMessage.stage: String
+    get() = this.context.stage
+        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'stage' attribute in context.")
+
+val CommandMessage.pmd: String
+    get() = this.context.pmd
+        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'pmd' attribute in context.")
+
+val CommandMessage.country: String
+    get() = this.context.country
+        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'country' attribute in context.")
 
 enum class CommandType(private val value: String) {
     CREATE_ENQUIRY("createEnquiry"),

@@ -24,7 +24,7 @@ class EnquiryServiceImpl(
 
     override fun findEnquiryIds(params: FindEnquiryIdsParams): Result<List<EnquiryId>, Fail> {
         val enquiryEntities = enquiryRepository.findAllByCpidAndStage(cpid = params.cpid, stage = params.ocid.stage)
-            .doReturn { fail -> return Fail.Incident.DatabaseIncident(exception = fail.exception).asFailure() }
+            .orForwardFail { fail -> return fail }
 
         if (enquiryEntities.isEmpty())
             return ValidationErrors.EnquiriesNotFoundOnFindEnquiriesIds(cpid = params.cpid, ocid = params.ocid)

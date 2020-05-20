@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.procurement.clarification.domain.fail.Fail
+import com.procurement.clarification.domain.util.Result
 import com.procurement.clarification.model.dto.databinding.IntDeserializer
 import com.procurement.clarification.model.dto.databinding.JsonDateDeserializer
 import com.procurement.clarification.model.dto.databinding.JsonDateSerializer
@@ -79,6 +81,8 @@ fun milliNowUTC(): Long {
     return localNowUTC().toInstant(ZoneOffset.UTC).toEpochMilli()
 }
 
+fun LocalDateTime.toMilliseconds(): Long = this.toInstant(ZoneOffset.UTC).toEpochMilli()
+
 /*Json utils*/
 fun <Any> toJson(obj: Any): String {
     try {
@@ -119,3 +123,22 @@ fun <T> Collection<T>.containsAny(dest: Collection<T>): Boolean {
     }
     return false
 }
+
+fun <T : Any> JsonNode.tryToObject(target: Class<T>): Result<T, Fail.Incident.Parsing> = try {
+    Result.success(JsonMapper.mapper.treeToValue(this, target))
+} catch (expected: Exception) {
+    Result.failure(Fail.Incident.Parsing(className = target.canonicalName, exception = expected))
+}
+
+fun <T : Any> String.tryToObject(target: Class<T>): Result<T, Fail.Incident.Parsing> = try {
+    Result.success(JsonMapper.mapper.readValue(this, target))
+} catch (expected: Exception) {
+    Result.failure(Fail.Incident.Parsing(className = target.canonicalName, exception = expected))
+}
+
+fun String.tryToNode(): Result<JsonNode, Fail.Incident.Transforming> = try {
+    Result.success(JsonMapper.mapper.readTree(this))
+} catch (exception: JsonProcessingException) {
+    Result.failure(Fail.Incident.Transforming(exception = exception))
+}
+

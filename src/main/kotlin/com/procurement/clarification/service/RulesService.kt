@@ -28,10 +28,16 @@ class RulesService(private val rulesDao: RulesDao) {
                 ?: throw ErrorException(ErrorType.INTERVAL_RULES_NOT_FOUND)
     }
 
+    fun getPeriodShift(country: String, pmd: String): Long {
+        return rulesDao.getValue(country, pmd, PARAMETER_PERIOD_SHIFT)?.toLongOrNull()
+                ?: throw ErrorException(ErrorType.INTERVAL_RULES_NOT_FOUND)
+    }
+
     companion object {
         private const val PARAMETER_INTERVAL = "interval"
         private const val PARAMETER_INTERVAL_BEFORE = "interval_before"
         private const val PARAMETER_OFFSET = "offset"
         private const val PARAMETER_OFFSET_EXTENDED = "offsetExtended"
+        private const val PARAMETER_PERIOD_SHIFT = "period_shift"
     }
 }

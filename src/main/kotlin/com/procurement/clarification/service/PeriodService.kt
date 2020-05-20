@@ -1,5 +1,8 @@
 package com.procurement.clarification.service
 
+import com.procurement.clarification.application.model.dto.period.create.CreatePeriodContext
+import com.procurement.clarification.application.model.dto.period.create.CreatePeriodData
+import com.procurement.clarification.application.model.dto.period.create.CreatePeriodResult
 import com.procurement.clarification.dao.PeriodDao
 import com.procurement.clarification.exception.ErrorException
 import com.procurement.clarification.exception.ErrorType
@@ -15,7 +18,6 @@ import com.procurement.clarification.utils.toObject
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.*
 
 @Service
 class PeriodService(private val periodDao: PeriodDao,
@@ -40,7 +42,7 @@ class PeriodService(private val periodDao: PeriodDao,
         val startDate = enquiryPeriod.startDate ?: throw ErrorException(ErrorType.INVALID_PERIOD)
         val endDate = enquiryPeriod.endDate ?: throw ErrorException(ErrorType.INVALID_PERIOD)
 
-        val period = getEntity(
+        val period = PeriodEntity(
                 cpId = cpId,
                 stage = stage,
                 owner = owner,
@@ -81,7 +83,7 @@ class PeriodService(private val periodDao: PeriodDao,
             rulesService.getOffset(country, pmd)
         }
         val enquiryEndDate = endDate.minusSeconds(offset)
-        val periodEntity = getEntity(
+        val periodEntity = PeriodEntity(
                 cpId = cpId,
                 stage = stage,
                 owner = owner,
@@ -100,6 +102,40 @@ class PeriodService(private val periodDao: PeriodDao,
         val entity = getPeriodEntity(cpId, stage)
         return ResponseDto(data = Period(entity.startDate.toLocal(), entity.endDate.toLocal()))
     }
+
+    fun createPeriod(context: CreatePeriodContext, request: CreatePeriodData): CreatePeriodResult {
+
+        // FR.COM-8.1.1
+        val startDate = request.period.startDate
+
+        // FR.COM-8.1.2
+        val shift = rulesService.getPeriodShift(country = context.country, pmd = context.pmd)
+        val endDate = request.period.endDate.minusDays(shift)
+
+        val periodEntity = PeriodEntity(
+            cpId = context.cpid,
+            owner = context.owner,
+            stage = context.stage,
+            startDate = startDate.toDate(),
+            endDate = endDate.toDate(),
+            tenderEndDate = null
+        )
+
+        val result = CreatePeriodResult(
+            enquiryPeriod = CreatePeriodResult.Period(
+                startDate = periodEntity.startDate.toLocal(),
+                endDate = periodEntity.endDate.toLocal()
+            )
+        )
+
+        // FR.COM-8.1.3
+        // FR.COM-8.1.4
+        periodDao.save(periodEntity)
+
+        // FR.COM-8.1.5
+        return result
+    }
+
 
     fun checkPeriod(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
@@ -182,19 +218,4 @@ class PeriodService(private val periodDao: PeriodDao,
         return sec >= interval
     }
 
-    private fun getEntity(cpId: String,
-                          stage: String,
-                          owner: String,
-                          startDate: Date,
-                          endDate: Date,
-                          tenderEndDate: Date?): PeriodEntity {
-        return PeriodEntity(
-                cpId = cpId,
-                stage = stage,
-                owner = owner,
-                startDate = startDate,
-                endDate = endDate,
-                tenderEndDate = tenderEndDate
-        )
-    }
 }

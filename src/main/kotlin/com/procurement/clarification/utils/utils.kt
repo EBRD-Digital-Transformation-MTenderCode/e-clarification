@@ -104,6 +104,12 @@ fun <T> toObject(clazz: Class<T>, json: JsonNode): T {
     }
 }
 
+fun String.toNode(): JsonNode = try {
+    JsonMapper.mapper.readTree(this)
+} catch (exception: JsonProcessingException) {
+    throw IllegalArgumentException("Error parsing JSON to JsonNode.", exception)
+}
+
 /*Collection*/
 fun <T> Collection<T>.containsAny(dest: Collection<T>): Boolean {
     for (value in dest) {

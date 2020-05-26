@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository
 class CassandraEnquiryRepository(private val session: Session) : EnquiryRepository {
 
     companion object {
+        private const val KEYSPACE = "ocds"
         private const val CLARIFICATION_TABLE = "clarification_enquiry"
         private const val COLUMN_CP_ID = "cp_id"
         private const val COLUMN_TOKEN = "token_entity"
@@ -28,7 +29,7 @@ class CassandraEnquiryRepository(private val session: Session) : EnquiryReposito
         private const val COLUMN_JSON_DATA = "json_data"
 
         private const val SAVE_CQL = """
-            INSERT INTO $CLARIFICATION_TABLE(
+            INSERT INTO $KEYSPACE.$CLARIFICATION_TABLE(
             $COLUMN_CP_ID,
             $COLUMN_TOKEN,
             $COLUMN_STAGE,
@@ -43,7 +44,7 @@ class CassandraEnquiryRepository(private val session: Session) : EnquiryReposito
                    $COLUMN_STAGE,
                    $COLUMN_IS_ANSWERED,
                    $COLUMN_JSON_DATA
-              FROM $CLARIFICATION_TABLE
+              FROM $KEYSPACE.$CLARIFICATION_TABLE
              WHERE $COLUMN_CP_ID=?
                AND $COLUMN_STAGE=?
         """
@@ -54,7 +55,7 @@ class CassandraEnquiryRepository(private val session: Session) : EnquiryReposito
                    $COLUMN_STAGE,
                    $COLUMN_IS_ANSWERED,
                    $COLUMN_JSON_DATA
-              FROM $CLARIFICATION_TABLE
+              FROM $KEYSPACE.$CLARIFICATION_TABLE
              WHERE $COLUMN_CP_ID=?
                AND $COLUMN_STAGE=?
                AND $COLUMN_TOKEN=?

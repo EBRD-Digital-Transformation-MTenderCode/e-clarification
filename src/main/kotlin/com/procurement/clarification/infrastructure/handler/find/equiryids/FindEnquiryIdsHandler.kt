@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class FindEnquiryIdsHandler(
-    private val logger: Logger,
+    logger: Logger,
     private val enquiryService: EnquiryService
 ) : AbstractQueryHandler<Command2Type, List<EnquiryId>>(logger = logger) {
 

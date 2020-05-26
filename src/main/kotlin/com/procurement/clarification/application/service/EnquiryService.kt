@@ -27,7 +27,7 @@ class EnquiryServiceImpl(
             .orForwardFail { fail -> return fail }
 
         if (enquiryEntities.isEmpty())
-            return ValidationErrors.EnquiriesNotFoundOnFindEnquiriesIds(cpid = params.cpid, ocid = params.ocid)
+            return ValidationErrors.EnquiriesNotFoundOnFindEnquiryIds(cpid = params.cpid, ocid = params.ocid)
                 .asFailure()
 
         val filteredEnquiries = if (params.isAnswer != null) {

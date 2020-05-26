@@ -7,6 +7,10 @@ import com.datastax.driver.core.PlainTextAuthProvider
 import com.datastax.driver.core.PoolingOptions
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.querybuilder.QueryBuilder
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.doThrow
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.clarification.application.respository.EnquiryRepository
 import com.procurement.clarification.dao.CassandraEnquiryRepository
 import com.procurement.clarification.domain.model.Cpid
@@ -23,9 +27,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.doThrow
-import org.mockito.Mockito.spy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -66,7 +67,6 @@ class CassandraEnquiryRepositoryIT {
             .withoutJMXReporting()
             .withPoolingOptions(poolingOptions)
             .withAuthProvider(PlainTextAuthProvider(container.username, container.password))
-
             .build()
 
         session = spy(cluster.connect())
@@ -94,7 +94,7 @@ class CassandraEnquiryRepositoryIT {
     @Test
     fun `error while saving`() {
         doThrow(RuntimeException())
-            .`when`(session)
+            .whenever(session)
             .execute(any<BoundStatement>())
 
         val actual = enquiryRepository.save(createEntity())

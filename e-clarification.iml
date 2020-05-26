@@ -179,6 +179,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-commons:1.2.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-engine:5.2.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-engine:1.2.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.nhaarman:mockito-kotlin:1.6.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.testcontainers:cassandra:1.12.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.testcontainers:database-commons:1.12.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.testcontainers:testcontainers:1.12.4" level="project" />

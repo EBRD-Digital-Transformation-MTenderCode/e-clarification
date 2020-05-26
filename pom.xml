@@ -35,7 +35,7 @@
         <!--Test-->
         <junit-jupiter.version>5.2.0</junit-jupiter.version>
         <junit-platform.version>1.2.0</junit-platform.version>
-        <mockito-kotlin.version>1.5.0</mockito-kotlin.version>
+        <mockito-kotlin.version>1.6.0</mockito-kotlin.version>
         <mockito.version>2.18.3</mockito.version>
         <testcontainer-cassandra.version>1.12.4</testcontainer-cassandra.version>
         <!--Plugins-->
@@ -155,6 +155,12 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.nhaarman</groupId>
+            <artifactId>mockito-kotlin</artifactId>
+            <version>${mockito-kotlin.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

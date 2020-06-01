@@ -24,7 +24,8 @@ inline fun <T, V> Collection<T>.toSetBy(selector: (T) -> V): Set<V> {
 fun <T, R, E> List<T>.mapResult(block: (T) -> Result<R, E>): Result<List<R>, E> {
     val r = mutableListOf<R>()
     for (element in this) {
-        when (val result = block(element)) {
+        val result = block(element)
+        when (result) {
             is Result.Success -> r.add(result.get)
             is Result.Failure -> return result
         }
@@ -37,7 +38,8 @@ fun <T, R, E> List<T>?.mapOptionalResult(block: (T) -> Result<R, E>): Result<Opt
         return Result.success(Option.none())
     val r = mutableListOf<R>()
     for (element in this) {
-        when (val result = block(element)) {
+        val result = block(element)
+        when (result) {
             is Result.Success -> r.add(result.get)
             is Result.Failure -> return result
         }

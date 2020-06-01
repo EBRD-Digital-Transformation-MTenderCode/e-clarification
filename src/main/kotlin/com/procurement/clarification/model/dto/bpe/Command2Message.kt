@@ -122,7 +122,8 @@ fun JsonNode.getId(): Result<UUID, DataErrors> {
 fun JsonNode.getVersion(): Result<ApiVersion, DataErrors> {
     return this.tryGetStringAttribute("version")
         .bind { version ->
-            when (val result = ApiVersion.tryOf(version)) {
+            val result = ApiVersion.tryOf(version)
+            when (result) {
                 is Result.Success -> result
                 is Result.Failure -> result.mapError {
                     DataErrors.Validation.DataFormatMismatch(

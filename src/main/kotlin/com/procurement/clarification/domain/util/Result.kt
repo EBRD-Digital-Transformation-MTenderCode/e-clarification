@@ -36,7 +36,7 @@ sealed class Result<out T, out E> {
     inline fun doReturn(error: (E) -> Nothing): T {
         return when (this) {
             is Success -> this.get
-            else       -> error(this.error)
+            else -> error(this.error)
         }
     }
 
@@ -95,9 +95,12 @@ sealed class Result<out T, out E> {
     }
 }
 
-infix fun <T, E> T.validate(rule: ValidationRule<T, E>): Result<T, E> = when (val result = rule.test(this)) {
-    is ValidationResult.Ok -> Result.success(this)
-    is ValidationResult.Fail -> Result.failure(result.error)
+infix fun <T, E> T.validate(rule: ValidationRule<T, E>): Result<T, E> {
+    val result = rule.test(this)
+    return when (result) {
+        is ValidationResult.Ok -> Result.success(this)
+        is ValidationResult.Fail -> Result.failure(result.error)
+    }
 }
 
 infix fun <T, E> Result<T, E>.validate(rule: ValidationRule<T, E>): Result<T, E> = when (this) {

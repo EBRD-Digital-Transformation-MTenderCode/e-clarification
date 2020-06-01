@@ -19,8 +19,8 @@ abstract class AbstractQueryHandler<ACTION : Action, R : Any>
     override fun handle(node: JsonNode): ApiResponse {
         val id = node.getId().get
         val version = node.getVersion().get
-
-        return when (val result = execute(node)) {
+        val result = execute(node)
+        return when (result) {
             is Result.Success -> {
                 if (logger.isDebugEnabled)
                     logger.debug("${action.key} has been executed. Result: ${toJson(result.get)}")

@@ -8,7 +8,7 @@ import com.procurement.clarification.domain.util.asSuccess
 
 fun parseCpid(value: String): Result<Cpid, DataErrors.Validation.DataMismatchToPattern> =
     Cpid.tryCreate(value = value)
-        .doOnError { expectedPattern ->
+        .doReturn { expectedPattern ->
             return Result.failure(
                 DataErrors.Validation.DataMismatchToPattern(
                     name = "cpid",
@@ -17,12 +17,11 @@ fun parseCpid(value: String): Result<Cpid, DataErrors.Validation.DataMismatchToP
                 )
             )
         }
-        .get
         .asSuccess()
 
 fun parseOcid(value: String): Result<Ocid, DataErrors.Validation.DataMismatchToPattern> =
     Ocid.tryCreate(value = value)
-        .doOnError { expectedPattern ->
+        .doReturn { expectedPattern ->
             return Result.failure(
                 DataErrors.Validation.DataMismatchToPattern(
                     name = "ocid",
@@ -31,5 +30,4 @@ fun parseOcid(value: String): Result<Ocid, DataErrors.Validation.DataMismatchToP
                 )
             )
         }
-        .get
         .asSuccess()

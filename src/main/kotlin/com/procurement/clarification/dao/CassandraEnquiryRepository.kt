@@ -28,16 +28,7 @@ class CassandraEnquiryRepository(private val session: Session) : EnquiryReposito
         private const val COLUMN_IS_ANSWERED = "is_answered"
         private const val COLUMN_JSON_DATA = "json_data"
 
-        private const val SAVE_CQL = """
-            INSERT INTO $KEYSPACE.$CLARIFICATION_TABLE(
-            $COLUMN_CP_ID,
-            $COLUMN_TOKEN,
-            $COLUMN_STAGE,
-            $COLUMN_IS_ANSWERED,
-            $COLUMN_JSON_DATA
-            )
-            VALUES (?, ?, ?, ?, ?)
-        """
+
         private const val FIND_ALL_BY_CPID_AND_STAGE_CQL = """
             SELECT $COLUMN_CP_ID,
                    $COLUMN_TOKEN,
@@ -49,37 +40,9 @@ class CassandraEnquiryRepository(private val session: Session) : EnquiryReposito
                AND $COLUMN_STAGE=?
         """
 
-        private const val FIND_ALL_BY_CPID_AND_STAGE_AND_TOKEN_CQL = """
-            SELECT $COLUMN_CP_ID,
-                   $COLUMN_TOKEN,
-                   $COLUMN_STAGE,
-                   $COLUMN_IS_ANSWERED,
-                   $COLUMN_JSON_DATA
-              FROM $KEYSPACE.$CLARIFICATION_TABLE
-             WHERE $COLUMN_CP_ID=?
-               AND $COLUMN_STAGE=?
-               AND $COLUMN_TOKEN=?
-        """
     }
 
-    private val preparedSaveStatement = session.prepare(SAVE_CQL)
     private val preparedFindAllByCpidAndStage = session.prepare(FIND_ALL_BY_CPID_AND_STAGE_CQL)
-    private val preparedFindAllByCpidAndStageAndToken = session.prepare(FIND_ALL_BY_CPID_AND_STAGE_AND_TOKEN_CQL)
-
-    override fun save(entity: EnquiryEntity): Result<Unit, Fail.Incident.Database> {
-        val query = preparedSaveStatement.bind()
-            .apply {
-                setString(COLUMN_CP_ID, entity.cpId)
-                setUUID(COLUMN_TOKEN, entity.token)
-                setString(COLUMN_STAGE, entity.stage)
-                setBool(COLUMN_IS_ANSWERED, entity.isAnswered)
-                setString(COLUMN_JSON_DATA, entity.jsonData)
-            }
-        query.tryExecute()
-            .orForwardFail { fail -> return fail }
-
-        return Unit.asSuccess()
-    }
 
     override fun findAllByCpidAndStage(cpid: Cpid, stage: Stage): Result<List<EnquiryEntity>, Fail.Incident.Database> {
         val query = preparedFindAllByCpidAndStage.bind()
@@ -90,24 +53,6 @@ class CassandraEnquiryRepository(private val session: Session) : EnquiryReposito
         return query.tryExecute()
             .orForwardFail { fail -> return fail }
             .map { row -> row.extractEnquiryEntity() }
-            .asSuccess()
-    }
-
-    override fun getByCpidAndStageAndToken(
-        cpid: Cpid,
-        stage: Stage,
-        token: Token
-    ): Result<EnquiryEntity?, Fail.Incident.Database> {
-        val query = preparedFindAllByCpidAndStageAndToken.bind()
-            .apply {
-                setString(COLUMN_CP_ID, cpid.toString())
-                setString(COLUMN_STAGE, stage.toString())
-                setUUID(COLUMN_TOKEN, token)
-            }
-        return query.tryExecute()
-            .orForwardFail { fail -> return fail }
-            .one()
-            ?.extractEnquiryEntity()
             .asSuccess()
     }
 

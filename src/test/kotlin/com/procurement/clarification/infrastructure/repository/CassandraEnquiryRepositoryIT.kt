@@ -82,25 +82,7 @@ class CassandraEnquiryRepositoryIT {
         dropKeyspace()
     }
 
-    @Test
-    fun save_success() {
-        val entity = createEntity()
-        enquiryRepository.save(entity = entity)
 
-        val enquiries = enquiryRepository.findAllByCpidAndStage(cpid = CPID, stage = STAGE).get
-        assertFalse(enquiries.isEmpty())
-    }
-
-    @Test
-    fun `error while saving`() {
-        doThrow(RuntimeException())
-            .whenever(session)
-            .execute(any<BoundStatement>())
-
-        val actual = enquiryRepository.save(createEntity())
-
-        assertTrue(actual.isFail)
-    }
 
     @Test
     fun findByCpidAndStage_success() {
@@ -120,23 +102,6 @@ class CassandraEnquiryRepositoryIT {
         val dbEnquiryEntity = enquiryRepository.findAllByCpidAndStage(cpid = CPID, stage = STAGE).get
 
         assertTrue(dbEnquiryEntity.isEmpty())
-    }
-
-    @Test
-    fun findByCpidAndStageAndToken_success() {
-        val entity = createEntity()
-        insertInto(entity)
-        val dbEnquiryEntity = enquiryRepository.getByCpidAndStageAndToken(cpid = CPID, stage = STAGE, token = TOKEN).get
-
-        assertNotNull(dbEnquiryEntity)
-        assertEquals(entity, dbEnquiryEntity)
-    }
-
-    @Test
-    fun findByCpidAndStageAndToken_fail() {
-        val dbEnquiryEntity = enquiryRepository.getByCpidAndStageAndToken(cpid = CPID, stage = STAGE, token = TOKEN).get
-
-        assertNull(dbEnquiryEntity)
     }
 
     private fun insertInto(enquiryEntity: EnquiryEntity) {

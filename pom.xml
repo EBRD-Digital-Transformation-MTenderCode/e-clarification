@@ -201,7 +201,6 @@
                     <compilerPlugins>
                         <plugin>spring</plugin>
                     </compilerPlugins>
-                    <languageVersion>1.2</languageVersion>
                 </configuration>
                 <dependencies>
                     <dependency>

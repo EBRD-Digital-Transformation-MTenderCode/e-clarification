@@ -1,4 +1,4 @@
-package com.procurement.access.model.dto.pn
+package com.procurement.clarification.model.dto.period.create.request
 
 import com.procurement.clarification.infrastructure.model.dto.period.create.request.CreatePeriodRequest
 import com.procurement.clarification.model.dto.AbstractDTOTestBase

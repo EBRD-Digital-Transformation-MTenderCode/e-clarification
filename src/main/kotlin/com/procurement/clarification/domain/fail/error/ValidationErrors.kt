@@ -28,8 +28,9 @@ sealed class ValidationErrors(
         description = "Enquiries not found by cpid='$cpid' and ocid='$ocid'."
     )
 
-    class EnquiriesNotFoundByIdOnGetEnquiryByIds(val ids: Collection<EnquiryId>) : ValidationErrors(
+    class EnquiriesNotFoundByIdOnGetEnquiryByIds(val id: EnquiryId) : ValidationErrors(
         numberError = "8.3.2",
-        description = "Enquiries [$ids] not found."
+        description = "Enquiries [$id] not found.",
+        entityId = id
     )
 }

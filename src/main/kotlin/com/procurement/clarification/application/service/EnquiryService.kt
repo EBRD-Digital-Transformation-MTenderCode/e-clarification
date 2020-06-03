@@ -11,8 +11,6 @@ import com.procurement.clarification.domain.model.lot.LotId
 import com.procurement.clarification.domain.util.Result
 import com.procurement.clarification.domain.util.asFailure
 import com.procurement.clarification.domain.util.asSuccess
-import com.procurement.clarification.domain.util.extension.getNewElements
-import com.procurement.clarification.domain.util.extension.toSetBy
 import com.procurement.clarification.infrastructure.handler.get.enquirybyids.GetEnquiryByIdsResult
 import com.procurement.clarification.model.dto.ocds.Enquiry
 import com.procurement.clarification.utils.tryToObject
@@ -72,21 +70,15 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
                         .asFailure()
                 }
         }
+            .associateBy { it.id }
 
-        val receivedIds = params.enquiryIds
-            .toSetBy { it }
-
-        val filteredEnquiries = enquiries.filter { enquiry ->
-            params.enquiryIds
-                .any { it == enquiry.id }
-        }
-        val knownIds = filteredEnquiries.toSetBy { it.id!! }
-        val unknownIds = getNewElements(received = receivedIds, known = knownIds)
-        if (unknownIds.isNotEmpty())
-            return ValidationErrors.EnquiriesNotFoundByIdOnGetEnquiryByIds(ids = unknownIds)
-                .asFailure()
-
-        return filteredEnquiries.map { it.convertToGetEnquiryByIdsResult() }
+        return params.enquiryIds
+            .map { id ->
+                enquiries[id]
+                    ?.convertToGetEnquiryByIdsResult()
+                    ?: return ValidationErrors.EnquiriesNotFoundByIdOnGetEnquiryByIds(id = id)
+                        .asFailure()
+            }
             .asSuccess()
     }
 

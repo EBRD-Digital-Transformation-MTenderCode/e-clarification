@@ -29,7 +29,8 @@ import java.time.LocalDateTime
 import java.util.*
 
 enum class Command2Type(@JsonValue override val key: String) : EnumElementProvider.Key, Action {
-   FIND_ENQUIRY_IDS("findEnquiryIds");
+   FIND_ENQUIRY_IDS("findEnquiryIds"),
+   GET_ENQUIRY_BY_IDS("getEnquiryByIds");
 
     override fun toString(): String = key
 

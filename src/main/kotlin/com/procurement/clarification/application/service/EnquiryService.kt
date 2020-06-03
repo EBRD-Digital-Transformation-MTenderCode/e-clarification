@@ -60,6 +60,10 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
         val enquiryEntities = enquiryRepository.findAllByCpidAndStage(cpid = params.cpid, stage = params.ocid.stage)
             .orForwardFail { fail -> return fail }
 
+        if (enquiryEntities.isEmpty())
+            return ValidationErrors.EnquiriesNotFoundOnGetEnquiryByIds(cpid = params.cpid, ocid = params.ocid)
+                .asFailure()
+
         val enquiries = enquiryEntities.map { entity ->
             entity.jsonData
                 .tryToObject(Enquiry::class.java)
@@ -79,11 +83,7 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
         val knownIds = filteredEnquiries.toSetBy { it.id!! }
         val unknownIds = getNewElements(received = receivedIds, known = knownIds)
         if (unknownIds.isNotEmpty())
-            return ValidationErrors.EnquiryNotFoundOnGetEnquiryByIds(
-                cpid = params.cpid,
-                ocid = params.ocid,
-                ids = unknownIds
-            )
+            return ValidationErrors.EnquiriesNotFoundByIdOnGetEnquiryByIds(ids = unknownIds)
                 .asFailure()
 
         return filteredEnquiries.map { it.convertToGetEnquiryByIdsResult() }
@@ -100,7 +100,7 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
             title = this.title,
             relatedLot = LotId.fromString(this.relatedLot),
             author = this.author
-                .let {organizationReference->
+                .let { organizationReference ->
                     GetEnquiryByIdsResult.Author(
                         id = organizationReference.id!!,
                         name = organizationReference.name,

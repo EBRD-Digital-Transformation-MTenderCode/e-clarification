@@ -90,7 +90,8 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
             dateAnswer = this.dateAnswered,
             description = this.description,
             title = this.title,
-            relatedLot = if (this.relatedLot != null) LotId.fromString(this.relatedLot) else null,
+            relatedLot = this.relatedLot
+                ?.let { LotId.fromString(it) },
             author = this.author
                 .let { organizationReference ->
                     GetEnquiryByIdsResult.Author(

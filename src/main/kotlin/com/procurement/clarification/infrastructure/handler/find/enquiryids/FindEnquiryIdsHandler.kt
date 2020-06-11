@@ -1,4 +1,4 @@
-package com.procurement.clarification.infrastructure.handler.find.equiryids
+package com.procurement.clarification.infrastructure.handler.find.enquiryids
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.application.service.EnquiryService

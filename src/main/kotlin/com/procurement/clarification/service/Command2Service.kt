@@ -3,7 +3,7 @@ package com.procurement.clarification.service
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.application.service.Logger
 import com.procurement.clarification.infrastructure.dto.ApiResponse
-import com.procurement.clarification.infrastructure.handler.find.equiryids.FindEnquiryIdsHandler
+import com.procurement.clarification.infrastructure.handler.find.enquiryids.FindEnquiryIdsHandler
 import com.procurement.clarification.infrastructure.handler.get.enquirybyids.GetEnquiryByIdsHandler
 import com.procurement.clarification.model.dto.bpe.Command2Type
 import com.procurement.clarification.model.dto.bpe.errorResponse

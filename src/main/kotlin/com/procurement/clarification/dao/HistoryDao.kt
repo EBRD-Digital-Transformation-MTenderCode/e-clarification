@@ -1,7 +1,9 @@
 package com.procurement.clarification.dao
 
 import com.datastax.driver.core.Session
-import com.datastax.driver.core.querybuilder.QueryBuilder.*
+import com.datastax.driver.core.querybuilder.QueryBuilder.eq
+import com.datastax.driver.core.querybuilder.QueryBuilder.insertInto
+import com.datastax.driver.core.querybuilder.QueryBuilder.select
 import com.procurement.clarification.model.dto.bpe.ResponseDto
 import com.procurement.clarification.model.entity.HistoryEntity
 import com.procurement.clarification.utils.localNowUTC

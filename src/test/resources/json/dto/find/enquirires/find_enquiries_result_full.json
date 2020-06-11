@@ -1,0 +1,61 @@
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "date": "2020-06-11T07:15:20Z",
+  "author": {
+    "name": "string",
+    "id": "string",
+    "identifier": {
+      "id": "string",
+      "legalName": "string",
+      "scheme": "string",
+      "uri": "string"
+    },
+    "address": {
+      "streetAddress": "string",
+      "postalCode": "string",
+      "addressDetails": {
+        "country": {
+          "id": "string",
+          "description": "string",
+          "scheme": "string",
+          "uri": "string"
+        },
+        "region": {
+          "id": "string",
+          "description": "string",
+          "scheme": "string",
+          "uri": "string"
+        },
+        "locality": {
+          "id": "string",
+          "description": "string",
+          "scheme": "string",
+          "uri": "string"
+        }
+      }
+    },
+    "additionalIdentifiers": [
+      {
+        "id": "string",
+        "legalName": "string",
+        "scheme": "string",
+        "uri": "string"
+      }
+    ],
+    "contactPoint": {
+      "name": "string",
+      "email": "string",
+      "telephone": "string",
+      "faxNumber": "string",
+      "url": "string"
+    },
+    "details": {
+      "scale": "micro"
+    }
+  },
+  "title": "string",
+  "description": "string",
+  "relatedLot": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "answer": "string",
+  "dateAnswer": "2020-06-11T07:15:20Z"
+}

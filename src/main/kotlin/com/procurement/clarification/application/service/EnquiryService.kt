@@ -107,8 +107,8 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
                         return Fail.Incident.DatabaseIncident(exception = fail.exception)
                             .asFailure()
                     }
+                    .convertToFindEnquiriesResult()
             }
-            .map { it.convertToFindEnquiriesResult() }
             .asSuccess()
     }
 

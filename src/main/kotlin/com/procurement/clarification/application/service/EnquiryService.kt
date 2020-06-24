@@ -35,8 +35,7 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
             .orForwardFail { fail -> return fail }
 
         if (enquiryEntities.isEmpty())
-            return ValidationErrors.EnquiriesNotFoundOnFindEnquiryIds(cpid = params.cpid, ocid = params.ocid)
-                .asFailure()
+            return emptyList<EnquiryId>().asSuccess()
 
         val filteredEnquiries = if (params.isAnswer != null) {
             enquiryEntities.filter { params.isAnswer == it.isAnswered }

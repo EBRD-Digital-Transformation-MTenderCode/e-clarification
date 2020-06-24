@@ -18,11 +18,6 @@ sealed class ValidationErrors(
         logger.error(message = message)
     }
 
-    class EnquiriesNotFoundOnFindEnquiryIds(val cpid: Cpid, val ocid: Ocid) : ValidationErrors(
-        numberError = "8.2.1",
-        description = "Enquiries not found by cpid='$cpid' and ocid='$ocid'."
-    )
-
     class EnquiriesNotFoundOnGetEnquiryByIds(val cpid: Cpid, val ocid: Ocid) : ValidationErrors(
         numberError = "8.3.1",
         description = "Enquiries not found by cpid='$cpid' and ocid='$ocid'."

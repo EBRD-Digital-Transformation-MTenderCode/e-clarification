@@ -16,8 +16,8 @@ import com.procurement.clarification.utils.toDate
 import com.procurement.clarification.utils.toLocal
 import com.procurement.clarification.utils.toObject
 import org.springframework.stereotype.Service
+import java.time.Duration
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 @Service
 class PeriodService(private val periodDao: PeriodDao,
@@ -60,7 +60,7 @@ class PeriodService(private val periodDao: PeriodDao,
         val pmd = cm.context.pmd ?: throw ErrorException(ErrorType.CONTEXT)
         val startDateContext = cm.context.startDate?.toLocal() ?: throw ErrorException(ErrorType.INVALID_PERIOD)
         val offsetExtended = rulesService.getOffsetExtended(country, pmd)
-        val newEndDate = startDateContext.plusSeconds(offsetExtended)
+        val newEndDate = startDateContext.plus(offsetExtended)
         val oldPeriod = getPeriodEntity(cpId, stage)
         val newPeriod = oldPeriod.copy(endDate = newEndDate.toDate())
         periodDao.save(newPeriod)
@@ -82,7 +82,7 @@ class PeriodService(private val periodDao: PeriodDao,
         } else {
             rulesService.getOffset(country, pmd)
         }
-        val enquiryEndDate = endDate.minusSeconds(offset)
+        val enquiryEndDate = endDate.minus(offset)
         val periodEntity = PeriodEntity(
                 cpId = cpId,
                 stage = stage,
@@ -110,7 +110,7 @@ class PeriodService(private val periodDao: PeriodDao,
 
         // FR.COM-8.1.2
         val shift = rulesService.getPeriodShift(country = context.country, pmd = context.pmd)
-        val endDate = request.period.endDate.minusDays(shift)
+        val endDate = request.period.endDate.minus(shift)
 
         val periodEntity = PeriodEntity(
             cpId = context.cpid,
@@ -150,7 +150,7 @@ class PeriodService(private val periodDao: PeriodDao,
         val periodEntity = getPeriodEntity(cpId, stage)
         val startDateDb = periodEntity.startDate.toLocal()
         val endDateDb = periodEntity.endDate.toLocal()
-        val checkPoint = endDateDb.minusSeconds(intervalBefore)
+        val checkPoint = endDateDb.minus(intervalBefore)
         //((pmd == "OT" && stage == "EV")
         if (endDateRq < endDateDb) throw ErrorException(ErrorType.INVALID_PERIOD)
         //a)
@@ -173,7 +173,7 @@ class PeriodService(private val periodDao: PeriodDao,
         //b)
         if (startDateRq >= checkPoint) {
             if (endDateRq == endDateDb) {
-                val newEndDate = startDateRq.plusSeconds(intervalBefore)
+                val newEndDate = startDateRq.plus(intervalBefore)
                 return ResponseDto(data = CheckPeriodRs(
                         setExtendedPeriod = true,
                         isEnquiryPeriodChanged = true,
@@ -181,7 +181,7 @@ class PeriodService(private val periodDao: PeriodDao,
                         endDate = newEndDate))
             }
             if (endDateDb < endDateRq) {
-                val newEndDate = startDateRq.plusSeconds(intervalBefore)
+                val newEndDate = startDateRq.plus(intervalBefore)
                 if (endDateRq <= newEndDate) throw ErrorException(ErrorType.INVALID_PERIOD)
                 return ResponseDto(data = CheckPeriodRs(
                         setExtendedPeriod = true,
@@ -214,8 +214,8 @@ class PeriodService(private val periodDao: PeriodDao,
                               startDate: LocalDateTime,
                               endDate: LocalDateTime): Boolean {
         val interval = rulesService.getInterval(country, pmd)
-        val sec = ChronoUnit.SECONDS.between(startDate, endDate)
-        return sec >= interval
+        val duration = Duration.between(startDate, endDate)
+        return duration >= interval
     }
 
 }

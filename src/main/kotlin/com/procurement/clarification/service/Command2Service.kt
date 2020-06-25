@@ -3,7 +3,8 @@ package com.procurement.clarification.service
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.application.service.Logger
 import com.procurement.clarification.infrastructure.dto.ApiResponse
-import com.procurement.clarification.infrastructure.handler.find.equiryids.FindEnquiryIdsHandler
+import com.procurement.clarification.infrastructure.handler.find.enquiries.FindEnquiriesHandler
+import com.procurement.clarification.infrastructure.handler.find.enquiryids.FindEnquiryIdsHandler
 import com.procurement.clarification.infrastructure.handler.get.enquirybyids.GetEnquiryByIdsHandler
 import com.procurement.clarification.model.dto.bpe.Command2Type
 import com.procurement.clarification.model.dto.bpe.errorResponse
@@ -16,7 +17,8 @@ import org.springframework.stereotype.Service
 class Command2Service(
     private val logger: Logger,
     private val findEnquiryIdsHandler: FindEnquiryIdsHandler,
-    private val getEnquiryByIdsHandler: GetEnquiryByIdsHandler
+    private val getEnquiryByIdsHandler: GetEnquiryByIdsHandler,
+    private val findEnquiriesHandler: FindEnquiriesHandler
 ) {
 
     fun execute(request: JsonNode): ApiResponse {
@@ -41,6 +43,7 @@ class Command2Service(
         val response: ApiResponse = when (action) {
             Command2Type.FIND_ENQUIRY_IDS -> findEnquiryIdsHandler.handle(node = request)
             Command2Type.GET_ENQUIRY_BY_IDS -> getEnquiryByIdsHandler.handle(node = request)
+            Command2Type.FIND_ENQUIRIES -> findEnquiriesHandler.handle(node = request)
         }
 
         logger.info("DataOfResponse: '$response'.")

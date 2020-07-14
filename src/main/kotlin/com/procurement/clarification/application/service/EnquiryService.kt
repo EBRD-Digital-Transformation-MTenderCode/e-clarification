@@ -116,7 +116,7 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
             id = this.id,
             answer = this.answer,
             date = this.date,
-            dateAnswer = this.dateAnswered,
+            dateAnswered = this.dateAnswered,
             description = this.description,
             relatedLot = this.relatedLot
                 ?.let { LotId.fromString(it) },

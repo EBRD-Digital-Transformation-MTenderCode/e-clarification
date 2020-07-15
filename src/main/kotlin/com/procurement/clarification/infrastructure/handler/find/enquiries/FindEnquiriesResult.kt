@@ -10,23 +10,29 @@ import java.time.LocalDateTime
 data class FindEnquiriesResult(
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @param:JsonProperty("id") @field:JsonProperty("id") val id: EnquiryId?,
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @param:JsonProperty("date") @field:JsonProperty("date") val date: LocalDateTime?,
+
     @param:JsonProperty("author") @field:JsonProperty("author") val author: Author,
     @param:JsonProperty("title") @field:JsonProperty("title") val title: String,
     @param:JsonProperty("description") @field:JsonProperty("description") val description: String,
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @param:JsonProperty("relatedLot") @field:JsonProperty("relatedLot") val relatedLot: LotId?,
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @param:JsonProperty("answer") @field:JsonProperty("answer") val answer: String?,
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @param:JsonProperty("dateAnswer") @field:JsonProperty("dateAnswer") val dateAnswer: LocalDateTime?
+    @param:JsonProperty("dateAnswered") @field:JsonProperty("dateAnswered") val dateAnswered: LocalDateTime?
 ) {
     data class Author(
         @param:JsonProperty("name") @field:JsonProperty("name") val name: String,
+
         @JsonInclude(JsonInclude.Include.NON_NULL)
         @param:JsonProperty("id") @field:JsonProperty("id") val id: String?,
+
         @param:JsonProperty("identifier") @field:JsonProperty("identifier") val identifier: Identifier,
         @param:JsonProperty("address") @field:JsonProperty("address") val address: Address,
         @param:JsonProperty("contactPoint") @field:JsonProperty("contactPoint") val contactPoint: ContactPoint,
@@ -58,20 +64,26 @@ data class FindEnquiriesResult(
             ) {
                 data class Country(
                     @param:JsonProperty("id") @field:JsonProperty("id") val id: String,
+
                     @JsonInclude(JsonInclude.Include.NON_NULL)
                     @param:JsonProperty("description") @field:JsonProperty("description") val description: String?,
+
                     @JsonInclude(JsonInclude.Include.NON_NULL)
                     @param:JsonProperty("scheme") @field:JsonProperty("scheme") val scheme: String?,
+
                     @JsonInclude(JsonInclude.Include.NON_NULL)
                     @param:JsonProperty("uri") @field:JsonProperty("uri") val uri: String?
                 )
 
                 data class Region(
                     @param:JsonProperty("id") @field:JsonProperty("id") val id: String,
+
                     @JsonInclude(JsonInclude.Include.NON_NULL)
                     @param:JsonProperty("description") @field:JsonProperty("description") val description: String?,
+
                     @JsonInclude(JsonInclude.Include.NON_NULL)
                     @param:JsonProperty("scheme") @field:JsonProperty("scheme") val scheme: String?,
+
                     @JsonInclude(JsonInclude.Include.NON_NULL)
                     @param:JsonProperty("uri") @field:JsonProperty("uri") val uri: String?
                 )
@@ -103,6 +115,7 @@ data class FindEnquiriesResult(
 
             @JsonInclude(JsonInclude.Include.NON_NULL)
             @param:JsonProperty("faxNumber") @field:JsonProperty("faxNumber") val faxNumber: String?,
+
             @JsonInclude(JsonInclude.Include.NON_NULL)
             @param:JsonProperty("url") @field:JsonProperty("url") val url: String?
         )

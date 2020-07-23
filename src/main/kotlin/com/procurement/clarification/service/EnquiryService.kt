@@ -3,7 +3,11 @@ package com.procurement.clarification.service
 import com.procurement.clarification.dao.EnquiryDao
 import com.procurement.clarification.dao.PeriodDao
 import com.procurement.clarification.exception.ErrorException
-import com.procurement.clarification.exception.ErrorType.*
+import com.procurement.clarification.exception.ErrorType.ALREADY_HAS_ANSWER
+import com.procurement.clarification.exception.ErrorType.CONTEXT
+import com.procurement.clarification.exception.ErrorType.INVALID_ANSWER
+import com.procurement.clarification.exception.ErrorType.INVALID_ID
+import com.procurement.clarification.exception.ErrorType.INVALID_OWNER
 import com.procurement.clarification.model.dto.bpe.CommandMessage
 import com.procurement.clarification.model.dto.bpe.ResponseDto
 import com.procurement.clarification.model.dto.ocds.Enquiry
@@ -97,7 +101,6 @@ class EnquiryService(private val generationService: GenerationService,
         if (enquiryId != enquiry.id) throw ErrorException(INVALID_ID)
         if (enquiryDto.answer.isBlank()) throw ErrorException(INVALID_ANSWER)
         enquiry.apply {
-            date = dateTime
             answer = enquiryDto.answer
             dateAnswered = dateTime
         }

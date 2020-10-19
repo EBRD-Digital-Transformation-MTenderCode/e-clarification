@@ -10,6 +10,6 @@ class CreateEnquiryPeriodResultTest : AbstractDTOTestBase<CreateEnquiryPeriodRes
 
     @Test
     fun fully() {
-        testBindingAndMapping("json/dto/enquiry/get_enquiry_by_ids_request_full.json")
+        testBindingAndMapping("json/dto/enquiry/period/create/result_create_enquiry_period_full.json")
     }
 }

@@ -10,12 +10,13 @@ import com.procurement.clarification.infrastructure.handler.AbstractQueryHandler
 import com.procurement.clarification.model.dto.bpe.Command2Type
 import com.procurement.clarification.model.dto.bpe.tryGetParams
 import com.procurement.clarification.model.dto.bpe.tryParamsToObject
+import com.procurement.clarification.service.PeriodService
 import org.springframework.stereotype.Component
 
 @Component
 class CreateEnquiryPeriodHandler(
     logger: Logger,
-    private val enquiryService: EnquiryService
+    private val periodService: PeriodService
 ) : AbstractQueryHandler<Command2Type, CreateEnquiryPeriodResult>(logger = logger) {
 
     override fun execute(node: JsonNode): Result<CreateEnquiryPeriodResult, Fail> {
@@ -25,7 +26,7 @@ class CreateEnquiryPeriodHandler(
             .bind {  it.convert()}
             .orForwardFail { fail -> return fail }
 
-        return enquiryService.createEnquiryPeriod(params = params)
+        return periodService.createEnquiryPeriod(params = params)
     }
 
     override val action: Command2Type

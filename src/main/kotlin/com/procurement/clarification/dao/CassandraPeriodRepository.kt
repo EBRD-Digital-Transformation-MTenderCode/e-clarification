@@ -26,8 +26,8 @@ class CassandraPeriodRepository(private val session: Session) : PeriodRepository
                    $COLUMN_CP_ID,
                    $COLUMN_STAGE,
                    $COLUMN_OWNER,
-                   $COLUMN_START_DATE
-                   $COLUMN_END_DATE
+                   $COLUMN_START_DATE,
+                   $COLUMN_END_DATE,
                    $COLUMN_TENDER_END_DATE
                )
                VALUES(?, ?, ?, ?, ?, ?)

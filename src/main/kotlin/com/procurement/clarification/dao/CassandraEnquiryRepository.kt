@@ -1,18 +1,14 @@
 package com.procurement.clarification.dao
 
-import com.datastax.driver.core.BoundStatement
-import com.datastax.driver.core.ResultSet
 import com.datastax.driver.core.Row
 import com.datastax.driver.core.Session
 import com.procurement.clarification.application.respository.EnquiryRepository
 import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.enums.Stage
-import com.procurement.clarification.domain.model.token.Token
 import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.domain.util.Result.Companion.failure
-import com.procurement.clarification.domain.util.Result.Companion.success
 import com.procurement.clarification.domain.util.asSuccess
+import com.procurement.clarification.infrastructure.extension.tryExecute
 import com.procurement.clarification.model.entity.EnquiryEntity
 import org.springframework.stereotype.Repository
 
@@ -27,7 +23,6 @@ class CassandraEnquiryRepository(private val session: Session) : EnquiryReposito
         private const val COLUMN_STAGE = "stage"
         private const val COLUMN_IS_ANSWERED = "is_answered"
         private const val COLUMN_JSON_DATA = "json_data"
-
 
         private const val FIND_ALL_BY_CPID_AND_STAGE_CQL = """
             SELECT $COLUMN_CP_ID,
@@ -50,17 +45,12 @@ class CassandraEnquiryRepository(private val session: Session) : EnquiryReposito
                 setString(COLUMN_CP_ID, cpid.toString())
                 setString(COLUMN_STAGE, stage.toString())
             }
-        return query.tryExecute()
+        return query.tryExecute(session)
             .orForwardFail { fail -> return fail }
             .map { row -> row.extractEnquiryEntity() }
             .asSuccess()
     }
 
-    private fun BoundStatement.tryExecute(): Result<ResultSet, Fail.Incident.Database> = try {
-        success(session.execute(this))
-    } catch (expected: Exception) {
-        failure(Fail.Incident.Database(expected))
-    }
 
     private fun Row.extractEnquiryEntity() =
         EnquiryEntity(

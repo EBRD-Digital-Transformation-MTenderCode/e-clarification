@@ -9,11 +9,11 @@ class FindEnquiryIdsTest : AbstractDTOTestBase<FindEnquiryIdsRequest>(
 
     @Test
     fun fully() {
-        testBindingAndMapping("json/dto/find/enquiryids/find_enquiry_ids_request_full.json")
+        testBindingAndMapping("json/dto/enquiry/id/find_enquiry_ids_request_full.json")
     }
     @Test
     fun fully1() {
-        testBindingAndMapping("json/dto/find/enquiryids/find_enquiry_ids_request_1.json")
+        testBindingAndMapping("json/dto/enquiry/id/find_enquiry_ids_request_1.json")
     }
 
 }

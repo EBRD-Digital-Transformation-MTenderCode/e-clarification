@@ -9,7 +9,7 @@ class GetEnquiryByIdsRequestTest : AbstractDTOTestBase<GetEnquiryByIdsRequest>(
 
     @Test
     fun fully() {
-        testBindingAndMapping("json/dto/get.enquirybyids/get_enquiry_by_ids_request_full.json")
+        testBindingAndMapping("json/dto/enquiry/get_enquiry_by_ids_request_full.json")
     }
 
 }

@@ -1,4 +1,4 @@
-package com.procurement.clarification.infrastructure.handler.find.enquiries
+package com.procurement.clarification.infrastructure.handler.enquiry.find.plural
 
 import com.procurement.clarification.application.model.dto.params.FindEnquiriesParams
 import com.procurement.clarification.domain.fail.error.DataErrors

@@ -12,8 +12,8 @@ import com.procurement.clarification.domain.model.lot.LotId
 import com.procurement.clarification.domain.util.Result
 import com.procurement.clarification.domain.util.asFailure
 import com.procurement.clarification.domain.util.asSuccess
-import com.procurement.clarification.infrastructure.handler.find.enquiries.FindEnquiriesResult
-import com.procurement.clarification.infrastructure.handler.get.enquirybyids.GetEnquiryByIdsResult
+import com.procurement.clarification.infrastructure.handler.enquiry.find.plural.FindEnquiriesResult
+import com.procurement.clarification.infrastructure.handler.enquiry.id.get.GetEnquiryByIdsResult
 import com.procurement.clarification.model.dto.ocds.Enquiry
 import com.procurement.clarification.utils.tryToObject
 import org.springframework.stereotype.Service
@@ -185,7 +185,11 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
                                 )
                             },
                         details = organizationReference.details
-                            .let { FindEnquiriesResult.Author.Details(scale = Scale.creator(name = it!!.scale)) },
+                            .let {
+                                FindEnquiriesResult.Author.Details(
+                                    scale = Scale.creator(name = it!!.scale)
+                                )
+                            },
                         identifier = organizationReference.identifier
                             .let { it ->
                                 FindEnquiriesResult.Author.Identifier(
@@ -235,7 +239,9 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
                             },
                         details = organizationReference.details
                             .let { details ->
-                                GetEnquiryByIdsResult.Author.Details(scale = Scale.creator(name = details!!.scale))
+                                GetEnquiryByIdsResult.Author.Details(
+                                    scale = Scale.creator(name = details!!.scale)
+                                )
                             },
                         identifier = organizationReference.identifier
                             .let { identifier ->

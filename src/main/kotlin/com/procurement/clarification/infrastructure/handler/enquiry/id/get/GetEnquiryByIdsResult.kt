@@ -1,4 +1,4 @@
-package com.procurement.clarification.infrastructure.handler.get.enquirybyids
+package com.procurement.clarification.infrastructure.handler.enquiry.id.get
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -6,7 +6,6 @@ import com.procurement.clarification.domain.model.country.CountryId
 import com.procurement.clarification.domain.model.enquiry.EnquiryId
 import com.procurement.clarification.domain.model.enums.Scale
 import com.procurement.clarification.domain.model.lot.LotId
-import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class GetEnquiryByIdsResult(

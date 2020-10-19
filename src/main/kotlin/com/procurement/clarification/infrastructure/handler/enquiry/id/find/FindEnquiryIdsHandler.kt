@@ -1,4 +1,4 @@
-package com.procurement.clarification.infrastructure.handler.get.enquirybyids
+package com.procurement.clarification.infrastructure.handler.enquiry.id.find
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.application.service.EnquiryService
@@ -14,21 +14,21 @@ import com.procurement.clarification.model.dto.bpe.tryParamsToObject
 import org.springframework.stereotype.Component
 
 @Component
-class GetEnquiryByIdsHandler(
+class FindEnquiryIdsHandler(
     logger: Logger,
     private val enquiryService: EnquiryService
-) : AbstractQueryHandler<Command2Type, List<GetEnquiryByIdsResult>>(logger = logger) {
+) : AbstractQueryHandler<Command2Type, List<EnquiryId>>(logger = logger) {
 
-    override fun execute(node: JsonNode): Result<List<GetEnquiryByIdsResult>, Fail> {
+    override fun execute(node: JsonNode): Result<List<EnquiryId>, Fail> {
 
         val params = node.tryGetParams()
             .orForwardFail { fail -> return fail }
-            .tryParamsToObject(GetEnquiryByIdsRequest::class.java)
+            .tryParamsToObject(FindEnquiryIdsRequest::class.java)
             .orForwardFail { fail -> return fail }
             .convert()
             .orForwardFail { fail -> return fail }
 
-        return enquiryService.getEnquiryByIds(params = params)
+        return enquiryService.findEnquiryIds(params = params)
     }
 
     override val action: Command2Type

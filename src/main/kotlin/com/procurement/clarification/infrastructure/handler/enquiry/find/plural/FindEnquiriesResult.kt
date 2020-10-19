@@ -1,4 +1,4 @@
-package com.procurement.clarification.infrastructure.handler.find.enquiries
+package com.procurement.clarification.infrastructure.handler.enquiry.find.plural
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty

@@ -1,4 +1,4 @@
-package com.procurement.clarification.infrastructure.handler.find.enquiries.period
+package com.procurement.clarification.infrastructure.handler.enquiry.period
 
 import com.procurement.clarification.application.model.dto.params.CreateEnquiryPeriodParams
 import com.procurement.clarification.domain.fail.error.DataErrors

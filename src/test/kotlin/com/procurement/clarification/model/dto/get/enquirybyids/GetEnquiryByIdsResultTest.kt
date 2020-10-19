@@ -1,10 +1,11 @@
 package com.procurement.clarification.model.dto.get.enquirybyids
 
-import com.procurement.clarification.infrastructure.handler.get.enquirybyids.GetEnquiryByIdsResult
+import com.procurement.clarification.infrastructure.handler.enquiry.id.get.GetEnquiryByIdsResult
 import com.procurement.clarification.model.dto.AbstractDTOTestBase
 import org.junit.Test
 
-class GetEnquiryByIdsResultTest : AbstractDTOTestBase<GetEnquiryByIdsResult>(GetEnquiryByIdsResult::class.java) {
+class GetEnquiryByIdsResultTest : AbstractDTOTestBase<GetEnquiryByIdsResult>(
+    GetEnquiryByIdsResult::class.java) {
 
     @Test
     fun fully() {

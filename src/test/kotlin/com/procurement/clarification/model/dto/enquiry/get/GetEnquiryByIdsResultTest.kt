@@ -9,17 +9,17 @@ class GetEnquiryByIdsResultTest : AbstractDTOTestBase<GetEnquiryByIdsResult>(
 
     @Test
     fun fully() {
-        testBindingAndMapping("json/dto/enquiry/get_enquiry_by_ids_response_full.json")
+        testBindingAndMapping("json/dto/enquiry/get/get_enquiry_by_ids_response_full.json")
     }
 
     @Test
     fun fully1() {
-        testBindingAndMapping("json/dto/enquiry/get_enquiry_by_ids_response_1.json")
+        testBindingAndMapping("json/dto/enquiry/get/get_enquiry_by_ids_response_1.json")
     }
 
     @Test
     fun fully2() {
-        testBindingAndMapping("json/dto/enquiry/get_enquiry_by_ids_response_2.json")
+        testBindingAndMapping("json/dto/enquiry/get/get_enquiry_by_ids_response_2.json")
     }
 
 }

@@ -9,16 +9,16 @@ class FindEnquiriesResultTest : AbstractDTOTestBase<FindEnquiriesResult>(
 
     @Test
     fun fully() {
-        testBindingAndMapping("json/dto/enquiry/plural/find_enquiries_result_full.json")
+        testBindingAndMapping("json/dto/enquiry/find/find_enquiries_result_full.json")
     }
 
     @Test
     fun fully1() {
-        testBindingAndMapping("json/dto/enquiry/plural/find_enquiries_result_1.json")
+        testBindingAndMapping("json/dto/enquiry/find/find_enquiries_result_1.json")
     }
 
     @Test
     fun fully2() {
-        testBindingAndMapping("json/dto/enquiry/plural/find_enquiries_result_2.json")
+        testBindingAndMapping("json/dto/enquiry/find/find_enquiries_result_2.json")
     }
 }

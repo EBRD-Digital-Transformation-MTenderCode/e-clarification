@@ -13,7 +13,7 @@ import com.procurement.clarification.domain.model.date.format
 import com.procurement.clarification.domain.model.enums.OperationType
 import com.procurement.clarification.domain.model.enums.ProcurementMethod
 import com.procurement.clarification.domain.util.MaybeFail
-import com.procurement.clarification.infrastructure.handler.enquiry.period.CreateEnquiryPeriodResult
+import com.procurement.clarification.infrastructure.handler.enquiry.period.create.CreateEnquiryPeriodResult
 import com.procurement.clarification.model.entity.PeriodEntity
 import com.procurement.clarification.service.PeriodService
 import com.procurement.clarification.service.RulesService

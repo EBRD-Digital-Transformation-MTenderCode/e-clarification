@@ -1,4 +1,4 @@
-package com.procurement.clarification.infrastructure.handler.enquiry.id.get
+package com.procurement.clarification.infrastructure.handler.enquiry.get
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty

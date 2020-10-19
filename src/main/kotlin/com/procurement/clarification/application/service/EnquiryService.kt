@@ -12,8 +12,8 @@ import com.procurement.clarification.domain.model.lot.LotId
 import com.procurement.clarification.domain.util.Result
 import com.procurement.clarification.domain.util.asFailure
 import com.procurement.clarification.domain.util.asSuccess
-import com.procurement.clarification.infrastructure.handler.enquiry.find.plural.FindEnquiriesResult
-import com.procurement.clarification.infrastructure.handler.enquiry.id.get.GetEnquiryByIdsResult
+import com.procurement.clarification.infrastructure.handler.enquiry.find.FindEnquiriesResult
+import com.procurement.clarification.infrastructure.handler.enquiry.get.GetEnquiryByIdsResult
 import com.procurement.clarification.model.dto.ocds.Enquiry
 import com.procurement.clarification.utils.tryToObject
 import org.springframework.stereotype.Service

@@ -3,10 +3,10 @@ package com.procurement.clarification.service
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.application.service.Logger
 import com.procurement.clarification.infrastructure.dto.ApiResponse
-import com.procurement.clarification.infrastructure.handler.enquiry.find.plural.FindEnquiriesHandler
-import com.procurement.clarification.infrastructure.handler.enquiry.period.CreateEnquiryPeriodHandler
+import com.procurement.clarification.infrastructure.handler.enquiry.find.FindEnquiriesHandler
+import com.procurement.clarification.infrastructure.handler.enquiry.period.create.CreateEnquiryPeriodHandler
 import com.procurement.clarification.infrastructure.handler.enquiry.id.find.FindEnquiryIdsHandler
-import com.procurement.clarification.infrastructure.handler.enquiry.id.get.GetEnquiryByIdsHandler
+import com.procurement.clarification.infrastructure.handler.enquiry.get.GetEnquiryByIdsHandler
 import com.procurement.clarification.model.dto.bpe.Command2Type
 import com.procurement.clarification.model.dto.bpe.errorResponse
 import com.procurement.clarification.model.dto.bpe.getAction

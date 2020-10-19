@@ -1,4 +1,4 @@
-package com.procurement.clarification.infrastructure.handler.enquiry.period
+package com.procurement.clarification.infrastructure.handler.enquiry.period.create
 
 
 import com.fasterxml.jackson.annotation.JsonProperty

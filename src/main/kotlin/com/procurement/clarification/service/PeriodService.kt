@@ -12,7 +12,7 @@ import com.procurement.clarification.domain.util.asFailure
 import com.procurement.clarification.domain.util.asSuccess
 import com.procurement.clarification.exception.ErrorException
 import com.procurement.clarification.exception.ErrorType
-import com.procurement.clarification.infrastructure.handler.enquiry.period.CreateEnquiryPeriodResult
+import com.procurement.clarification.infrastructure.handler.enquiry.period.create.CreateEnquiryPeriodResult
 import com.procurement.clarification.model.dto.bpe.CommandMessage
 import com.procurement.clarification.model.dto.bpe.ResponseDto
 import com.procurement.clarification.model.dto.ocds.Period

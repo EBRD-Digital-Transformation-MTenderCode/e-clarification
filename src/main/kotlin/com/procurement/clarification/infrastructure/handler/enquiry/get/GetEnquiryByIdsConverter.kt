@@ -1,4 +1,4 @@
-package com.procurement.clarification.infrastructure.handler.enquiry.id.get
+package com.procurement.clarification.infrastructure.handler.enquiry.get
 
 import com.procurement.clarification.application.model.dto.params.GetEnquiryByIdsParams
 import com.procurement.clarification.domain.fail.error.DataErrors

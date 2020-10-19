@@ -1,4 +1,4 @@
-package com.procurement.clarification.model.dto.enquiry.id.get
+package com.procurement.clarification.model.dto.enquiry.get
 
 import com.procurement.clarification.infrastructure.handler.enquiry.id.get.GetEnquiryByIdsResult
 import com.procurement.clarification.model.dto.AbstractDTOTestBase

@@ -1,4 +1,4 @@
-package com.procurement.clarification.model.dto.enquiry.plural
+package com.procurement.clarification.model.dto.enquiry.find
 
 import com.procurement.clarification.infrastructure.handler.enquiry.find.plural.FindEnquiriesRequest
 import com.procurement.clarification.model.dto.AbstractDTOTestBase

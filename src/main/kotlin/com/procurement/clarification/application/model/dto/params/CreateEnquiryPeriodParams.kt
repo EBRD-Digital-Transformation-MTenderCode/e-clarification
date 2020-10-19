@@ -98,7 +98,7 @@ class CreateEnquiryPeriodParams private constructor(
     data class Tender(
         val tenderPeriod: TenderPeriod
     ) {
-        data class TenderPeriod(
+        class TenderPeriod private constructor(
             val startDate: LocalDateTime,
             val endDate: LocalDateTime
         ) {

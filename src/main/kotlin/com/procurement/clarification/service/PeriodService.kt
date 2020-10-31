@@ -1,11 +1,18 @@
 package com.procurement.clarification.service
 
+import com.procurement.clarification.application.model.dto.params.CreateEnquiryPeriodParams
 import com.procurement.clarification.application.model.dto.period.create.CreatePeriodContext
 import com.procurement.clarification.application.model.dto.period.create.CreatePeriodData
 import com.procurement.clarification.application.model.dto.period.create.CreatePeriodResult
+import com.procurement.clarification.application.respository.PeriodRepository
 import com.procurement.clarification.dao.PeriodDao
+import com.procurement.clarification.domain.fail.Fail
+import com.procurement.clarification.domain.util.Result
+import com.procurement.clarification.domain.util.asFailure
+import com.procurement.clarification.domain.util.asSuccess
 import com.procurement.clarification.exception.ErrorException
 import com.procurement.clarification.exception.ErrorType
+import com.procurement.clarification.infrastructure.handler.enquiry.period.create.CreateEnquiryPeriodResult
 import com.procurement.clarification.model.dto.bpe.CommandMessage
 import com.procurement.clarification.model.dto.bpe.ResponseDto
 import com.procurement.clarification.model.dto.ocds.Period
@@ -21,6 +28,7 @@ import java.time.LocalDateTime
 
 @Service
 class PeriodService(private val periodDao: PeriodDao,
+                    private val periodRepository: PeriodRepository,
                     private val rulesService: RulesService) {
 
     fun periodValidation(cm: CommandMessage): ResponseDto {
@@ -218,4 +226,29 @@ class PeriodService(private val periodDao: PeriodDao,
         return duration >= interval
     }
 
+
+    fun createEnquiryPeriod(params: CreateEnquiryPeriodParams): Result<CreateEnquiryPeriodResult, Fail> {
+        val periodShift = rulesService.getPeriodShift(country = params.country, pmd = params.pmd.key).seconds
+        val tenderPeriod = params.tender.tenderPeriod
+        val enquiryPeriod = PeriodEntity(
+            cpId = params.cpid.toString(),
+            owner = params.owner.toString(),
+            stage = params.ocid.stage.toString(),
+            startDate = tenderPeriod.startDate.toDate(),
+            endDate = tenderPeriod.endDate.minusSeconds(periodShift).toDate(),
+            tenderEndDate = null
+        )
+
+        periodRepository.save(enquiryPeriod)
+            .doOnFail { error -> return error.asFailure() }
+
+        return CreateEnquiryPeriodResult(
+            CreateEnquiryPeriodResult.Tender(
+                CreateEnquiryPeriodResult.Tender.EnquiryPeriod(
+                    startDate = enquiryPeriod.startDate.toLocal(),
+                    endDate = enquiryPeriod.endDate.toLocal()
+                )
+            )
+        ).asSuccess()
+    }
 }

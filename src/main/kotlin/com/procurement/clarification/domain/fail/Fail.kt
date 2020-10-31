@@ -82,15 +82,6 @@ sealed class Fail {
             }
         }
 
-        class ParsingIncident : Incident(
-            level = Level.ERROR,
-            number = "05",
-            description = "Internal Server Error."
-        ) {
-            override fun logging(logger: Logger) {
-                logger.error(message = message)
-            }
-        }
 
         enum class Level(@JsonValue override val key: String) : EnumElementProvider.Key {
             ERROR("error"),

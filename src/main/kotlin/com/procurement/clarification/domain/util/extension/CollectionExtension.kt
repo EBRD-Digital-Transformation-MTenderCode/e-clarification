@@ -1,7 +1,7 @@
 package com.procurement.clarification.domain.util.extension
 
-import com.procurement.clarification.domain.util.Option
-import com.procurement.clarification.domain.util.Result
+import com.procurement.clarification.lib.functional.Option
+import com.procurement.clarification.lib.functional.Result
 
 fun <T> T?.toList(): List<T> = if (this != null) listOf(this) else emptyList()
 

@@ -3,8 +3,8 @@ package com.procurement.clarification.domain.fail
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.clarification.application.service.Logger
 import com.procurement.clarification.domain.EnumElementProvider
-import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.domain.util.ValidationResult
+import com.procurement.clarification.lib.functional.Result
+import com.procurement.clarification.lib.functional.ValidationResult
 
 sealed class Fail {
 

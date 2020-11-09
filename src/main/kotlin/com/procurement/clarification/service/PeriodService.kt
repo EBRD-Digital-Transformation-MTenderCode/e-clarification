@@ -7,9 +7,9 @@ import com.procurement.clarification.application.model.dto.period.create.CreateP
 import com.procurement.clarification.application.respository.PeriodRepository
 import com.procurement.clarification.dao.PeriodDao
 import com.procurement.clarification.domain.fail.Fail
-import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.domain.util.asFailure
-import com.procurement.clarification.domain.util.asSuccess
+import com.procurement.clarification.lib.functional.Result
+import com.procurement.clarification.lib.functional.asFailure
+import com.procurement.clarification.lib.functional.asSuccess
 import com.procurement.clarification.exception.ErrorException
 import com.procurement.clarification.exception.ErrorType
 import com.procurement.clarification.infrastructure.handler.enquiry.period.create.CreateEnquiryPeriodResult

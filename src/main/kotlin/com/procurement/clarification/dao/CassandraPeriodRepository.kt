@@ -3,7 +3,7 @@ package com.procurement.clarification.dao
 import com.datastax.driver.core.Session
 import com.procurement.clarification.application.respository.PeriodRepository
 import com.procurement.clarification.domain.fail.Fail
-import com.procurement.clarification.domain.util.MaybeFail
+import com.procurement.clarification.lib.functional.MaybeFail
 import com.procurement.clarification.infrastructure.extension.tryExecute
 import com.procurement.clarification.model.entity.PeriodEntity
 import org.springframework.stereotype.Repository

@@ -14,11 +14,11 @@ import com.procurement.clarification.domain.fail.error.BadRequestErrors
 import com.procurement.clarification.domain.fail.error.DataErrors
 import com.procurement.clarification.domain.fail.error.ValidationErrors
 import com.procurement.clarification.domain.util.Action
-import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.domain.util.Result.Companion.failure
-import com.procurement.clarification.domain.util.Result.Companion.success
-import com.procurement.clarification.domain.util.asSuccess
-import com.procurement.clarification.domain.util.bind
+import com.procurement.clarification.lib.functional.Result
+import com.procurement.clarification.lib.functional.Result.Companion.failure
+import com.procurement.clarification.lib.functional.Result.Companion.success
+import com.procurement.clarification.lib.functional.asSuccess
+import com.procurement.clarification.lib.functional.bind
 import com.procurement.clarification.domain.util.extension.toList
 import com.procurement.clarification.infrastructure.dto.ApiErrorResponse
 import com.procurement.clarification.infrastructure.dto.ApiIncidentResponse

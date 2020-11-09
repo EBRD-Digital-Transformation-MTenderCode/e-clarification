@@ -2,8 +2,8 @@ package com.procurement.clarification.infrastructure.handler.enquiry.period.crea
 
 import com.procurement.clarification.application.model.dto.params.CreateEnquiryPeriodParams
 import com.procurement.clarification.domain.fail.error.DataErrors
-import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.domain.util.asSuccess
+import com.procurement.clarification.lib.functional.Result
+import com.procurement.clarification.lib.functional.asSuccess
 
 fun CreateEnquiryPeriodRequest.convert(): Result<CreateEnquiryPeriodParams, DataErrors> =
     CreateEnquiryPeriodParams.tryCreate(

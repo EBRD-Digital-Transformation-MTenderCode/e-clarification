@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.procurement.clarification.domain.fail.Fail
-import com.procurement.clarification.domain.util.Result
+import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.model.dto.databinding.IntDeserializer
 import com.procurement.clarification.model.dto.databinding.JsonDateDeserializer
 import com.procurement.clarification.model.dto.databinding.JsonDateSerializer

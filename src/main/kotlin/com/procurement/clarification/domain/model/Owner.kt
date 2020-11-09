@@ -1,7 +1,7 @@
 package com.procurement.clarification.domain.model
 
 import com.procurement.clarification.domain.fail.Fail
-import com.procurement.clarification.domain.util.Result
+import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.domain.util.extension.tryUUID
 import java.util.*
 

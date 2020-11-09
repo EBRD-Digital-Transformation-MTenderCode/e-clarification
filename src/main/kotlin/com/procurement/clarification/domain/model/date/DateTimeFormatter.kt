@@ -1,7 +1,7 @@
 package com.procurement.clarification.domain.model.date
 
 import com.procurement.clarification.domain.fail.error.DataTimeError
-import com.procurement.clarification.domain.util.Result
+import com.procurement.clarification.lib.functional.Result
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.ResolverStyle

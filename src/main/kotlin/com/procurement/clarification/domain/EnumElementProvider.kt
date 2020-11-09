@@ -1,8 +1,8 @@
 package com.procurement.clarification.domain
 
-import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.domain.util.Result.Companion.failure
-import com.procurement.clarification.domain.util.Result.Companion.success
+import com.procurement.clarification.lib.functional.Result
+import com.procurement.clarification.lib.functional.Result.Companion.failure
+import com.procurement.clarification.lib.functional.Result.Companion.success
 import com.procurement.clarification.exception.EnumElementProviderException
 
 abstract class EnumElementProvider<T>(val info: EnumInfo<T>) where T : Enum<T>,

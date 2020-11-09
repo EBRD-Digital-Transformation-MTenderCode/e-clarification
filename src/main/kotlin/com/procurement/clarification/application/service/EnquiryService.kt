@@ -7,9 +7,9 @@ import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.model.enquiry.EnquiryId
 import com.procurement.clarification.domain.model.enums.Scale
 import com.procurement.clarification.domain.model.lot.LotId
-import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.domain.util.asFailure
-import com.procurement.clarification.domain.util.asSuccess
+import com.procurement.clarification.lib.functional.Result
+import com.procurement.clarification.lib.functional.asFailure
+import com.procurement.clarification.lib.functional.asSuccess
 import com.procurement.clarification.infrastructure.handler.enquiry.find.FindEnquiriesResult
 import com.procurement.clarification.model.dto.ocds.Enquiry
 import com.procurement.clarification.utils.tryToObject

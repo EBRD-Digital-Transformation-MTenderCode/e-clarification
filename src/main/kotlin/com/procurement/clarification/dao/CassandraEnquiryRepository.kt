@@ -6,8 +6,8 @@ import com.procurement.clarification.application.respository.EnquiryRepository
 import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.enums.Stage
-import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.domain.util.asSuccess
+import com.procurement.clarification.lib.functional.Result
+import com.procurement.clarification.lib.functional.asSuccess
 import com.procurement.clarification.infrastructure.extension.tryExecute
 import com.procurement.clarification.model.entity.EnquiryEntity
 import org.springframework.stereotype.Repository

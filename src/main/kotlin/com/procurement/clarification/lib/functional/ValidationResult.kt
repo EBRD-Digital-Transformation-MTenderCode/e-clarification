@@ -1,4 +1,4 @@
-package com.procurement.clarification.domain.util
+package com.procurement.clarification.lib.functional
 
 sealed class ValidationResult<out E> {
 

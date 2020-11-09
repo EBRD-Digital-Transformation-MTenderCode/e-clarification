@@ -12,8 +12,8 @@ import com.procurement.clarification.domain.model.Ocid
 import com.procurement.clarification.domain.model.Owner
 import com.procurement.clarification.domain.model.enums.OperationType
 import com.procurement.clarification.domain.model.enums.ProcurementMethod
-import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.domain.util.asSuccess
+import com.procurement.clarification.lib.functional.Result
+import com.procurement.clarification.lib.functional.asSuccess
 import java.time.LocalDateTime
 
 class CreateEnquiryPeriodParams private constructor(

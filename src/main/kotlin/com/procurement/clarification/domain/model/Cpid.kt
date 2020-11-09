@@ -2,7 +2,7 @@ package com.procurement.clarification.domain.model
 
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.clarification.domain.model.country.CountryId
-import com.procurement.clarification.domain.util.Result
+import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.utils.toMilliseconds
 import java.time.LocalDateTime
 

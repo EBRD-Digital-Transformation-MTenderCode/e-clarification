@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.application.service.Logger
 import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.util.Action
-import com.procurement.clarification.domain.util.Result
+import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.infrastructure.dto.ApiResponse
 import com.procurement.clarification.infrastructure.dto.ApiSuccessResponse
 import com.procurement.clarification.model.dto.bpe.getId

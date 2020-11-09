@@ -5,9 +5,9 @@ import com.datastax.driver.core.BoundStatement
 import com.datastax.driver.core.ResultSet
 import com.datastax.driver.core.Session
 import com.procurement.clarification.domain.fail.Fail
-import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.domain.util.Result.Companion.failure
-import com.procurement.clarification.domain.util.Result.Companion.success
+import com.procurement.clarification.lib.functional.Result
+import com.procurement.clarification.lib.functional.Result.Companion.failure
+import com.procurement.clarification.lib.functional.Result.Companion.success
 
 
 fun BoundStatement.tryExecute(session: Session): Result<ResultSet, Fail.Incident.Database> = try {

@@ -16,9 +16,9 @@ import com.procurement.clarification.model.dto.bpe.action
 import com.procurement.clarification.model.dto.bpe.commandId
 import com.procurement.clarification.model.dto.bpe.country
 import com.procurement.clarification.model.dto.bpe.cpid
+import com.procurement.clarification.model.dto.bpe.ocid
 import com.procurement.clarification.model.dto.bpe.owner
 import com.procurement.clarification.model.dto.bpe.pmd
-import com.procurement.clarification.model.dto.bpe.stage
 import com.procurement.clarification.utils.toJson
 import com.procurement.clarification.utils.toObject
 import org.slf4j.LoggerFactory
@@ -51,9 +51,9 @@ class CommandService(
             CommandType.CREATE_ENQUIRY -> enquiryService.createEnquiry(cm)
             CommandType.CREATE_PERIOD -> {
                 val context = CreatePeriodContext(
-                    owner = cm.owner,
-                    stage = cm.stage,
                     cpid = cm.cpid,
+                    ocid = cm.ocid,
+                    owner = cm.owner,
                     pmd = cm.pmd,
                     country = cm.country
                 )

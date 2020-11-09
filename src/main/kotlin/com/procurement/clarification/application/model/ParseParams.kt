@@ -16,30 +16,26 @@ import com.procurement.clarification.lib.functional.asSuccess
 import java.time.LocalDateTime
 
 fun parseCpid(value: String): Result<Cpid, DataErrors.Validation.DataMismatchToPattern> =
-    Cpid.tryCreate(value = value)
-        .doReturn { expectedPattern ->
-            return Result.failure(
-                DataErrors.Validation.DataMismatchToPattern(
-                    name = "cpid",
-                    pattern = expectedPattern,
-                    actualValue = value
-                )
+    Cpid.tryCreateOrNull(value = value)
+        ?.asSuccess()
+        ?: Result.failure(
+            DataErrors.Validation.DataMismatchToPattern(
+                name = "cpid",
+                pattern = Cpid.pattern,
+                actualValue = value
             )
-        }
-        .asSuccess()
+        )
 
 fun parseOcid(value: String): Result<Ocid, DataErrors.Validation.DataMismatchToPattern> =
-    Ocid.tryCreate(value = value)
-        .doReturn { expectedPattern ->
-            return Result.failure(
-                DataErrors.Validation.DataMismatchToPattern(
-                    name = "ocid",
-                    pattern = expectedPattern,
-                    actualValue = value
-                )
+    Ocid.tryCreateOrNull(value = value)
+        ?.asSuccess()
+        ?: Result.failure(
+            DataErrors.Validation.DataMismatchToPattern(
+                name = "ocid",
+                pattern = Ocid.pattern,
+                actualValue = value
             )
-        }
-        .asSuccess()
+        )
 
 fun parseOwner(value: String): Result<Owner, DataErrors.Validation.DataFormatMismatch> =
     value.tryOwner()

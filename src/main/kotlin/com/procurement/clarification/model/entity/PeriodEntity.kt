@@ -1,18 +1,14 @@
 package com.procurement.clarification.model.entity
 
-import java.util.*
+import com.procurement.clarification.domain.model.Cpid
+import com.procurement.clarification.domain.model.Ocid
+import java.time.LocalDateTime
 
 data class PeriodEntity(
-
-        val cpId: String,
-
-        val stage: String,
-
+        val cpid: Cpid,
+        val ocid: Ocid,
         val owner: String,
-
-        val startDate: Date,
-
-        val endDate: Date,
-
-        val tenderEndDate: Date?
+        val startDate: LocalDateTime,
+        val endDate: LocalDateTime,
+        val tenderEndDate: LocalDateTime?
 )

@@ -5,8 +5,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.clarification.application.model.dto.params.CreateEnquiryPeriodParams
-import com.procurement.clarification.application.repository.PeriodRepository
-import com.procurement.clarification.dao.PeriodDao
+import com.procurement.clarification.application.repository.period.PeriodRepository
 import com.procurement.clarification.domain.extension.format
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.Ocid
@@ -17,7 +16,6 @@ import com.procurement.clarification.infrastructure.handler.enquiry.period.creat
 import com.procurement.clarification.model.entity.PeriodEntity
 import com.procurement.clarification.service.PeriodService
 import com.procurement.clarification.service.RulesService
-import com.procurement.clarification.utils.toDate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -32,7 +30,6 @@ class PeriodServiceTest {
 
     private lateinit var periodService: PeriodService
     private lateinit var periodRepository: PeriodRepository
-    private lateinit var periodDao: PeriodDao
     private lateinit var rulesService: RulesService
 
     companion object {
@@ -53,9 +50,8 @@ class PeriodServiceTest {
     @BeforeEach
     fun init() {
         periodRepository = mock()
-        periodDao = mock()
         rulesService = mock()
-        periodService = PeriodService(periodDao, periodRepository, rulesService)
+        periodService = PeriodService(periodRepository, rulesService)
     }
 
     @Nested
@@ -97,11 +93,11 @@ class PeriodServiceTest {
             periodService.createEnquiryPeriod(params).get
 
             verify(periodRepository).save(period = PeriodEntity(
-                cpId = params.cpid.toString(),
-                stage = params.ocid.stage.toString(),
+                cpid = params.cpid,
+                ocid = params.ocid,
                 owner = params.owner.toString(),
-                startDate = RECEIVED_START_DATE.toDate(),
-                endDate = LocalDateTime.parse("2020-02-20T08:49:55Z", FORMATTER).toDate(),
+                startDate = RECEIVED_START_DATE,
+                endDate = LocalDateTime.parse("2020-02-20T08:49:55Z", FORMATTER),
                 tenderEndDate = null
             ))
         }

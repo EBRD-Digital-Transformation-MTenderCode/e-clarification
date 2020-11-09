@@ -2,14 +2,18 @@ package com.procurement.clarification.service
 
 import com.procurement.clarification.application.model.dto.period.create.CreatePeriodContext
 import com.procurement.clarification.application.model.dto.period.create.CreatePeriodData
-import com.procurement.clarification.dao.HistoryDao
+import com.procurement.clarification.domain.extension.nowDefaultUTC
+import com.procurement.clarification.infrastructure.handler.HistoryRepository
 import com.procurement.clarification.infrastructure.model.dto.period.create.request.CreatePeriodRequest
 import com.procurement.clarification.infrastructure.model.dto.period.create.request.convert
 import com.procurement.clarification.infrastructure.model.dto.period.create.response.CreatePeriodResponse
 import com.procurement.clarification.infrastructure.model.dto.period.create.response.convert
+import com.procurement.clarification.infrastructure.repository.history.model.HistoryEntity
 import com.procurement.clarification.model.dto.bpe.CommandMessage
 import com.procurement.clarification.model.dto.bpe.CommandType
 import com.procurement.clarification.model.dto.bpe.ResponseDto
+import com.procurement.clarification.model.dto.bpe.action
+import com.procurement.clarification.model.dto.bpe.commandId
 import com.procurement.clarification.model.dto.bpe.country
 import com.procurement.clarification.model.dto.bpe.cpid
 import com.procurement.clarification.model.dto.bpe.owner
@@ -21,18 +25,23 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
-class CommandService(private val historyDao: HistoryDao,
-                     private val enquiryService: EnquiryService,
-                     private val periodService: PeriodService) {
+class CommandService(
+    private val historyRepository: HistoryRepository,
+    private val enquiryService: EnquiryService,
+    private val periodService: PeriodService
+) {
 
     companion object {
         private val log = LoggerFactory.getLogger(CommandService::class.java)
     }
 
     fun execute(cm: CommandMessage): ResponseDto {
-        var historyEntity = historyDao.getHistory(cm.id, cm.command.value())
-        if (historyEntity != null) {
-            return toObject(ResponseDto::class.java, historyEntity.jsonData)
+        val history = historyRepository.getHistory(cm.commandId)
+            .onFailure {
+                throw RuntimeException("Error of loading history. ${it.reason.description}", it.reason.exception)
+            }
+        if (history != null) {
+            return toObject(ResponseDto::class.java, history)
         }
         val response = when (cm.command) {
             CommandType.ADD_ANSWER -> enquiryService.addAnswer(cm)
@@ -64,7 +73,16 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.SAVE_PERIOD -> periodService.savePeriod(cm)
             CommandType.VALIDATE_PERIOD -> periodService.periodValidation(cm)
         }
-        historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
-        return toObject(ResponseDto::class.java, historyEntity.jsonData)
+        val historyEntity = HistoryEntity(
+            commandId = cm.commandId,
+            action = cm.action,
+            date = nowDefaultUTC(),
+            data = toJson(response)
+        )
+        historyRepository.saveHistory(historyEntity)
+            .doOnError {
+                log.error("Error of save history. ${it.description}", it.exception)
+            }
+        return toObject(ResponseDto::class.java, historyEntity.data)
     }
 }

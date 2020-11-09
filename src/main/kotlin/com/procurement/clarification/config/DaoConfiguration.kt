@@ -10,7 +10,12 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @EnableConfigurationProperties(CassandraProperties::class)
-@ComponentScan(basePackages = ["com.procurement.clarification.dao"])
+@ComponentScan(
+    basePackages = [
+        "com.procurement.clarification.dao",
+        "com.procurement.clarification.infrastructure.repository"
+    ]
+)
 class DaoConfiguration constructor(private val cassandraProperties: CassandraProperties) {
 
     internal val cluster: Cluster

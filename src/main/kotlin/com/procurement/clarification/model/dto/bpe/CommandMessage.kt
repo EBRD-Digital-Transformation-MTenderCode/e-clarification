@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.JsonNode
+import com.procurement.clarification.domain.util.Action
 import com.procurement.clarification.exception.EnumException
 import com.procurement.clarification.exception.ErrorException
 import com.procurement.clarification.exception.ErrorType
+import com.procurement.clarification.infrastructure.model.CommandId
 
 data class CommandMessage @JsonCreator constructor(
 
@@ -39,6 +41,12 @@ data class Context @JsonCreator constructor(
         val setExtendedPeriod: Boolean?
 )
 
+val CommandMessage.commandId: CommandId
+    get() = CommandId(this.id)
+
+val CommandMessage.action: Action
+    get() = this.command
+
 val CommandMessage.owner: String
     get() = this.context.owner
         ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'owner' attribute in context.")
@@ -59,7 +67,7 @@ val CommandMessage.country: String
     get() = this.context.country
         ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'country' attribute in context.")
 
-enum class CommandType(private val value: String) {
+enum class CommandType(override val key: String):Action {
     ADD_ANSWER("addAnswer"),
     CHECK_ANSWER("checkAnswer"),
     CHECK_ENQUIRIES("checkEnquiries"),
@@ -73,11 +81,11 @@ enum class CommandType(private val value: String) {
 
     @JsonValue
     fun value(): String {
-        return this.value
+        return this.key
     }
 
     override fun toString(): String {
-        return this.value
+        return this.key
     }
 }
 

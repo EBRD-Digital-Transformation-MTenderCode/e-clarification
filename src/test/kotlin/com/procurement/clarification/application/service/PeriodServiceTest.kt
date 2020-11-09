@@ -7,9 +7,9 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.clarification.application.model.dto.params.CreateEnquiryPeriodParams
 import com.procurement.clarification.application.respository.PeriodRepository
 import com.procurement.clarification.dao.PeriodDao
+import com.procurement.clarification.domain.extension.format
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.Ocid
-import com.procurement.clarification.domain.model.date.format
 import com.procurement.clarification.domain.model.enums.OperationType
 import com.procurement.clarification.domain.model.enums.ProcurementMethod
 import com.procurement.clarification.lib.functional.MaybeFail

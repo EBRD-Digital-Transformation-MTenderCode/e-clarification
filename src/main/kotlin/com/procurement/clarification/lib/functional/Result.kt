@@ -47,6 +47,11 @@ sealed class Result<out T, out E> {
         }
     }
 
+    inline fun onFailure(f: (Failure<E>) -> Nothing): T = when (this) {
+        is Success<T> -> value
+        is Failure<E> -> f(this)
+    }
+
     val orNull: T?
         get() = when (this) {
             is Success -> get
@@ -69,12 +74,17 @@ sealed class Result<out T, out E> {
         is Failure -> this
     }
 
-    infix fun <R> mapError(transform: (E) -> R): Result<T, R> = when (this) {
+    infix fun <R> mapFailure(transform: (E) -> R): Result<T, R> = when (this) {
         is Success -> this
         is Failure -> Failure(transform(this.error))
     }
 
-    class Success<out T> internal constructor(value: T) : Result<T, Nothing>() {
+    fun forEach(block: (T) -> Unit): Unit = when (this) {
+        is Success -> block(value)
+        is Failure -> Unit
+    }
+
+    class Success<out T> internal constructor(val value: T) : Result<T, Nothing>() {
         override val isSuccess: Boolean = true
         override val isFail: Boolean = false
         override val get: T = value
@@ -84,12 +94,12 @@ sealed class Result<out T, out E> {
         override fun toString(): String = get.toString()
     }
 
-    class Failure<out E> internal constructor(value: E) : Result<Nothing, E>() {
+    class Failure<out E> internal constructor(val reason: E) : Result<Nothing, E>() {
         override val isSuccess: Boolean = false
         override val isFail: Boolean = true
         override val get: Nothing
             get() = throw NoSuchElementException("The result does not contain a value.")
-        override val error: E = value
+        override val error: E = reason
 
         override fun toString(): String = error.toString()
     }

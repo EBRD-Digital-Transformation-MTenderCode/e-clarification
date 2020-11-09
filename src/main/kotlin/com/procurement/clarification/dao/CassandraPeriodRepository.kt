@@ -1,7 +1,7 @@
 package com.procurement.clarification.dao
 
 import com.datastax.driver.core.Session
-import com.procurement.clarification.application.respository.PeriodRepository
+import com.procurement.clarification.application.repository.PeriodRepository
 import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.lib.functional.MaybeFail
 import com.procurement.clarification.infrastructure.extension.cassandra.tryExecute

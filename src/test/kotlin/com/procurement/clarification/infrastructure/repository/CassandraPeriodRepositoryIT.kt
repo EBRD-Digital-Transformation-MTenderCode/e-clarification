@@ -7,7 +7,7 @@ import com.datastax.driver.core.PoolingOptions
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.querybuilder.QueryBuilder
 import com.nhaarman.mockito_kotlin.spy
-import com.procurement.clarification.application.respository.PeriodRepository
+import com.procurement.clarification.application.repository.PeriodRepository
 import com.procurement.clarification.dao.CassandraPeriodRepository
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.Ocid

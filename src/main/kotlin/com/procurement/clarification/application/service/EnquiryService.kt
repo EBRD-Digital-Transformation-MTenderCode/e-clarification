@@ -2,7 +2,7 @@ package com.procurement.clarification.application.service
 
 import com.procurement.clarification.application.model.dto.params.FindEnquiriesParams
 import com.procurement.clarification.application.model.dto.params.FindEnquiryIdsParams
-import com.procurement.clarification.application.respository.EnquiryRepository
+import com.procurement.clarification.application.repository.EnquiryRepository
 import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.model.enquiry.EnquiryId
 import com.procurement.clarification.domain.model.enums.Scale

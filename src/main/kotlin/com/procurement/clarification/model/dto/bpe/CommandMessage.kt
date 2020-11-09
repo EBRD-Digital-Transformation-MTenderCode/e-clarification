@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.JsonNode
+import com.procurement.clarification.domain.model.enums.ProcurementMethod
 import com.procurement.clarification.domain.util.Action
 import com.procurement.clarification.exception.EnumException
 import com.procurement.clarification.exception.ErrorException
@@ -59,8 +60,9 @@ val CommandMessage.stage: String
     get() = this.context.stage
         ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'stage' attribute in context.")
 
-val CommandMessage.pmd: String
+val CommandMessage.pmd: ProcurementMethod
     get() = this.context.pmd
+        ?.let { ProcurementMethod.creator(it) }
         ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'pmd' attribute in context.")
 
 val CommandMessage.country: String

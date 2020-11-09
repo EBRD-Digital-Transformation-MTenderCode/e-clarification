@@ -5,7 +5,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.clarification.application.model.dto.params.CreateEnquiryPeriodParams
-import com.procurement.clarification.application.respository.PeriodRepository
+import com.procurement.clarification.application.repository.PeriodRepository
 import com.procurement.clarification.dao.PeriodDao
 import com.procurement.clarification.domain.extension.format
 import com.procurement.clarification.domain.model.Cpid
@@ -65,7 +65,7 @@ class PeriodServiceTest {
         fun createEnquiryPeriod_success() {
             val params = getParams()
 
-            whenever(rulesService.getPeriodShift(country = params.country, pmd = params.pmd.key))
+            whenever(rulesService.getPeriodShift(country = params.country, pmd = params.pmd))
                 .thenReturn(PERIOD_SHIFT)
 
             whenever(periodRepository.save(any()))
@@ -88,7 +88,7 @@ class PeriodServiceTest {
         fun save_success() {
             val params = getParams()
 
-            whenever(rulesService.getPeriodShift(country = params.country, pmd = params.pmd.key))
+            whenever(rulesService.getPeriodShift(country = params.country, pmd = params.pmd))
                 .thenReturn(PERIOD_SHIFT)
 
             whenever(periodRepository.save(any()))

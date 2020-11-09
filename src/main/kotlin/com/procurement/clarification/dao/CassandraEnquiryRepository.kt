@@ -2,7 +2,7 @@ package com.procurement.clarification.dao
 
 import com.datastax.driver.core.Row
 import com.datastax.driver.core.Session
-import com.procurement.clarification.application.respository.EnquiryRepository
+import com.procurement.clarification.application.repository.EnquiryRepository
 import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.enums.Stage

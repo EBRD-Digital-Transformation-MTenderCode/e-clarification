@@ -1,4 +1,4 @@
-package com.procurement.clarification.application.respository
+package com.procurement.clarification.application.repository
 
 import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.lib.functional.MaybeFail

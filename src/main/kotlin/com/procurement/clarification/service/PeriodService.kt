@@ -4,9 +4,10 @@ import com.procurement.clarification.application.model.dto.params.CreateEnquiryP
 import com.procurement.clarification.application.model.dto.period.create.CreatePeriodContext
 import com.procurement.clarification.application.model.dto.period.create.CreatePeriodData
 import com.procurement.clarification.application.model.dto.period.create.CreatePeriodResult
-import com.procurement.clarification.application.respository.PeriodRepository
+import com.procurement.clarification.application.repository.PeriodRepository
 import com.procurement.clarification.dao.PeriodDao
 import com.procurement.clarification.domain.fail.Fail
+import com.procurement.clarification.domain.model.enums.ProcurementMethod
 import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.lib.functional.asFailure
 import com.procurement.clarification.lib.functional.asSuccess
@@ -15,6 +16,7 @@ import com.procurement.clarification.exception.ErrorType
 import com.procurement.clarification.infrastructure.handler.enquiry.period.create.CreateEnquiryPeriodResult
 import com.procurement.clarification.model.dto.bpe.CommandMessage
 import com.procurement.clarification.model.dto.bpe.ResponseDto
+import com.procurement.clarification.model.dto.bpe.pmd
 import com.procurement.clarification.model.dto.ocds.Period
 import com.procurement.clarification.model.dto.request.PeriodRq
 import com.procurement.clarification.model.dto.response.CheckPeriodRs
@@ -33,7 +35,7 @@ class PeriodService(private val periodDao: PeriodDao,
 
     fun periodValidation(cm: CommandMessage): ResponseDto {
         val country = cm.context.country ?: throw ErrorException(ErrorType.CONTEXT)
-        val pmd = cm.context.pmd ?: throw ErrorException(ErrorType.CONTEXT)
+        val pmd = cm.pmd
         val enquiryPeriod = toObject(PeriodRq::class.java, cm.data).enquiryPeriod
         val startDate = enquiryPeriod.startDate ?: throw ErrorException(ErrorType.INVALID_PERIOD)
         val endDate = enquiryPeriod.endDate ?: throw ErrorException(ErrorType.INVALID_PERIOD)
@@ -65,7 +67,7 @@ class PeriodService(private val periodDao: PeriodDao,
         val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
         val country = cm.context.country ?: throw ErrorException(ErrorType.CONTEXT)
-        val pmd = cm.context.pmd ?: throw ErrorException(ErrorType.CONTEXT)
+        val pmd = cm.pmd
         val startDateContext = cm.context.startDate?.toLocal() ?: throw ErrorException(ErrorType.INVALID_PERIOD)
         val offsetExtended = rulesService.getOffsetExtended(country, pmd)
         val newEndDate = startDateContext.plus(offsetExtended)
@@ -113,7 +115,7 @@ class PeriodService(private val periodDao: PeriodDao,
         val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
         val country = cm.context.country ?: throw ErrorException(ErrorType.CONTEXT)
-        val pmd = cm.context.pmd ?: throw ErrorException(ErrorType.CONTEXT)
+        val pmd = cm.pmd
         val dto = toObject(PeriodRq::class.java, cm.data)
         val startDateRq = dto.enquiryPeriod.startDate ?: throw ErrorException(ErrorType.INVALID_PERIOD) // from payload
         val endDateRq = dto.enquiryPeriod.endDate ?: throw ErrorException(ErrorType.INVALID_PERIOD)// from payload
@@ -182,7 +184,7 @@ class PeriodService(private val periodDao: PeriodDao,
 
 
     private fun checkInterval(country: String,
-                              pmd: String,
+                              pmd: ProcurementMethod,
                               startDate: LocalDateTime,
                               endDate: LocalDateTime): Boolean {
         val interval = rulesService.getInterval(country, pmd)
@@ -192,7 +194,7 @@ class PeriodService(private val periodDao: PeriodDao,
 
 
     fun createEnquiryPeriod(params: CreateEnquiryPeriodParams): Result<CreateEnquiryPeriodResult, Fail> {
-        val periodShift = rulesService.getPeriodShift(country = params.country, pmd = params.pmd.key).seconds
+        val periodShift = rulesService.getPeriodShift(country = params.country, pmd = params.pmd).seconds
         val tenderPeriod = params.tender.tenderPeriod
         val enquiryPeriod = PeriodEntity(
             cpId = params.cpid.toString(),

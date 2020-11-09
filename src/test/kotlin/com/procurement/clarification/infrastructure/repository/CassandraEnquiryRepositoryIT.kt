@@ -7,7 +7,7 @@ import com.datastax.driver.core.PoolingOptions
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.querybuilder.QueryBuilder
 import com.nhaarman.mockito_kotlin.spy
-import com.procurement.clarification.application.respository.EnquiryRepository
+import com.procurement.clarification.application.repository.EnquiryRepository
 import com.procurement.clarification.dao.CassandraEnquiryRepository
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.enums.Stage

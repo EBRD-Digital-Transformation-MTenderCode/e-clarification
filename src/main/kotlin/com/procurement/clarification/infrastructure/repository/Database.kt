@@ -10,4 +10,13 @@ object Database {
         const val COMMAND_DATE = "command_date"
         const val JSON_DATA = "json_data"
     }
+
+    object Rules {
+        const val TABLE = "rules"
+        const val COUNTRY = "country"
+        const val PMD = "pmd"
+        const val OPERATION_TYPE = "operation_type"
+        const val PARAMETER = "parameter"
+        const val VALUE = "value"
+    }
 }

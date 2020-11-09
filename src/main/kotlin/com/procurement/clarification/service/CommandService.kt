@@ -35,16 +35,11 @@ class CommandService(private val historyDao: HistoryDao,
             return toObject(ResponseDto::class.java, historyEntity.jsonData)
         }
         val response = when (cm.command) {
-            CommandType.CREATE_ENQUIRY -> enquiryService.createEnquiry(cm)
             CommandType.ADD_ANSWER -> enquiryService.addAnswer(cm)
             CommandType.CHECK_ANSWER -> enquiryService.checkAnswer(cm)
             CommandType.CHECK_ENQUIRIES -> enquiryService.checkEnquiries(cm)
             CommandType.CHECK_PERIOD -> periodService.checkPeriod(cm)
-            CommandType.SAVE_PERIOD -> periodService.savePeriod(cm)
-            CommandType.SAVE_NEW_PERIOD -> periodService.saveNewPeriod(cm)
-            CommandType.VALIDATE_PERIOD -> periodService.periodValidation(cm)
-            CommandType.CALCULATE_SAVE_PERIOD -> periodService.calculateAndSavePeriod(cm)
-            CommandType.GET_PERIOD -> periodService.getPeriod(cm)
+            CommandType.CREATE_ENQUIRY -> enquiryService.createEnquiry(cm)
             CommandType.CREATE_PERIOD -> {
                 val context = CreatePeriodContext(
                     owner = cm.owner,
@@ -65,6 +60,9 @@ class CommandService(private val historyDao: HistoryDao,
 
                 return ResponseDto(data = response)
             }
+            CommandType.SAVE_NEW_PERIOD -> periodService.saveNewPeriod(cm)
+            CommandType.SAVE_PERIOD -> periodService.savePeriod(cm)
+            CommandType.VALIDATE_PERIOD -> periodService.periodValidation(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
         return toObject(ResponseDto::class.java, historyEntity.jsonData)

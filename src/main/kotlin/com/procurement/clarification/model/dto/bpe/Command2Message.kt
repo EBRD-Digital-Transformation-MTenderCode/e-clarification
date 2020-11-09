@@ -30,9 +30,9 @@ import java.util.*
 
 enum class Command2Type(@JsonValue override val key: String) : EnumElementProvider.Key, Action {
     CREATE_ENQUIRY_PERIOD("createEnquiryPeriod"),
-    FIND_ENQUIRY_IDS("findEnquiryIds"),
     FIND_ENQUIRIES("findEnquiries"),
-    GET_ENQUIRY_BY_IDS("getEnquiryByIds");
+    FIND_ENQUIRY_IDS("findEnquiryIds"),
+    ;
 
     override fun toString(): String = key
 

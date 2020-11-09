@@ -1,16 +1,12 @@
 package com.procurement.clarification.infrastructure.repository
 
-import com.datastax.driver.core.BoundStatement
 import com.datastax.driver.core.Cluster
 import com.datastax.driver.core.HostDistance
 import com.datastax.driver.core.PlainTextAuthProvider
 import com.datastax.driver.core.PoolingOptions
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.querybuilder.QueryBuilder
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.doThrow
 import com.nhaarman.mockito_kotlin.spy
-import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.clarification.application.respository.EnquiryRepository
 import com.procurement.clarification.dao.CassandraEnquiryRepository
 import com.procurement.clarification.domain.model.Cpid
@@ -21,8 +17,6 @@ import com.procurement.clarification.model.entity.EnquiryEntity
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

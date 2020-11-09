@@ -60,17 +60,16 @@ val CommandMessage.country: String
         ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'country' attribute in context.")
 
 enum class CommandType(private val value: String) {
-    CREATE_ENQUIRY("createEnquiry"),
     ADD_ANSWER("addAnswer"),
     CHECK_ANSWER("checkAnswer"),
     CHECK_ENQUIRIES("checkEnquiries"),
     CHECK_PERIOD("checkPeriod"),
-    GET_PERIOD("getPeriod"),
-    SAVE_PERIOD("savePeriod"),
+    CREATE_ENQUIRY("createEnquiry"),
+    CREATE_PERIOD("createPeriod"),
     SAVE_NEW_PERIOD("saveNewPeriod"),
+    SAVE_PERIOD("savePeriod"),
     VALIDATE_PERIOD("validatePeriod"),
-    CALCULATE_SAVE_PERIOD("calculateSavePeriod"),
-    CREATE_PERIOD("createPeriod");
+    ;
 
     @JsonValue
     fun value(): String {

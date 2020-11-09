@@ -75,42 +75,6 @@ class PeriodService(private val periodDao: PeriodDao,
         return ResponseDto(data = Period(newPeriod.startDate.toLocal(), newPeriod.endDate.toLocal()))
     }
 
-    fun calculateAndSavePeriod(cm: CommandMessage): ResponseDto {
-        val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
-        val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
-        val owner = cm.context.owner ?: throw ErrorException(ErrorType.CONTEXT)
-        val country = cm.context.country ?: throw ErrorException(ErrorType.CONTEXT)
-        val pmd = cm.context.pmd ?: throw ErrorException(ErrorType.CONTEXT)
-        val startDate = cm.context.startDate?.toLocal() ?: throw ErrorException(ErrorType.CONTEXT)
-        val endDate = cm.context.endDate?.toLocal() ?: throw ErrorException(ErrorType.CONTEXT)
-        val setExtendedPeriod = cm.context.setExtendedPeriod ?: throw ErrorException(ErrorType.CONTEXT)
-
-        val offset = if (setExtendedPeriod) {
-            rulesService.getOffsetExtended(country, pmd)
-        } else {
-            rulesService.getOffset(country, pmd)
-        }
-        val enquiryEndDate = endDate.minus(offset)
-        val periodEntity = PeriodEntity(
-                cpId = cpId,
-                stage = stage,
-                owner = owner,
-                startDate = startDate.toDate(),
-                endDate = enquiryEndDate.toDate(),
-                tenderEndDate = endDate.toDate()
-        )
-        periodDao.save(periodEntity)
-        return ResponseDto(data = Period(periodEntity.startDate.toLocal(), periodEntity.endDate.toLocal()))
-    }
-
-    fun getPeriod(cm: CommandMessage): ResponseDto {
-        val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT)
-        val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT)
-
-        val entity = getPeriodEntity(cpId, stage)
-        return ResponseDto(data = Period(entity.startDate.toLocal(), entity.endDate.toLocal()))
-    }
-
     fun createPeriod(context: CreatePeriodContext, request: CreatePeriodData): CreatePeriodResult {
 
         // FR.COM-8.1.1

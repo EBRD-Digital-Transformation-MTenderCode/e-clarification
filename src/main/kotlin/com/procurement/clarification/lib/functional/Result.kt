@@ -119,7 +119,7 @@ infix fun <T, E> Result<T, E>.validate(rule: ValidationRule<T, E>): Result<T, E>
     is Result.Failure -> this
 }
 
-infix fun <T, R, E> Result<T, E>.bind(function: (T) -> Result<R, E>): Result<R, E> = when (this) {
+infix fun <T, R, E> Result<T, E>.flatMap(function: (T) -> Result<R, E>): Result<R, E> = when (this) {
     is Result.Success -> function(this.get)
     is Result.Failure -> this
 }

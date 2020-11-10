@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.application.service.Logger
 import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.lib.functional.Result
-import com.procurement.clarification.lib.functional.bind
+import com.procurement.clarification.lib.functional.flatMap
 import com.procurement.clarification.infrastructure.handler.AbstractQueryHandler
 import com.procurement.clarification.model.dto.bpe.Command2Type
 import com.procurement.clarification.model.dto.bpe.tryGetParams
@@ -21,8 +21,8 @@ class CreateEnquiryPeriodHandler(
     override fun execute(node: JsonNode): Result<CreateEnquiryPeriodResult, Fail> {
 
         val params = node.tryGetParams()
-            .bind {  it.tryParamsToObject(CreateEnquiryPeriodRequest::class.java)}
-            .bind {  it.convert()}
+            .flatMap {  it.tryParamsToObject(CreateEnquiryPeriodRequest::class.java)}
+            .flatMap {  it.convert()}
             .onFailure { return it }
 
         return periodService.createEnquiryPeriod(params = params)

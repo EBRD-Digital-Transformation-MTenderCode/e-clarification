@@ -18,7 +18,7 @@ import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.lib.functional.Result.Companion.failure
 import com.procurement.clarification.lib.functional.Result.Companion.success
 import com.procurement.clarification.lib.functional.asSuccess
-import com.procurement.clarification.lib.functional.bind
+import com.procurement.clarification.lib.functional.flatMap
 import com.procurement.clarification.domain.util.extension.toList
 import com.procurement.clarification.infrastructure.dto.ApiErrorResponse
 import com.procurement.clarification.infrastructure.dto.ApiIncidentResponse
@@ -118,7 +118,7 @@ fun JsonNode.getId(): Result<CommandId, DataErrors> = tryGetStringAttribute("id"
 
 fun JsonNode.getVersion(): Result<ApiVersion, DataErrors> =
     tryGetStringAttribute("version")
-        .bind { version ->
+        .flatMap { version ->
             ApiVersion.orNull(version)
                 ?.asSuccess()
                 ?: DataErrors.Validation.DataFormatMismatch(
@@ -140,7 +140,7 @@ private fun <T> JsonNode.tryGetEnumAttribute(name: String, enumProvider: EnumEle
     : Result<T, DataErrors> where T : Enum<T>,
                                   T : EnumElementProvider.Key =
     this.tryGetStringAttribute(name)
-        .bind { enum ->
+        .flatMap { enum ->
             enumProvider.orNull(enum)
                 ?.asSuccess<T, DataErrors>()
                 ?: failure(
@@ -154,7 +154,7 @@ private fun <T> JsonNode.tryGetEnumAttribute(name: String, enumProvider: EnumEle
 
 private fun JsonNode.tryGetAttribute(name: String, type: JsonNodeType): Result<JsonNode, DataErrors> =
     getAttribute(name = name)
-        .bind { node ->
+        .flatMap { node ->
             if (node.nodeType == type)
                 success(node)
             else

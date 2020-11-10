@@ -5,18 +5,18 @@ import com.procurement.clarification.application.service.Logger
 import com.procurement.clarification.application.service.Transform
 import com.procurement.clarification.domain.extension.nowDefaultUTC
 import com.procurement.clarification.domain.fail.Fail
-import com.procurement.clarification.infrastructure.bind.api.Action
 import com.procurement.clarification.infrastructure.api.ApiVersion
 import com.procurement.clarification.infrastructure.api.v2.ApiResponseV2
-import com.procurement.clarification.infrastructure.bind.api.CommandId
-import com.procurement.clarification.infrastructure.repository.history.model.HistoryEntity
-import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.infrastructure.api.v2.errorResponse
 import com.procurement.clarification.infrastructure.api.v2.getAction
 import com.procurement.clarification.infrastructure.api.v2.getId
 import com.procurement.clarification.infrastructure.api.v2.getVersion
+import com.procurement.clarification.infrastructure.bind.api.Action
+import com.procurement.clarification.infrastructure.bind.api.CommandId
 import com.procurement.clarification.infrastructure.handler.Handler
 import com.procurement.clarification.infrastructure.handler.HistoryRepository
+import com.procurement.clarification.infrastructure.repository.history.model.HistoryEntity
+import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.utils.toJson
 
 abstract class AbstractHistoricalHandlerV2<ACTION : Action, R>(

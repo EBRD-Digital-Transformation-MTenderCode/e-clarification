@@ -1,19 +1,11 @@
 package com.procurement.clarification.utils
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.databind.node.JsonNodeFactory
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.procurement.clarification.domain.fail.Fail
-import com.procurement.clarification.lib.functional.Result
-import com.procurement.clarification.infrastructure.bind.IntDeserializer
-import com.procurement.clarification.infrastructure.bind.date.JsonDateDeserializer
-import com.procurement.clarification.infrastructure.bind.date.JsonDateSerializer
-import com.procurement.clarification.infrastructure.bind.StringsDeserializer
 import com.procurement.clarification.infrastructure.bind.configuration
+import com.procurement.clarification.lib.functional.Result
 import java.io.IOException
 import java.time.Instant
 import java.time.LocalDateTime
@@ -22,7 +14,6 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoField
 import java.util.*
-
 
 private object JsonMapper {
 

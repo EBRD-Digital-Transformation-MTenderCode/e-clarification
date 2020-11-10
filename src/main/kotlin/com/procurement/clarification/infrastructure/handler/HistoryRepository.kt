@@ -1,8 +1,8 @@
 package com.procurement.clarification.infrastructure.handler
 
-import com.procurement.clarification.infrastructure.bind.api.CommandId
 import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.infrastructure.bind.api.Action
+import com.procurement.clarification.infrastructure.bind.api.CommandId
 import com.procurement.clarification.infrastructure.repository.history.model.HistoryEntity
 import com.procurement.clarification.lib.functional.Result
 

@@ -4,14 +4,14 @@ import com.procurement.clarification.application.service.Logger
 import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.fail.error.DataErrors
 import com.procurement.clarification.domain.fail.error.ValidationErrors
-import com.procurement.clarification.infrastructure.bind.api.Action
 import com.procurement.clarification.infrastructure.api.ApiVersion
 import com.procurement.clarification.infrastructure.api.v2.ApiResponseV2
-import com.procurement.clarification.infrastructure.bind.api.CommandId
 import com.procurement.clarification.infrastructure.api.v2.generateDataErrorResponse
 import com.procurement.clarification.infrastructure.api.v2.generateErrorResponse
 import com.procurement.clarification.infrastructure.api.v2.generateIncidentResponse
 import com.procurement.clarification.infrastructure.api.v2.generateValidationErrorResponse
+import com.procurement.clarification.infrastructure.bind.api.Action
+import com.procurement.clarification.infrastructure.bind.api.CommandId
 import com.procurement.clarification.infrastructure.handler.Handler
 
 abstract class AbstractHandler<ACTION : Action, R : Any>(

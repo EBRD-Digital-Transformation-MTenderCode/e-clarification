@@ -3,11 +3,11 @@ package com.procurement.clarification.infrastructure.handler.v2.base
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.application.service.Logger
 import com.procurement.clarification.domain.fail.Fail
-import com.procurement.clarification.infrastructure.bind.api.Action
 import com.procurement.clarification.infrastructure.api.v2.ApiResponseV2
-import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.infrastructure.api.v2.getId
 import com.procurement.clarification.infrastructure.api.v2.getVersion
+import com.procurement.clarification.infrastructure.bind.api.Action
+import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.utils.toJson
 
 abstract class AbstractQueryHandlerV2<ACTION : Action, R : Any>

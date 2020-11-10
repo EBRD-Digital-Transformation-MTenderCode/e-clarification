@@ -2,13 +2,13 @@ package com.procurement.clarification.infrastructure.repository.enquiry
 
 import com.datastax.driver.core.Session
 import com.procurement.clarification.application.repository.enquiry.EnquiryRepository
+import com.procurement.clarification.application.repository.enquiry.model.EnquiryEntity
 import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.Ocid
 import com.procurement.clarification.domain.model.token.Token
 import com.procurement.clarification.infrastructure.extension.cassandra.tryExecute
 import com.procurement.clarification.infrastructure.repository.Database
-import com.procurement.clarification.application.repository.enquiry.model.EnquiryEntity
 import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.lib.functional.asSuccess
 import org.springframework.stereotype.Repository

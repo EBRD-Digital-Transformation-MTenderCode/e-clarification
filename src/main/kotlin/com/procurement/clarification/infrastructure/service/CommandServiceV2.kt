@@ -3,16 +3,16 @@ package com.procurement.clarification.infrastructure.service
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.application.service.Logger
 import com.procurement.clarification.infrastructure.api.ApiVersion
-import com.procurement.clarification.infrastructure.handler.v2.FindEnquiriesHandler
-import com.procurement.clarification.infrastructure.handler.v2.FindEnquiryIdsHandler
-import com.procurement.clarification.infrastructure.handler.v2.CreateEnquiryPeriodHandler
 import com.procurement.clarification.infrastructure.api.v2.ApiResponseV2
-import com.procurement.clarification.infrastructure.bind.api.CommandId
 import com.procurement.clarification.infrastructure.api.v2.CommandTypeV2
 import com.procurement.clarification.infrastructure.api.v2.errorResponse
 import com.procurement.clarification.infrastructure.api.v2.getAction
 import com.procurement.clarification.infrastructure.api.v2.getId
 import com.procurement.clarification.infrastructure.api.v2.getVersion
+import com.procurement.clarification.infrastructure.bind.api.CommandId
+import com.procurement.clarification.infrastructure.handler.v2.CreateEnquiryPeriodHandler
+import com.procurement.clarification.infrastructure.handler.v2.FindEnquiriesHandler
+import com.procurement.clarification.infrastructure.handler.v2.FindEnquiryIdsHandler
 import org.springframework.stereotype.Service
 
 @Service

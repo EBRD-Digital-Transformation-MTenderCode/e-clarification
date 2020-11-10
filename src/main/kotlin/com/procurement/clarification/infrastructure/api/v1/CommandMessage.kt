@@ -1,13 +1,11 @@
 package com.procurement.clarification.infrastructure.api.v1
 
 import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.domain.extension.parseLocalDateTime
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.Ocid
 import com.procurement.clarification.domain.model.enums.ProcurementMethod
-import com.procurement.clarification.exception.EnumException
 import com.procurement.clarification.exception.ErrorException
 import com.procurement.clarification.exception.ErrorType
 import com.procurement.clarification.infrastructure.api.ApiVersion

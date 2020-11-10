@@ -27,10 +27,10 @@ import com.procurement.clarification.infrastructure.handler.v1.model.response.Ad
 import com.procurement.clarification.infrastructure.handler.v1.model.response.CheckAnswerRs
 import com.procurement.clarification.infrastructure.handler.v1.model.response.CheckEnquiresRs
 import com.procurement.clarification.infrastructure.handler.v1.model.response.CreateEnquiryRs
+import com.procurement.clarification.infrastructure.handler.v2.model.response.FindEnquiriesResult
 import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.lib.functional.asFailure
 import com.procurement.clarification.lib.functional.asSuccess
-import com.procurement.clarification.infrastructure.handler.v2.model.response.FindEnquiriesResult
 import com.procurement.clarification.model.dto.ocds.Enquiry
 import com.procurement.clarification.model.dto.ocds.OrganizationReference
 import com.procurement.clarification.model.dto.ocds.Period

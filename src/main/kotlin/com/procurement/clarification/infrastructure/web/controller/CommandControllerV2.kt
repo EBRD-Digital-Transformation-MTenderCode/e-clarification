@@ -5,10 +5,10 @@ import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.fail.error.BadRequestErrors
 import com.procurement.clarification.infrastructure.api.ApiVersion
 import com.procurement.clarification.infrastructure.api.v2.ApiResponseV2
-import com.procurement.clarification.infrastructure.bind.api.CommandId
 import com.procurement.clarification.infrastructure.api.v2.errorResponse
 import com.procurement.clarification.infrastructure.api.v2.getId
 import com.procurement.clarification.infrastructure.api.v2.getVersion
+import com.procurement.clarification.infrastructure.bind.api.CommandId
 import com.procurement.clarification.infrastructure.service.CommandServiceV2
 import com.procurement.clarification.utils.toJson
 import com.procurement.clarification.utils.tryToNode

@@ -23,7 +23,7 @@ class CreateEnquiryPeriodHandler(
         val params = node.tryGetParams()
             .bind {  it.tryParamsToObject(CreateEnquiryPeriodRequest::class.java)}
             .bind {  it.convert()}
-            .orForwardFail { fail -> return fail }
+            .onFailure { return it }
 
         return periodService.createEnquiryPeriod(params = params)
     }

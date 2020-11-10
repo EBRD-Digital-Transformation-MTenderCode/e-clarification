@@ -9,7 +9,7 @@ fun CreateEnquiryPeriodRequest.convert(): Result<CreateEnquiryPeriodParams, Data
     CreateEnquiryPeriodParams.tryCreate(
         cpid = cpid,
         ocid = ocid,
-        tender = tender.convert().orForwardFail { fail -> return fail },
+        tender = tender.convert().onFailure { return it },
         country = country,
         operationType = operationType,
         pmd = pmd,
@@ -20,7 +20,7 @@ private fun CreateEnquiryPeriodRequest.Tender.convert(): Result<CreateEnquiryPer
     val tenderPeriod = CreateEnquiryPeriodParams.Tender.TenderPeriod.tryCreate(
         startDate = tenderPeriod.startDate,
         endDate = tenderPeriod.endDate
-    ).orForwardFail { fail -> return fail }
+    ).onFailure { return it }
 
     return CreateEnquiryPeriodParams.Tender(tenderPeriod).asSuccess()
 }

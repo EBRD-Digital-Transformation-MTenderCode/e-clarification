@@ -27,7 +27,7 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
 
     override fun findEnquiryIds(params: FindEnquiryIdsParams): Result<List<EnquiryId>, Fail> {
         val enquiryEntities = enquiryRepository.findBy(params.cpid, params.ocid)
-            .orForwardFail { fail -> return fail }
+            .onFailure { return it }
 
         if (enquiryEntities.isEmpty())
             return emptyList<EnquiryId>().asSuccess()
@@ -56,7 +56,7 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
         val isAnswered = params.isAnswer
 
         val enquiryEntities = enquiryRepository.findBy( params.cpid, params.ocid)
-            .orForwardFail { fail -> return fail }
+            .onFailure { return it }
 
         val filteredEnquiries = if (isAnswered != null) {
             enquiryEntities.filter { it.isAnswered == isAnswered }

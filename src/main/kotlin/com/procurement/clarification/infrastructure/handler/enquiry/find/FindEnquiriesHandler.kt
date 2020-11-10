@@ -20,11 +20,11 @@ class FindEnquiriesHandler(
     override fun execute(node: JsonNode): Result<List<FindEnquiriesResult>, Fail> {
 
         val params = node.tryGetParams()
-            .orForwardFail { fail -> return fail }
+            .onFailure { return it }
             .tryParamsToObject(FindEnquiriesRequest::class.java)
-            .orForwardFail { fail -> return fail }
+            .onFailure { return it }
             .convert()
-            .orForwardFail { fail -> return fail }
+            .onFailure { return it }
 
         return enquiryService.findEnquiries(params = params)
     }

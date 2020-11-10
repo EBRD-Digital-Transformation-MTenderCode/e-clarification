@@ -20,9 +20,9 @@ class FindEnquiriesParams private constructor(
             isAnswer: Boolean?
         ): Result<FindEnquiriesParams, DataErrors> {
             val parsedCpid = parseCpid(value = cpid)
-                .orForwardFail { fail -> return fail }
+                .onFailure { return it }
             val parsedOcid = parseOcid(value = ocid)
-                .orForwardFail { fail -> return fail }
+                .onFailure { return it }
             return FindEnquiriesParams(cpid = parsedCpid, isAnswer = isAnswer, ocid = parsedOcid)
                 .asSuccess()
         }

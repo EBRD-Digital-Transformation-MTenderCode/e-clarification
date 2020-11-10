@@ -1,4 +1,4 @@
-package com.procurement.clarification.config
+package com.procurement.clarification.infrastructure.configuration.properties
 
 import com.procurement.clarification.infrastructure.api.ApiVersion
 import com.procurement.clarification.infrastructure.io.orThrow

@@ -2,7 +2,7 @@ package com.procurement.clarification.infrastructure.api.v2
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.application.service.Logger
-import com.procurement.clarification.config.GlobalProperties
+import com.procurement.clarification.infrastructure.configuration.properties.GlobalProperties
 import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.fail.Fail.Error
 import com.procurement.clarification.domain.fail.error.BadRequestErrors

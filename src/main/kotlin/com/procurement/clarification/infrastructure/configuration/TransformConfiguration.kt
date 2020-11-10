@@ -1,4 +1,4 @@
-package com.procurement.clarification.config
+package com.procurement.clarification.infrastructure.configuration
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.procurement.clarification.application.service.Transform

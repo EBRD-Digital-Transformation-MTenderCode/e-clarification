@@ -1,4 +1,4 @@
-package com.procurement.clarification.config
+package com.procurement.clarification.infrastructure.configuration.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 

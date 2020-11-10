@@ -1,4 +1,4 @@
-package com.procurement.clarification.config
+package com.procurement.clarification.infrastructure.configuration
 
 import com.procurement.clarification.application.service.Logger
 import com.procurement.clarification.infrastructure.service.CustomLogger

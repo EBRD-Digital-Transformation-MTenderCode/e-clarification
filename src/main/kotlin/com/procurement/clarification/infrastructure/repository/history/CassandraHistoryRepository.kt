@@ -2,6 +2,7 @@ package com.procurement.clarification.infrastructure.repository.history
 
 import com.datastax.driver.core.Session
 import com.procurement.clarification.domain.fail.Fail
+import com.procurement.clarification.domain.util.Action
 import com.procurement.clarification.infrastructure.extension.cassandra.toCassandraTimestamp
 import com.procurement.clarification.infrastructure.extension.cassandra.tryExecute
 import com.procurement.clarification.infrastructure.handler.HistoryRepository
@@ -32,18 +33,23 @@ class CassandraHistoryRepository(private val session: Session) : HistoryReposito
                SELECT ${Database.History.JSON_DATA}
                  FROM ${Database.KEYSPACE}.${Database.History.TABLE}
                 WHERE ${Database.History.COMMAND_ID}=?
+                  AND ${Database.History.COMMAND_NAME}=?
             """
     }
 
     private val preparedSaveHistoryCQL = session.prepare(SAVE_HISTORY_CQL)
     private val preparedFindHistoryCQL = session.prepare(FIND_HISTORY_ENTRY_CQL)
 
-    override fun getHistory(commandId: CommandId): Result<String?, Fail.Incident.Database.Interaction> =
+    override fun getHistory(commandId: CommandId, action: Action): Result<String?, Fail.Incident.Database.Interaction> =
         preparedFindHistoryCQL.bind()
-            .apply { setString(Database.History.COMMAND_ID, commandId.underlying) }
+            .apply {
+                setString(Database.History.COMMAND_ID, commandId.underlying)
+                setString(Database.History.COMMAND_NAME, action.key)
+            }
             .tryExecute(session)
             .onFailure { return it }
-            .one()?.getString(Database.History.JSON_DATA)
+            .one()
+            ?.getString(Database.History.JSON_DATA)
             .asSuccess()
 
     override fun saveHistory(entity: HistoryEntity): Result<HistoryEntity, Fail.Incident.Database.Interaction> {

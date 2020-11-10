@@ -7,17 +7,17 @@ import com.procurement.clarification.domain.fail.error.ValidationErrors
 import com.procurement.clarification.domain.util.Action
 import com.procurement.clarification.infrastructure.dto.ApiResponse
 import com.procurement.clarification.infrastructure.dto.ApiVersion
+import com.procurement.clarification.infrastructure.model.CommandId
 import com.procurement.clarification.model.dto.bpe.generateDataErrorResponse
 import com.procurement.clarification.model.dto.bpe.generateErrorResponse
 import com.procurement.clarification.model.dto.bpe.generateIncidentResponse
 import com.procurement.clarification.model.dto.bpe.generateValidationErrorResponse
-import java.util.*
 
 abstract class AbstractHandler<ACTION : Action, R : Any>(
     private val logger: Logger
 ) : Handler<ACTION, ApiResponse> {
 
-    protected fun responseError(id: UUID, version: ApiVersion, fail: Fail): ApiResponse {
+    protected fun responseError(id: CommandId, version: ApiVersion, fail: Fail): ApiResponse {
         fail.logging(logger)
         return when (fail) {
             is Fail.Error -> {

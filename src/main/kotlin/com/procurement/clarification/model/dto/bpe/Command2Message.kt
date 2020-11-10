@@ -24,6 +24,8 @@ import com.procurement.clarification.infrastructure.dto.ApiErrorResponse
 import com.procurement.clarification.infrastructure.dto.ApiIncidentResponse
 import com.procurement.clarification.infrastructure.dto.ApiResponse
 import com.procurement.clarification.infrastructure.dto.ApiVersion
+import com.procurement.clarification.infrastructure.model.CommandId
+import com.procurement.clarification.lib.functional.asFailure
 import com.procurement.clarification.utils.tryToObject
 import java.time.LocalDateTime
 import java.util.*
@@ -44,14 +46,14 @@ enum class Command2Type(@JsonValue override val key: String) : EnumElementProvid
     }
 }
 
-fun errorResponse(fail: Fail, id: UUID = NaN, version: ApiVersion = GlobalProperties.App.apiVersion): ApiResponse =
+fun errorResponse(fail: Fail, id: CommandId, version: ApiVersion = GlobalProperties.App.apiVersion): ApiResponse =
     when (fail) {
         is DataErrors.Validation -> generateDataErrorResponse(id = id, version = version, fail = fail)
         is Error -> generateErrorResponse(id = id, version = version, fail = fail)
         is Fail.Incident -> generateIncidentResponse(id = id, version = version, fail = fail)
     }
 
-fun generateDataErrorResponse(id: UUID, version: ApiVersion, fail: DataErrors.Validation): ApiErrorResponse =
+fun generateDataErrorResponse(id: CommandId, version: ApiVersion, fail: DataErrors.Validation): ApiErrorResponse =
     ApiErrorResponse(
         version = version,
         id = id,
@@ -64,7 +66,7 @@ fun generateDataErrorResponse(id: UUID, version: ApiVersion, fail: DataErrors.Va
         )
     )
 
-fun generateValidationErrorResponse(id: UUID, version: ApiVersion, fail: ValidationErrors): ApiErrorResponse =
+fun generateValidationErrorResponse(id: CommandId, version: ApiVersion, fail: ValidationErrors): ApiErrorResponse =
     ApiErrorResponse(
         version = version,
         id = id,
@@ -77,7 +79,7 @@ fun generateValidationErrorResponse(id: UUID, version: ApiVersion, fail: Validat
         )
     )
 
-fun generateErrorResponse(id: UUID, version: ApiVersion, fail: Error): ApiErrorResponse =
+fun generateErrorResponse(id: CommandId, version: ApiVersion, fail: Error): ApiErrorResponse =
     ApiErrorResponse(
         version = version,
         id = id,
@@ -89,7 +91,7 @@ fun generateErrorResponse(id: UUID, version: ApiVersion, fail: Error): ApiErrorR
         )
     )
 
-fun generateIncidentResponse(id: UUID, version: ApiVersion, fail: Fail.Incident): ApiIncidentResponse =
+fun generateIncidentResponse(id: CommandId, version: ApiVersion, fail: Fail.Incident): ApiIncidentResponse =
     ApiIncidentResponse(
         id = id,
         version = version,
@@ -112,43 +114,27 @@ fun generateIncidentResponse(id: UUID, version: ApiVersion, fail: Fail.Incident)
         )
     )
 
-val NaN: UUID
-    get() = UUID(0, 0)
+fun JsonNode.getId(): Result<CommandId, DataErrors> = tryGetStringAttribute("id").map { value -> CommandId(value) }
 
-fun JsonNode.getId(): Result<UUID, DataErrors> {
-    return this.tryGetStringAttribute("id")
-        .bind { value ->
-            asUUID(value)
-        }
-}
-
-fun JsonNode.getVersion(): Result<ApiVersion, DataErrors> {
-    return this.tryGetStringAttribute("version")
+fun JsonNode.getVersion(): Result<ApiVersion, DataErrors> =
+    tryGetStringAttribute("version")
         .bind { version ->
-            val result = ApiVersion.tryOf(version)
-            when (result) {
-                is Result.Success -> result
-                is Result.Failure -> result.mapFailure {
-                    DataErrors.Validation.DataFormatMismatch(
-                        name = "version",
-                        actualValue = version,
-                        expectedFormat = "00.00.00"
-                    )
-                }
-            }
+            ApiVersion.orNull(version)
+                ?.asSuccess()
+                ?: DataErrors.Validation.DataFormatMismatch(
+                    name = "version",
+                    expectedFormat = ApiVersion.pattern,
+                    actualValue = version
+                ).asFailure()
         }
-}
 
-fun JsonNode.getAction(): Result<Command2Type, DataErrors> {
-    return this.tryGetEnumAttribute(name = "action", enumProvider = Command2Type)
-}
+fun JsonNode.getAction(): Result<Command2Type, DataErrors> =
+    tryGetEnumAttribute(name = "action", enumProvider = Command2Type)
 
-private fun JsonNode.tryGetStringAttribute(name: String): Result<String, DataErrors> {
-    return this.tryGetAttribute(name = name, type = JsonNodeType.STRING)
-        .map {
-            it.asText()
-        }
-}
+private fun JsonNode.tryGetStringAttribute(name: String): Result<String, DataErrors> =
+    tryGetAttribute(name = name, type = JsonNodeType.STRING)
+        .map { it.asText() }
+
 
 private fun <T> JsonNode.tryGetEnumAttribute(name: String, enumProvider: EnumElementProvider<T>)
     : Result<T, DataErrors> where T : Enum<T>,
@@ -180,19 +166,6 @@ private fun JsonNode.tryGetAttribute(name: String, type: JsonNodeType): Result<J
                     )
                 )
         }
-
-private fun asUUID(value: String): Result<UUID, DataErrors> =
-    try {
-        Result.success<UUID>(UUID.fromString(value))
-    } catch (exception: IllegalArgumentException) {
-        Result.failure(
-            DataErrors.Validation.DataFormatMismatch(
-                name = "id",
-                expectedFormat = "uuid",
-                actualValue = value
-            )
-        )
-    }
 
 fun <T : Any> JsonNode.tryParamsToObject(clazz: Class<T>): Result<T, Error> {
     return this.tryToObject(clazz)

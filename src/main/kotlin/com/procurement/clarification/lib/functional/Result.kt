@@ -69,6 +69,16 @@ sealed class Result<out T, out E> {
         is Failure -> throw block(this.error)
     }
 
+    infix fun getOrElse(defaultValue: @UnsafeVariance T): T = when (this) {
+        is Success -> value
+        is Failure -> defaultValue
+    }
+
+    infix fun orElse(defaultValue: () -> @UnsafeVariance T): T = when (this) {
+        is Success -> value
+        is Failure -> defaultValue()
+    }
+
     infix fun <R> map(transform: (T) -> R): Result<R, E> = when (this) {
         is Success -> Success(transform(this.get))
         is Failure -> this

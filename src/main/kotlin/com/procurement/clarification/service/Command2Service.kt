@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.application.service.Logger
 import com.procurement.clarification.infrastructure.dto.ApiResponse
 import com.procurement.clarification.infrastructure.handler.enquiry.find.FindEnquiriesHandler
-import com.procurement.clarification.infrastructure.handler.enquiry.period.create.CreateEnquiryPeriodHandler
 import com.procurement.clarification.infrastructure.handler.enquiry.id.find.FindEnquiryIdsHandler
+import com.procurement.clarification.infrastructure.handler.enquiry.period.create.CreateEnquiryPeriodHandler
+import com.procurement.clarification.infrastructure.model.CommandId
 import com.procurement.clarification.model.dto.bpe.Command2Type
 import com.procurement.clarification.model.dto.bpe.errorResponse
 import com.procurement.clarification.model.dto.bpe.getAction
@@ -24,21 +25,16 @@ class Command2Service(
     fun execute(request: JsonNode): ApiResponse {
 
         val version = request.getVersion()
-            .doOnError { versionError ->
-                val id = request.getId()
-                    .doOnError { _ -> return errorResponse(fail = versionError) }
-                    .get
-                return errorResponse(fail = versionError, id = id)
+            .onFailure {
+                val id = request.getId().getOrElse(CommandId.NaN)
+                return errorResponse(fail = it.reason, id = id)
             }
-            .get
 
         val id = request.getId()
-            .doOnError { error -> return errorResponse(fail = error, version = version) }
-            .get
+            .onFailure { return errorResponse(fail = it.reason, version = version, id = CommandId.NaN) }
 
         val action = request.getAction()
-            .doOnError { error -> return errorResponse(id = id, version = version, fail = error) }
-            .get
+            .onFailure { return errorResponse(fail = it.reason, version = version, id = id) }
 
         val response: ApiResponse = when (action) {
             Command2Type.CREATE_ENQUIRY_PERIOD -> createEnquiryPeriodHandler.handle(node = request)

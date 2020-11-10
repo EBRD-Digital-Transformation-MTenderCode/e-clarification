@@ -9,7 +9,7 @@ import java.io.IOException
 
 class ApiVersionSerializer : JsonSerializer<ApiVersion>() {
     companion object {
-        fun serialize(apiVersion: ApiVersion): String = "${apiVersion.major}.${apiVersion.minor}.${apiVersion.patch}"
+        fun serialize(apiVersion: ApiVersion): String = apiVersion.underlying
     }
 
     @Throws(IOException::class, JsonProcessingException::class)

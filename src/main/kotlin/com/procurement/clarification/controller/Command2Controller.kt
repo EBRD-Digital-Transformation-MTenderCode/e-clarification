@@ -6,7 +6,7 @@ import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.fail.error.BadRequestErrors
 import com.procurement.clarification.infrastructure.dto.ApiResponse
 import com.procurement.clarification.infrastructure.dto.ApiVersion
-import com.procurement.clarification.model.dto.bpe.NaN
+import com.procurement.clarification.infrastructure.model.CommandId
 import com.procurement.clarification.model.dto.bpe.errorResponse
 import com.procurement.clarification.model.dto.bpe.getId
 import com.procurement.clarification.model.dto.bpe.getVersion
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
 
 @RestController
 @RequestMapping("/command2")
@@ -36,29 +35,25 @@ class Command2Controller(
         logger.info("RECEIVED COMMAND: '${requestBody}'.")
 
         val node = requestBody.tryToNode()
-            .doOnError { error ->
+            .onFailure {
                 return responseEntity(
-                    expected = BadRequestErrors.Parsing(
+                    fail = BadRequestErrors.Parsing(
                         message = "Invalid request data",
                         request = requestBody,
-                        exception = error.exception
-                    )
+                        exception = it.reason.exception
+                    ),
+                    id = CommandId.NaN
                 )
             }
-            .get
 
         val version = node.getVersion()
-            .doOnError { versionError ->
-                val id = node.getId()
-                    .doOnError { _ -> return responseEntity(expected = versionError) }
-                    .get
-                return responseEntity(expected = versionError, id = id)
+            .onFailure {
+                val id = node.getId().getOrElse(CommandId.NaN)
+                return responseEntity(fail = it.reason, id = id)
             }
-            .get
 
         val id = node.getId()
-            .doOnError { error -> return responseEntity(expected = error, version = version) }
-            .get
+            .onFailure { return responseEntity(fail = it.reason, version = version, id = CommandId.NaN) }
 
         val response = command2Service.execute(request = node)
             .also { response ->
@@ -69,12 +64,12 @@ class Command2Controller(
     }
 
     private fun responseEntity(
-        expected: Fail,
-        id: UUID = NaN,
+        fail: Fail,
+        id: CommandId,
         version: ApiVersion = GlobalProperties.App.apiVersion
     ): ResponseEntity<ApiResponse> {
-        expected.logging(logger)
-        val response = errorResponse(fail = expected, id = id, version = version)
+        fail.logging(logger)
+        val response = errorResponse(fail = fail, id = id, version = version)
         return ResponseEntity(response, HttpStatus.OK)
     }
 }

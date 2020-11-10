@@ -9,7 +9,9 @@ import java.io.IOException
 
 class ApiVersionDeserializer : JsonDeserializer<ApiVersion>() {
     companion object {
-        fun deserialize(text: String) = ApiVersion.valueOf(text)
+        fun deserialize(text: String) = ApiVersion.orThrow(text) {
+            IllegalAccessException("Invalid format of the api version. Expected: '${ApiVersion.pattern}', actual: '$text'.")
+        }
     }
 
     @Throws(IOException::class, JsonProcessingException::class)

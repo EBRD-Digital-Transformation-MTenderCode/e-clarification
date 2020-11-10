@@ -1,43 +1,32 @@
 package com.procurement.clarification.infrastructure.dto
 
-import com.procurement.clarification.lib.functional.Result
+import com.fasterxml.jackson.annotation.JsonValue
 
-data class ApiVersion(val major: Int, val minor: Int, val patch: Int) {
+class ApiVersion private constructor(@JsonValue val underlying: String) : Comparable<ApiVersion> {
+
     companion object {
-        fun valueOf(version: String): ApiVersion {
-            val elements = version.split(".")
-            if (elements.isEmpty() || elements.size != 3)
-                throw IllegalArgumentException("Invalid value of the api version ($version).")
+        const val pattern: String = "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\$"
+        private val regex = pattern.toRegex()
 
-            val major: Int = elements[0].toIntOrNull()
-                ?: throw IllegalArgumentException("Invalid value of the api version ($version).")
+        fun orNull(version: String): ApiVersion? = if (version.matches(regex)) ApiVersion(version) else null
 
-            val minor: Int = elements[1].toIntOrNull()
-                ?: throw IllegalArgumentException("Invalid value of the api version ($version).")
-
-            val patch: Int = elements[2].toIntOrNull()
-                ?: throw IllegalArgumentException("Invalid value of the api version ($version).")
-
-            return ApiVersion(major = major, minor = minor, patch = patch)
-        }
-
-        fun tryOf(version: String): Result<ApiVersion, String> {
-            val elements = version.split(".")
-            if (elements.isEmpty() || elements.size != 3)
-                return Result.failure("Invalid value of the api version ($version).")
-
-            val major: Int = elements[0].toIntOrNull()
-                ?: return Result.failure("Invalid value of the api version ($version).")
-
-            val minor: Int = elements[1].toIntOrNull()
-                ?: return Result.failure("Invalid value of the api version ($version).")
-
-            val patch: Int = elements[2].toIntOrNull()
-                ?: return Result.failure("Invalid value of the api version ($version).")
-
-            return Result.success(ApiVersion(major = major, minor = minor, patch = patch))
-        }
+        fun orThrow(version: String, builder: (String) -> Exception): ApiVersion =
+            if (version.matches(regex)) ApiVersion(version) else throw builder(version)
     }
 
-    override fun toString(): String = "$major.$minor.$patch"
+    constructor(major: Int, minor: Int, patch: Int) : this("$major.$minor.$patch")
+
+    override fun equals(other: Any?): Boolean {
+        return if (this !== other)
+            other is ApiVersion
+                && this.underlying == other.underlying
+        else
+            true
+    }
+
+    override fun hashCode(): Int = underlying.hashCode()
+
+    override fun toString(): String = underlying
+
+    override fun compareTo(other: ApiVersion): Int = underlying.compareTo(other.underlying)
 }

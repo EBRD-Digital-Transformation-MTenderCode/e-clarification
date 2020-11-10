@@ -47,6 +47,8 @@ fun <T, R, E> List<T>?.mapOptionalResult(block: (T) -> Result<R, E>): Result<Opt
     return Result.success(Option.pure(r))
 }
 
+fun <T> T?.toListOrEmpty(): List<T> = if (this != null) listOf(this) else emptyList()
+
 fun <T> getUnknownElements(received: Set<T>, known: Set<T>) = getNewElements(
     received,
     known

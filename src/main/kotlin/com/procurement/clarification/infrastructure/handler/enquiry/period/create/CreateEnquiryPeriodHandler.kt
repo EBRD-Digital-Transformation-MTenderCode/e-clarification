@@ -2,10 +2,12 @@ package com.procurement.clarification.infrastructure.handler.enquiry.period.crea
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.application.service.Logger
+import com.procurement.clarification.application.service.Transform
 import com.procurement.clarification.domain.fail.Fail
+import com.procurement.clarification.infrastructure.handler.AbstractHistoricalHandler
+import com.procurement.clarification.infrastructure.handler.HistoryRepository
 import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.lib.functional.flatMap
-import com.procurement.clarification.infrastructure.handler.AbstractQueryHandler
 import com.procurement.clarification.model.dto.bpe.Command2Type
 import com.procurement.clarification.model.dto.bpe.tryGetParams
 import com.procurement.clarification.model.dto.bpe.tryParamsToObject
@@ -15,14 +17,21 @@ import org.springframework.stereotype.Component
 @Component
 class CreateEnquiryPeriodHandler(
     logger: Logger,
+    transform: Transform,
+    historyRepository: HistoryRepository,
     private val periodService: PeriodService
-) : AbstractQueryHandler<Command2Type, CreateEnquiryPeriodResult>(logger = logger) {
+) : AbstractHistoricalHandler<Command2Type, CreateEnquiryPeriodResult>(
+    logger = logger,
+    transform = transform,
+    historyRepository = historyRepository,
+    target = CreateEnquiryPeriodResult::class.java
+) {
 
     override fun execute(node: JsonNode): Result<CreateEnquiryPeriodResult, Fail> {
 
         val params = node.tryGetParams()
-            .flatMap {  it.tryParamsToObject(CreateEnquiryPeriodRequest::class.java)}
-            .flatMap {  it.convert()}
+            .flatMap { it.tryParamsToObject(CreateEnquiryPeriodRequest::class.java) }
+            .flatMap { it.convert() }
             .onFailure { return it }
 
         return periodService.createEnquiryPeriod(params = params)

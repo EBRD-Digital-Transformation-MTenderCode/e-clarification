@@ -8,6 +8,8 @@ class ApiVersion private constructor(@JsonValue val underlying: String) : Compar
         const val pattern: String = "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\$"
         private val regex = pattern.toRegex()
 
+        val NaN = ApiVersion(0, 0, 0)
+
         fun orNull(version: String): ApiVersion? = if (version.matches(regex)) ApiVersion(version) else null
 
         fun orThrow(version: String, builder: (String) -> Exception): ApiVersion =

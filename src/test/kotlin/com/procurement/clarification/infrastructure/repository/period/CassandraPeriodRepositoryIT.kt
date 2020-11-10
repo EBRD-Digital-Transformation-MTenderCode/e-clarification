@@ -13,7 +13,7 @@ import com.procurement.clarification.get
 import com.procurement.clarification.infrastructure.configuration.DatabaseTestConfiguration
 import com.procurement.clarification.infrastructure.repository.CassandraTestContainer
 import com.procurement.clarification.infrastructure.repository.Database
-import com.procurement.clarification.model.entity.PeriodEntity
+import com.procurement.clarification.application.repository.period.model.PeriodEntity
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -38,12 +38,8 @@ class CassandraPeriodRepositoryIT {
     companion object {
         private val CPID = Cpid.tryCreateOrNull("ocds-t1s2t3-MD-1565251033096")!!
         private val OCID = Ocid.tryCreateOrNull("ocds-b3wdp1-MD-1581509539187-EV-1581509653044")!!
-
-        private const val FORMAT_PATTERN = "uuuu-MM-dd'T'HH:mm:ss'Z'"
-        private val FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern(FORMAT_PATTERN)
-            .withResolverStyle(ResolverStyle.STRICT)
-        private val START_DATE = LocalDateTime.parse("2020-02-12T08:49:55Z", FORMATTER)
-        private val END_DATE = LocalDateTime.parse("2020-02-22T08:49:55Z", FORMATTER)
+        private val START_DATE = LocalDateTime.now()
+        private val END_DATE = START_DATE.plusDays(1)
 
         private val PERIOD_ENTITY = PeriodEntity(
             cpid = CPID,
@@ -90,7 +86,7 @@ class CassandraPeriodRepositoryIT {
     fun save_success() {
         repository.save(PERIOD_ENTITY)
 
-        val fundedPeriod = repository.find(PERIOD_ENTITY.cpid, PERIOD_ENTITY.ocid).get()
+        val fundedPeriod = repository.find(cpid = CPID, ocid = OCID).get()
 
         assertNotNull(fundedPeriod)
         assertEquals(PERIOD_ENTITY, fundedPeriod)

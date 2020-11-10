@@ -1,22 +1,24 @@
-package com.procurement.clarification.infrastructure.repository
+package com.procurement.clarification.infrastructure.repository.enquiry
 
 import com.datastax.driver.core.Cluster
 import com.datastax.driver.core.HostDistance
 import com.datastax.driver.core.PlainTextAuthProvider
 import com.datastax.driver.core.PoolingOptions
 import com.datastax.driver.core.Session
-import com.datastax.driver.core.querybuilder.QueryBuilder
 import com.nhaarman.mockito_kotlin.spy
-import com.procurement.clarification.application.repository.EnquiryRepository
-import com.procurement.clarification.dao.CassandraEnquiryRepository
+import com.procurement.clarification.application.repository.enquiry.EnquiryRepository
 import com.procurement.clarification.domain.model.Cpid
-import com.procurement.clarification.domain.model.enums.Stage
+import com.procurement.clarification.domain.model.Ocid
 import com.procurement.clarification.domain.model.token.tryCreateToken
 import com.procurement.clarification.infrastructure.configuration.DatabaseTestConfiguration
-import com.procurement.clarification.model.entity.EnquiryEntity
+import com.procurement.clarification.infrastructure.repository.CassandraTestContainer
+import com.procurement.clarification.infrastructure.repository.Database
+import com.procurement.clarification.application.repository.enquiry.model.EnquiryEntity
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -30,16 +32,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 class CassandraEnquiryRepositoryIT {
 
     companion object {
-        private const val KEYSPACE = "ocds"
-        private const val TABLE_NAME = "clarification_enquiry"
-        private const val COLUMN_CP_ID = "cp_id"
-        private const val COLUMN_TOKEN = "token_entity"
-        private const val COLUMN_STAGE = "stage"
-        private const val COLUMN_IS_ANSWERED = "is_answered"
-        private const val COLUMN_JSON_DATA = "json_data"
-
         private val CPID = Cpid.tryCreateOrNull("ocds-t1s2t3-MD-1565251033096")!!
-        private val STAGE = Stage.AC
+        private val OCID = Ocid.tryCreateOrNull("ocds-b3wdp1-MD-1581509539187-EV-1581509653044")!!
         private val TOKEN = "5d88e696-6a7d-48e1-b760-ab89aa57cfd8".tryCreateToken().get
         private const val IS_ANSWERED = false
         private const val JSON_DATA = ""
@@ -76,14 +70,13 @@ class CassandraEnquiryRepositoryIT {
         dropKeyspace()
     }
 
-
-
     @Test
-    fun findByCpidAndStage_success() {
-
+    fun findByCpidAndOcid_success() {
         val entity = createEntity()
-        insertInto(entity)
-        val dbEnquiryEntity = enquiryRepository.findAllByCpidAndStage(cpid = CPID, stage = STAGE).get
+        val isSaved = enquiryRepository.save(entity).get
+        assertTrue(isSaved)
+
+        val dbEnquiryEntity = enquiryRepository.findBy(CPID, OCID).get
 
         val expectedEntityList = listOf(entity)
 
@@ -92,26 +85,41 @@ class CassandraEnquiryRepositoryIT {
     }
 
     @Test
-    fun findByCpidAndStage_fail() {
-        val dbEnquiryEntity = enquiryRepository.findAllByCpidAndStage(cpid = CPID, stage = STAGE).get
+    fun findByCpidAndOcid_fail() {
+        val dbEnquiryEntity = enquiryRepository.findBy(CPID, OCID).get
 
         assertTrue(dbEnquiryEntity.isEmpty())
     }
 
-    private fun insertInto(enquiryEntity: EnquiryEntity) {
-        val record = QueryBuilder.insertInto(KEYSPACE, TABLE_NAME)
-            .value(COLUMN_CP_ID, enquiryEntity.cpId)
-            .value(COLUMN_IS_ANSWERED, enquiryEntity.isAnswered)
-            .value(COLUMN_JSON_DATA, enquiryEntity.jsonData)
-            .value(COLUMN_STAGE, enquiryEntity.stage)
-            .value(COLUMN_TOKEN, enquiryEntity.token)
+    @Test
+    fun findByCpidAndOcidAndToken_success() {
+        val entity = createEntity()
+        val isSaved = enquiryRepository.save(entity).get
+        assertTrue(isSaved)
 
-        session.execute(record)
+        val dbEnquiryEntity = enquiryRepository.findBy(CPID, OCID, TOKEN).get
+
+        assertNotNull(dbEnquiryEntity)
+        assertEquals(entity, dbEnquiryEntity)
+    }
+
+    @Test
+    fun findByCpidAndOcidAndToken_fail() {
+        val dbEnquiryEntity = enquiryRepository.findBy(CPID, OCID, TOKEN).get
+
+        assertNull(dbEnquiryEntity)
+    }
+
+    @Test
+    fun save() {
+        val entity = createEntity()
+        val isSaved = enquiryRepository.save(entity).get
+        assertTrue(isSaved)
     }
 
     private fun createEntity() = EnquiryEntity(
-        cpId = CPID.toString(),
-        stage = STAGE.key,
+        cpid = CPID,
+        ocid = OCID,
         token = TOKEN,
         isAnswered = IS_ANSWERED,
         jsonData = JSON_DATA
@@ -119,25 +127,25 @@ class CassandraEnquiryRepositoryIT {
 
     private fun createKeyspace() {
         session.execute(
-            "CREATE KEYSPACE $KEYSPACE " +
+            "CREATE KEYSPACE ${Database.KEYSPACE} " +
                 "WITH replication = {'class' : 'SimpleStrategy', 'replication_factor' : 1};"
         )
     }
 
     private fun dropKeyspace() {
-        session.execute("DROP KEYSPACE $KEYSPACE;")
+        session.execute("DROP KEYSPACE ${Database.KEYSPACE};")
     }
 
     private fun createTable() {
         session.execute(
             """
-                CREATE TABLE IF NOT EXISTS  $KEYSPACE.$TABLE_NAME (
-                     $COLUMN_CP_ID text,
-                     $COLUMN_STAGE text,
-                     $COLUMN_TOKEN uuid,
-                     $COLUMN_JSON_DATA text,
-                     $COLUMN_IS_ANSWERED boolean,
-                     primary key($COLUMN_CP_ID, $COLUMN_STAGE, $COLUMN_TOKEN)
+                CREATE TABLE IF NOT EXISTS  ${Database.KEYSPACE}.${Database.Enquiry.TABLE} (
+                     ${Database.Enquiry.CPID}         TEXT,
+                     ${Database.Enquiry.OCID}         TEXT,
+                     ${Database.Enquiry.TOKEN_ENTITY} TEXT,
+                     ${Database.Enquiry.JSON_DATA}    TEXT,
+                     ${Database.Enquiry.IS_ANSWERED}  BOOLEAN,
+                     PRIMARY KEY(${Database.Enquiry.CPID}, ${Database.Enquiry.OCID}, ${Database.Enquiry.TOKEN_ENTITY})
                     );
             """
         )

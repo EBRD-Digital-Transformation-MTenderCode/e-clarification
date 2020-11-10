@@ -13,7 +13,7 @@ import com.procurement.clarification.domain.model.enums.OperationType
 import com.procurement.clarification.domain.model.enums.ProcurementMethod
 import com.procurement.clarification.lib.functional.MaybeFail
 import com.procurement.clarification.infrastructure.handler.enquiry.period.create.CreateEnquiryPeriodResult
-import com.procurement.clarification.model.entity.PeriodEntity
+import com.procurement.clarification.application.repository.period.model.PeriodEntity
 import com.procurement.clarification.service.PeriodService
 import com.procurement.clarification.service.RulesService
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -99,7 +99,8 @@ class PeriodServiceTest {
                 startDate = RECEIVED_START_DATE,
                 endDate = LocalDateTime.parse("2020-02-20T08:49:55Z", FORMATTER),
                 tenderEndDate = null
-            ))
+            )
+            )
         }
 
         private fun getParams() = CreateEnquiryPeriodParams.tryCreate(

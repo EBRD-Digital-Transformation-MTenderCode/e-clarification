@@ -29,4 +29,13 @@ object Database {
         const val END_DATE = "end_date"
         const val TENDER_END_DATE = "tender_end_date"
     }
+
+    object Enquiry {
+        const val TABLE = "enquiries"
+        const val CPID = "cpid"
+        const val OCID = "ocid"
+        const val TOKEN_ENTITY = "token_entity"
+        const val IS_ANSWERED = "is_answered"
+        const val JSON_DATA = "json_data"
+    }
 }

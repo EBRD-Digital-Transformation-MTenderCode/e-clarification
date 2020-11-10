@@ -12,7 +12,7 @@ import com.procurement.clarification.infrastructure.repository.Database
 import com.procurement.clarification.lib.functional.MaybeFail
 import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.lib.functional.asSuccess
-import com.procurement.clarification.model.entity.PeriodEntity
+import com.procurement.clarification.application.repository.period.model.PeriodEntity
 import org.springframework.stereotype.Repository
 
 @Repository

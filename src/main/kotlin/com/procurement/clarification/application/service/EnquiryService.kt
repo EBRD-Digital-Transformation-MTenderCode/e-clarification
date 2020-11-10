@@ -2,7 +2,7 @@ package com.procurement.clarification.application.service
 
 import com.procurement.clarification.application.model.dto.params.FindEnquiriesParams
 import com.procurement.clarification.application.model.dto.params.FindEnquiryIdsParams
-import com.procurement.clarification.application.repository.EnquiryRepository
+import com.procurement.clarification.application.repository.enquiry.EnquiryRepository
 import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.model.enquiry.EnquiryId
 import com.procurement.clarification.domain.model.enums.Scale
@@ -26,7 +26,7 @@ interface EnquiryService {
 class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryService {
 
     override fun findEnquiryIds(params: FindEnquiryIdsParams): Result<List<EnquiryId>, Fail> {
-        val enquiryEntities = enquiryRepository.findAllByCpidAndStage(cpid = params.cpid, stage = params.ocid.stage)
+        val enquiryEntities = enquiryRepository.findBy(params.cpid, params.ocid)
             .orForwardFail { fail -> return fail }
 
         if (enquiryEntities.isEmpty())
@@ -55,7 +55,7 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
 
         val isAnswered = params.isAnswer
 
-        val enquiryEntities = enquiryRepository.findAllByCpidAndStage(cpid = params.cpid, stage = params.ocid.stage)
+        val enquiryEntities = enquiryRepository.findBy( params.cpid, params.ocid)
             .orForwardFail { fail -> return fail }
 
         val filteredEnquiries = if (isAnswered != null) {

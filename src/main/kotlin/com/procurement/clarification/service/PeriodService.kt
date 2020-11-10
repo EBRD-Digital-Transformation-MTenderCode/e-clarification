@@ -25,7 +25,7 @@ import com.procurement.clarification.model.dto.bpe.pmd
 import com.procurement.clarification.model.dto.ocds.Period
 import com.procurement.clarification.model.dto.request.PeriodRq
 import com.procurement.clarification.model.dto.response.CheckPeriodRs
-import com.procurement.clarification.model.entity.PeriodEntity
+import com.procurement.clarification.application.repository.period.model.PeriodEntity
 import com.procurement.clarification.utils.toLocal
 import com.procurement.clarification.utils.toObject
 import org.springframework.stereotype.Service

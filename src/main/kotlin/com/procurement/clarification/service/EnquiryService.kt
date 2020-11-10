@@ -1,9 +1,10 @@
 package com.procurement.clarification.service
 
-import com.procurement.clarification.dao.EnquiryDao
+import com.procurement.clarification.application.repository.enquiry.EnquiryRepository
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.Ocid
 import com.procurement.clarification.exception.ErrorException
+import com.procurement.clarification.exception.ErrorType
 import com.procurement.clarification.exception.ErrorType.ALREADY_HAS_ANSWER
 import com.procurement.clarification.exception.ErrorType.CONTEXT
 import com.procurement.clarification.exception.ErrorType.INVALID_ANSWER
@@ -28,17 +29,16 @@ import com.procurement.clarification.model.dto.response.AddAnswerRs
 import com.procurement.clarification.model.dto.response.CheckAnswerRs
 import com.procurement.clarification.model.dto.response.CheckEnquiresRs
 import com.procurement.clarification.model.dto.response.CreateEnquiryRs
-import com.procurement.clarification.model.entity.EnquiryEntity
+import com.procurement.clarification.application.repository.enquiry.model.EnquiryEntity
 import com.procurement.clarification.utils.toJson
 import com.procurement.clarification.utils.toLocal
 import com.procurement.clarification.utils.toObject
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class EnquiryService(
     private val generationService: GenerationService,
-    private val enquiryDao: EnquiryDao,
+    private val enquiryRepository: EnquiryRepository,
     private val periodService: PeriodService
 ) {
 
@@ -55,7 +55,7 @@ class EnquiryService(
         val owner = periodEntity.owner
         val author = converterOrganizationReferenceCreateToOrganizationReference(enquiryRequest.author)
         val enquiry = Enquiry(
-            id = generationService.generateTimeBasedUUID().toString(),
+            id = generationService.generateEnquiryId().toString(),
             date = dateTime,
             author = author,
             title = enquiryRequest.title,
@@ -66,14 +66,14 @@ class EnquiryService(
             dateAnswered = null
         )
 
-        val entity = getEntity(
-            cpId = cpid.underlying,
-            token = generationService.generateRandomUUID(),
-            stage = ocid.stage.key,
+        val entity = EnquiryEntity(
+            cpid = cpid,
+            ocid = ocid,
+            token = generationService.generateToken(),
             isAnswered = false,
-            enquiry = enquiry
+            jsonData = toJson(enquiry)
         )
-        enquiryDao.save(entity)
+        enquiryRepository.save(entity)
         return ResponseDto(data = CreateEnquiryRs(entity.token.toString(), owner, enquiry))
     }
 
@@ -104,7 +104,10 @@ class EnquiryService(
         val dateTime = cm.startDate
         val dto = toObject(AddAnswerRq::class.java, cm.data)
 
-        val entity = enquiryDao.getByCpIdAndStageAndToken(cpid.underlying, ocid.stage.key, token)
+        val entity = enquiryRepository.findBy(cpid, ocid, token)
+            .onFailure { throw it.reason.exception }
+            ?: throw ErrorException(ErrorType.DATA_NOT_FOUND)
+
         val periodEntity = periodService.getPeriodEntity(cpid, ocid)
         if (periodEntity.owner != owner) throw ErrorException(INVALID_OWNER)
         if (entity.isAnswered) throw ErrorException(ALREADY_HAS_ANSWER)
@@ -112,17 +115,18 @@ class EnquiryService(
         val enquiry = toObject(Enquiry::class.java, entity.jsonData)
         if (enquiryId != enquiry.id) throw ErrorException(INVALID_ID)
         if (enquiryDto.answer.isBlank()) throw ErrorException(INVALID_ANSWER)
-        enquiry.apply {
-            answer = enquiryDto.answer
-            dateAnswered = dateTime
-        }
-        entity.apply {
-            isAnswered = true
-            jsonData = toJson(enquiry)
-        }
-        enquiryDao.save(entity)
 
-        return ResponseDto(data = AddAnswerRs(enquiry))
+        val updatedEnquiry = enquiry.copy(
+            answer = enquiryDto.answer,
+            dateAnswered = dateTime
+        )
+        val updatedEntity = entity.copy(
+            isAnswered = true,
+            jsonData = toJson(updatedEnquiry)
+        )
+        enquiryRepository.save(updatedEntity)
+
+        return ResponseDto(data = AddAnswerRs(updatedEnquiry))
     }
 
     fun checkAnswer(cm: CommandMessage): ResponseDto {
@@ -132,7 +136,8 @@ class EnquiryService(
         val owner = cm.owner
         val dateTime = cm.context.startDate?.toLocal() ?: throw ErrorException(CONTEXT)
         toObject(AddAnswerRq::class.java, cm.data)
-        val entities = enquiryDao.findAllByCpIdAndStage(cpid.underlying, ocid.stage.key)
+        val entities = enquiryRepository.findBy(cpid, ocid)
+            .onFailure { throw it.reason.exception }
         val isAllAnswered = !entities.any { (it.token != token && !it.isAnswered) }
         val periodEntity = periodService.getPeriodEntity(cpid, ocid)
         if (periodEntity.owner != owner) throw ErrorException(INVALID_OWNER)
@@ -155,23 +160,9 @@ class EnquiryService(
     }
 
     private fun checkIsAllAnswered(cpid: Cpid, ocid: Ocid): Boolean {
-        val isAllAnswered = enquiryDao.getCountOfUnanswered(cpid.underlying, ocid.stage.key)
-        return isAllAnswered == 0L
-    }
-
-    private fun getEntity(
-        cpId: String,
-        token: UUID,
-        stage: String,
-        isAnswered: Boolean,
-        enquiry: Enquiry
-    ): EnquiryEntity {
-        return EnquiryEntity(
-            cpId = cpId,
-            token = token,
-            stage = stage,
-            jsonData = toJson(enquiry),
-            isAnswered = isAnswered
-        )
+        val isAllAnswered = enquiryRepository.findBy(cpid, ocid)
+            .onFailure { throw it.reason.exception }
+            .count { !it.isAnswered }
+        return isAllAnswered == 0
     }
 }

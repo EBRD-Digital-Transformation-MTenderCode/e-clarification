@@ -12,10 +12,8 @@ import com.procurement.clarification.domain.model.Ocid
 import com.procurement.clarification.domain.model.enums.OperationType
 import com.procurement.clarification.domain.model.enums.ProcurementMethod
 import com.procurement.clarification.lib.functional.MaybeFail
-import com.procurement.clarification.infrastructure.handler.enquiry.period.create.CreateEnquiryPeriodResult
+import com.procurement.clarification.infrastructure.handler.v2.model.response.CreateEnquiryPeriodResult
 import com.procurement.clarification.application.repository.period.model.PeriodEntity
-import com.procurement.clarification.service.PeriodService
-import com.procurement.clarification.service.RulesService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested

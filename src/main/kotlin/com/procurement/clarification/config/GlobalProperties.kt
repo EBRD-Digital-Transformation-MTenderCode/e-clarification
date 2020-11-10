@@ -1,6 +1,6 @@
 package com.procurement.clarification.config
 
-import com.procurement.clarification.infrastructure.dto.ApiVersion
+import com.procurement.clarification.infrastructure.api.ApiVersion
 import com.procurement.clarification.infrastructure.io.orThrow
 import java.util.*
 

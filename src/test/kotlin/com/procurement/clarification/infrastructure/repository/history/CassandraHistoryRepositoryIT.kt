@@ -8,14 +8,14 @@ import com.datastax.driver.core.Session
 import com.nhaarman.mockito_kotlin.spy
 import com.procurement.clarification.domain.extension.format
 import com.procurement.clarification.domain.extension.parseLocalDateTime
-import com.procurement.clarification.domain.util.Action
+import com.procurement.clarification.infrastructure.bind.api.Action
 import com.procurement.clarification.infrastructure.configuration.DatabaseTestConfiguration
 import com.procurement.clarification.infrastructure.handler.HistoryRepository
-import com.procurement.clarification.infrastructure.model.CommandId
+import com.procurement.clarification.infrastructure.bind.api.CommandId
 import com.procurement.clarification.infrastructure.repository.CassandraTestContainer
 import com.procurement.clarification.infrastructure.repository.Database
 import com.procurement.clarification.infrastructure.repository.history.model.HistoryEntity
-import com.procurement.clarification.model.dto.bpe.CommandType
+import com.procurement.clarification.infrastructure.api.v1.CommandTypeV1
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -35,7 +35,7 @@ class CassandraHistoryRepositoryIT {
 
     companion object {
         private val COMMAND_ID: CommandId = CommandId(UUID.randomUUID().toString())
-        private val COMMAND_NAME: Action = CommandType.ADD_ANSWER
+        private val COMMAND_NAME: Action = CommandTypeV1.ADD_ANSWER
         private val COMMAND_DATE = LocalDateTime.now().format().parseLocalDateTime()
         private const val JSON_DATA: String = """{"tender": {"title" : "Tender-Title"}}"""
 

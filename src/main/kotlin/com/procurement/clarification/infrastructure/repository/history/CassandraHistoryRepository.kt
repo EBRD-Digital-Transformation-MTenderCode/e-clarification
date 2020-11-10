@@ -2,11 +2,11 @@ package com.procurement.clarification.infrastructure.repository.history
 
 import com.datastax.driver.core.Session
 import com.procurement.clarification.domain.fail.Fail
-import com.procurement.clarification.domain.util.Action
+import com.procurement.clarification.infrastructure.bind.api.Action
 import com.procurement.clarification.infrastructure.extension.cassandra.toCassandraTimestamp
 import com.procurement.clarification.infrastructure.extension.cassandra.tryExecute
 import com.procurement.clarification.infrastructure.handler.HistoryRepository
-import com.procurement.clarification.infrastructure.model.CommandId
+import com.procurement.clarification.infrastructure.bind.api.CommandId
 import com.procurement.clarification.infrastructure.repository.Database
 import com.procurement.clarification.infrastructure.repository.history.model.HistoryEntity
 import com.procurement.clarification.lib.functional.Result

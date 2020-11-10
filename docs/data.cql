@@ -69,3 +69,68 @@ INSERT INTO ocds.clarification_rules (country, pmd, parameter, value) VALUES ('M
 
 //86400sec(day) * 9 = 777600 (OT)
 //86400sec(day) * 4 = 345600 (SV)
+
+CREATE KEYSPACE IF NOT EXISTS clarification
+    WITH REPLICATION = {
+        'class' : 'SimpleStrategy',
+        'replication_factor' : 1
+        };
+
+CREATE TABLE IF NOT EXISTS clarification.history
+(
+    command_id   TEXT,
+    command_name TEXT,
+    command_date TIMESTAMP,
+    json_data    TEXT,
+    PRIMARY KEY (command_id)
+);
+
+CREATE TABLE IF NOT EXISTS clarification.rules
+(
+    country        TEXT,
+    pmd            TEXT,
+    operation_type TEXT,
+    parameter      TEXT,
+    value          TEXT,
+    PRIMARY KEY (country, pmd, operation_type, parameter)
+);
+
+CREATE TABLE IF NOT EXISTS clarification.periods
+(
+    cpid            TEXT,
+    ocid            TEXT,
+    owner           TEXT,
+    start_date      TIMESTAMP,
+    end_date        TIMESTAMP,
+    tender_end_date TIMESTAMP,
+    PRIMARY KEY (cpid, ocid)
+);
+
+CREATE TABLE IF NOT EXISTS  clarification.enquiries (
+    cpid         TEXT,
+    ocid         TEXT,
+    token_entity TEXT,
+    is_answered  BOOLEAN,
+    json_data    TEXT,
+    PRIMARY KEY(cpid, ocid, token_entity)
+);
+
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'interval', '777600');
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'offset', '777600');
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'interval_before', '172800');
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'OT', 'offsetExtended', '172800');
+
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'SV', 'interval', '345600');
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'SV', 'offset', '345600');
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'SV', 'interval_before', '172800');
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'SV', 'offsetExtended', '172800');
+
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_OT', 'interval', '90');
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_OT', 'offset', '90');
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_OT', 'interval_before', '20');
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_OT', 'offsetExtended', '20');
+
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_SV', 'interval', '40');
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_SV', 'offset', '40');
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_SV', 'interval_before', '20');
+INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_SV', 'offsetExtended', '20');

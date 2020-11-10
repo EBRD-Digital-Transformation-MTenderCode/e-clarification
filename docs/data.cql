@@ -135,9 +135,9 @@ INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', '
 INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_SV', 'interval_before', '20');
 INSERT INTO clarification.rules (country, pmd, parameter, value) VALUES ('MD', 'TEST_SV', 'offsetExtended', '20');
 
-DROP TABLE IF EXISTS submission.history;
+DROP TABLE IF EXISTS clarification.history;
 
-CREATE TABLE IF NOT EXISTS submission.history
+CREATE TABLE IF NOT EXISTS clarification.history
 (
     command_id   TEXT,
     command_name TEXT,

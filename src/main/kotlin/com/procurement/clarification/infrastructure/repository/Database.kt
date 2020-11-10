@@ -1,7 +1,7 @@
 package com.procurement.clarification.infrastructure.repository
 
 object Database {
-    const val KEYSPACE = "submission"
+    const val KEYSPACE = "clarification"
 
     object History {
         const val TABLE = "history"

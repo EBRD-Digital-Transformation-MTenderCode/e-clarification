@@ -39,15 +39,13 @@ fun parseOcid(value: String): Result<Ocid, DataErrors.Validation.DataMismatchToP
 
 fun parseOwner(value: String): Result<Owner, DataErrors.Validation.DataFormatMismatch> =
     value.tryOwner()
-        .doReturn {
-            return Result.failure(
-                DataErrors.Validation.DataFormatMismatch(
-                    name = "owner",
-                    expectedFormat = "uuid",
-                    actualValue = value
-                )
+        .mapFailure {
+            DataErrors.Validation.DataFormatMismatch(
+                name = "owner",
+                expectedFormat = "uuid",
+                actualValue = value
             )
-        }.asSuccess()
+        }
 
 fun parseDate(value: String, attributeName: String): Result<LocalDateTime, DataErrors.Validation> =
     value.tryParseLocalDateTime()

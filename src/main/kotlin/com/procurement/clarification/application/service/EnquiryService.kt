@@ -42,8 +42,8 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
             .map { entity ->
                 entity.jsonData
                     .tryToObject(Enquiry::class.java)
-                    .doReturn { fail ->
-                        return Fail.Incident.DatabaseIncident(exception = fail.exception)
+                    .onFailure {
+                        return Fail.Incident.DatabaseIncident(exception = it.reason.exception)
                             .asFailure()
                     }
                     .let { it.id!! }
@@ -68,8 +68,8 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
             .map { entity ->
                 entity.jsonData
                     .tryToObject(Enquiry::class.java)
-                    .doReturn { fail ->
-                        return Fail.Incident.DatabaseIncident(exception = fail.exception)
+                    .onFailure {
+                        return Fail.Incident.DatabaseIncident(exception = it.reason.exception)
                             .asFailure()
                     }
                     .convertToFindEnquiriesResult()

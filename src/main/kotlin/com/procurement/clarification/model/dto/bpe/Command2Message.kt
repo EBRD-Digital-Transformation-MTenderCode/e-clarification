@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.JsonNodeType
 import com.fasterxml.jackson.databind.node.NullNode
+import com.procurement.clarification.application.service.Logger
 import com.procurement.clarification.config.GlobalProperties
 import com.procurement.clarification.domain.EnumElementProvider
 import com.procurement.clarification.domain.EnumElementProvider.Companion.keysAsStrings
@@ -14,18 +15,16 @@ import com.procurement.clarification.domain.fail.error.BadRequestErrors
 import com.procurement.clarification.domain.fail.error.DataErrors
 import com.procurement.clarification.domain.fail.error.ValidationErrors
 import com.procurement.clarification.domain.util.Action
+import com.procurement.clarification.domain.util.extension.toList
+import com.procurement.clarification.infrastructure.dto.ApiVersion
+import com.procurement.clarification.infrastructure.handler.model.ApiResponseV2
+import com.procurement.clarification.infrastructure.model.CommandId
 import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.lib.functional.Result.Companion.failure
 import com.procurement.clarification.lib.functional.Result.Companion.success
+import com.procurement.clarification.lib.functional.asFailure
 import com.procurement.clarification.lib.functional.asSuccess
 import com.procurement.clarification.lib.functional.flatMap
-import com.procurement.clarification.domain.util.extension.toList
-import com.procurement.clarification.infrastructure.dto.ApiErrorResponse
-import com.procurement.clarification.infrastructure.dto.ApiIncidentResponse
-import com.procurement.clarification.infrastructure.dto.ApiResponse
-import com.procurement.clarification.infrastructure.dto.ApiVersion
-import com.procurement.clarification.infrastructure.model.CommandId
-import com.procurement.clarification.lib.functional.asFailure
 import com.procurement.clarification.utils.tryToObject
 import java.time.LocalDateTime
 import java.util.*
@@ -46,67 +45,69 @@ enum class Command2Type(@JsonValue override val key: String) : EnumElementProvid
     }
 }
 
-fun errorResponse(fail: Fail, id: CommandId, version: ApiVersion = GlobalProperties.App.apiVersion): ApiResponse =
-    when (fail) {
+fun errorResponse(fail: Fail, id: CommandId, version: ApiVersion = GlobalProperties.App.apiVersion, logger: Logger): ApiResponseV2 {
+    fail.logging(logger)
+    return when (fail) {
         is DataErrors.Validation -> generateDataErrorResponse(id = id, version = version, fail = fail)
         is Error -> generateErrorResponse(id = id, version = version, fail = fail)
         is Fail.Incident -> generateIncidentResponse(id = id, version = version, fail = fail)
     }
+}
 
-fun generateDataErrorResponse(id: CommandId, version: ApiVersion, fail: DataErrors.Validation): ApiErrorResponse =
-    ApiErrorResponse(
+fun generateDataErrorResponse(id: CommandId, version: ApiVersion, fail: DataErrors.Validation) =
+    ApiResponseV2.Error(
         version = version,
         id = id,
         result = listOf(
-            ApiErrorResponse.Error(
+            ApiResponseV2.Error.Result(
                 code = "${fail.code}/${GlobalProperties.service.id}",
                 description = fail.description,
-                details = ApiErrorResponse.Error.Detail.tryCreateOrNull(name = fail.name).toList()
+                details = ApiResponseV2.Error.Result.Detail.tryCreateOrNull(name = fail.name).toList()
             )
         )
     )
 
-fun generateValidationErrorResponse(id: CommandId, version: ApiVersion, fail: ValidationErrors): ApiErrorResponse =
-    ApiErrorResponse(
+fun generateValidationErrorResponse(id: CommandId, version: ApiVersion, fail: ValidationErrors) =
+    ApiResponseV2.Error(
         version = version,
         id = id,
         result = listOf(
-            ApiErrorResponse.Error(
+            ApiResponseV2.Error.Result(
                 code = "${fail.code}/${GlobalProperties.service.id}",
                 description = fail.description,
-                details = ApiErrorResponse.Error.Detail.tryCreateOrNull(id = fail.entityId).toList()
+                details = ApiResponseV2.Error.Result.Detail.tryCreateOrNull(id = fail.entityId).toList()
             )
         )
     )
 
-fun generateErrorResponse(id: CommandId, version: ApiVersion, fail: Error): ApiErrorResponse =
-    ApiErrorResponse(
+fun generateErrorResponse(id: CommandId, version: ApiVersion, fail: Error) =
+    ApiResponseV2.Error(
         version = version,
         id = id,
         result = listOf(
-            ApiErrorResponse.Error(
+            ApiResponseV2.Error.Result(
                 code = "${fail.code}/${GlobalProperties.service.id}",
                 description = fail.description
             )
         )
     )
 
-fun generateIncidentResponse(id: CommandId, version: ApiVersion, fail: Fail.Incident): ApiIncidentResponse =
-    ApiIncidentResponse(
+fun generateIncidentResponse(id: CommandId, version: ApiVersion, fail: Fail.Incident) =
+    ApiResponseV2.Incident(
         id = id,
         version = version,
-        result = ApiIncidentResponse.Incident(
-            id = UUID.randomUUID(),
+        result = ApiResponseV2.Incident.Result(
+            id = UUID.randomUUID().toString(),
             date = LocalDateTime.now(),
             level = fail.level,
             details = listOf(
-                ApiIncidentResponse.Incident.Detail(
+                ApiResponseV2.Incident.Result.Detail(
                     code = "${fail.code}/${GlobalProperties.service.id}",
                     description = fail.description,
                     metadata = null
                 )
             ),
-            service = ApiIncidentResponse.Incident.Service(
+            service = ApiResponseV2.Incident.Result.Service(
                 id = GlobalProperties.service.id,
                 version = GlobalProperties.service.version,
                 name = GlobalProperties.service.name
@@ -134,7 +135,6 @@ fun JsonNode.getAction(): Result<Command2Type, DataErrors> =
 private fun JsonNode.tryGetStringAttribute(name: String): Result<String, DataErrors> =
     tryGetAttribute(name = name, type = JsonNodeType.STRING)
         .map { it.asText() }
-
 
 private fun <T> JsonNode.tryGetEnumAttribute(name: String, enumProvider: EnumElementProvider<T>)
     : Result<T, DataErrors> where T : Enum<T>,

@@ -5,8 +5,8 @@ import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.fail.error.DataErrors
 import com.procurement.clarification.domain.fail.error.ValidationErrors
 import com.procurement.clarification.domain.util.Action
-import com.procurement.clarification.infrastructure.dto.ApiResponse
 import com.procurement.clarification.infrastructure.dto.ApiVersion
+import com.procurement.clarification.infrastructure.handler.model.ApiResponseV2
 import com.procurement.clarification.infrastructure.model.CommandId
 import com.procurement.clarification.model.dto.bpe.generateDataErrorResponse
 import com.procurement.clarification.model.dto.bpe.generateErrorResponse
@@ -15,9 +15,9 @@ import com.procurement.clarification.model.dto.bpe.generateValidationErrorRespon
 
 abstract class AbstractHandler<ACTION : Action, R : Any>(
     private val logger: Logger
-) : Handler<ACTION, ApiResponse> {
+) : Handler<ACTION, ApiResponseV2> {
 
-    protected fun responseError(id: CommandId, version: ApiVersion, fail: Fail): ApiResponse {
+    protected fun responseError(id: CommandId, version: ApiVersion, fail: Fail): ApiResponseV2 {
         fail.logging(logger)
         return when (fail) {
             is Fail.Error -> {

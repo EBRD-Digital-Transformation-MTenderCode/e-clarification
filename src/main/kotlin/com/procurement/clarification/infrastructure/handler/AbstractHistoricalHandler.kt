@@ -3,18 +3,15 @@ package com.procurement.clarification.infrastructure.handler
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.clarification.application.service.Logger
 import com.procurement.clarification.application.service.Transform
-
 import com.procurement.clarification.domain.extension.nowDefaultUTC
 import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.util.Action
-import com.procurement.clarification.infrastructure.dto.ApiResponse
-import com.procurement.clarification.infrastructure.dto.ApiSuccessResponse
 import com.procurement.clarification.infrastructure.dto.ApiVersion
+import com.procurement.clarification.infrastructure.handler.model.ApiResponseV2
 import com.procurement.clarification.infrastructure.model.CommandId
 import com.procurement.clarification.infrastructure.repository.history.model.HistoryEntity
-import com.procurement.clarification.infrastructure.web.api.ApiResponseGenerator.generateResponseOnFailure
-
 import com.procurement.clarification.lib.functional.Result
+import com.procurement.clarification.model.dto.bpe.errorResponse
 import com.procurement.clarification.model.dto.bpe.getAction
 import com.procurement.clarification.model.dto.bpe.getId
 import com.procurement.clarification.model.dto.bpe.getVersion
@@ -25,58 +22,46 @@ abstract class AbstractHistoricalHandler<ACTION : Action, R>(
     private val transform: Transform,
     private val historyRepository: HistoryRepository,
     private val logger: Logger
-) : Handler<ACTION, ApiResponse> {
+) : Handler<ACTION, ApiResponseV2> {
 
-    override fun handle(node: JsonNode): ApiResponse {
+    override fun handle(node: JsonNode): ApiResponseV2 {
         val version = node.getVersion()
             .onFailure {
-                return generateResponseOnFailure(
-                    fail = it.reason,
-                    version = ApiVersion.NaN,
-                    id = CommandId.NaN,
-                    logger = logger
-                )
+                return errorResponse(fail = it.reason, version = ApiVersion.NaN, id = CommandId.NaN, logger = logger)
             }
         val id = node.getId()
             .onFailure {
-                return generateResponseOnFailure(
-                    fail = it.reason,
-                    version = version,
-                    id = CommandId.NaN,
-                    logger = logger
-                )
+                return errorResponse(fail = it.reason, version = version, id = CommandId.NaN, logger = logger)
             }
 
         val action = node.getAction()
             .onFailure {
-                return generateResponseOnFailure(fail = it.reason, version = version, id = id, logger = logger)
+                return errorResponse(fail = it.reason, version = version, id = id, logger = logger)
             }
 
         val history = historyRepository.getHistory(id, action)
             .onFailure {
-                return generateResponseOnFailure(fail = it.reason, version = version, id = id, logger = logger)
+                return errorResponse(fail = it.reason, version = version, id = id, logger = logger)
             }
 
         if (history != null) {
             val result = transform.tryDeserialization(value = history, target = target)
-                .onFailure {
-                    return generateResponseOnFailure(
-                        fail = Fail.Incident.Database.Parsing(
-                            column = "json_data",
-                            value = history,
-                            exception = it.reason.exception
-                        ),
-                        id = id,
-                        version = version,
-                        logger = logger
+                .mapFailure {
+                    Fail.Incident.Database.Parsing(
+                        column = "json_data",
+                        value = history,
+                        exception = it.exception
                     )
                 }
-            return ApiSuccessResponse(version = version, id = id, result = result)
+                .onFailure {
+                    return errorResponse(fail = it.reason, id = id, version = version, logger = logger)
+                }
+            return ApiResponseV2.Success(version = version, id = id, result = result)
         }
 
         return execute(node)
             .onFailure {
-                return generateResponseOnFailure(fail = it.reason, version = version, id = id, logger = logger)
+                return errorResponse(fail = it.reason, version = version, id = id, logger = logger)
             }
             .let { result ->
                 if (result != null) {
@@ -91,7 +76,7 @@ abstract class AbstractHistoricalHandler<ACTION : Action, R>(
                 if (logger.isDebugEnabled)
                     logger.debug("${action.key} has been executed. Result: '${transform.trySerialization(result)}'")
 
-                ApiSuccessResponse(version = version, id = id, result = result)
+                ApiResponseV2.Success(version = version, id = id, result = result)
             }
     }
 

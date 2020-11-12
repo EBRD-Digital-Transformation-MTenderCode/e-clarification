@@ -145,3 +145,5 @@ CREATE TABLE IF NOT EXISTS clarification.history
     json_data    TEXT,
     PRIMARY KEY (command_id, command_name)
 );
+
+ALTER TABLE clarification.periods DROP tender_end_date;

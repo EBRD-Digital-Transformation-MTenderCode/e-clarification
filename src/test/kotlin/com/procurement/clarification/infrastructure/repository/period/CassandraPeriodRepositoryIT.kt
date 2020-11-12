@@ -7,13 +7,13 @@ import com.datastax.driver.core.PoolingOptions
 import com.datastax.driver.core.Session
 import com.nhaarman.mockito_kotlin.spy
 import com.procurement.clarification.application.repository.period.PeriodRepository
+import com.procurement.clarification.application.repository.period.model.PeriodEntity
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.Ocid
 import com.procurement.clarification.get
 import com.procurement.clarification.infrastructure.configuration.DatabaseTestConfiguration
 import com.procurement.clarification.infrastructure.repository.CassandraTestContainer
 import com.procurement.clarification.infrastructure.repository.Database
-import com.procurement.clarification.application.repository.period.model.PeriodEntity
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -27,8 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.ResolverStyle
 import java.util.*
 
 @ExtendWith(SpringExtension::class)
@@ -46,8 +44,7 @@ class CassandraPeriodRepositoryIT {
             ocid = OCID,
             owner = UUID.randomUUID().toString(),
             startDate = START_DATE,
-            endDate = END_DATE,
-            tenderEndDate = null
+            endDate = END_DATE
         )
     }
 
@@ -141,7 +138,6 @@ class CassandraPeriodRepositoryIT {
                      ${Database.Period.OWNER}           TEXT,
                      ${Database.Period.START_DATE}      TIMESTAMP,
                      ${Database.Period.END_DATE}        TIMESTAMP,
-                     ${Database.Period.TENDER_END_DATE} TIMESTAMP,
                      PRIMARY KEY(${Database.Period.CPID}, ${Database.Period.OCID})
                     );
             """

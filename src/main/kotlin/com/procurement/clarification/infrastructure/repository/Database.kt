@@ -27,7 +27,6 @@ object Database {
         const val OWNER = "owner"
         const val START_DATE = "start_date"
         const val END_DATE = "end_date"
-        const val TENDER_END_DATE = "tender_end_date"
     }
 
     object Enquiry {

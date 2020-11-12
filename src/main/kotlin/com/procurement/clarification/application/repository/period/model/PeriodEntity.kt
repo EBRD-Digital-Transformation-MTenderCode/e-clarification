@@ -9,6 +9,5 @@ data class PeriodEntity(
     val ocid: Ocid,
     val owner: String,
     val startDate: LocalDateTime,
-    val endDate: LocalDateTime,
-    val tenderEndDate: LocalDateTime?
+    val endDate: LocalDateTime
 )

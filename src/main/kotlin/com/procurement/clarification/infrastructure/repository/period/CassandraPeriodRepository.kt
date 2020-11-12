@@ -26,17 +26,15 @@ class CassandraPeriodRepository(private val session: Session) : PeriodRepository
                    ${Database.Period.OCID},
                    ${Database.Period.OWNER},
                    ${Database.Period.START_DATE},
-                   ${Database.Period.END_DATE},
-                   ${Database.Period.TENDER_END_DATE}
+                   ${Database.Period.END_DATE}
                )
-               VALUES(?, ?, ?, ?, ?, ?)
+               VALUES(?, ?, ?, ?, ?)
             """
 
         private const val GET_CQL = """
                SELECT ${Database.Period.OWNER},
                       ${Database.Period.START_DATE},
-                      ${Database.Period.END_DATE},
-                      ${Database.Period.TENDER_END_DATE}
+                      ${Database.Period.END_DATE}
                  FROM ${Database.KEYSPACE}.${Database.Period.TABLE}
                 WHERE ${Database.Period.CPID}=?
                   AND ${Database.Period.OCID}=?
@@ -61,8 +59,7 @@ class CassandraPeriodRepository(private val session: Session) : PeriodRepository
                     ocid = ocid,
                     owner = row.getString(Database.Period.OWNER),
                     startDate = row.getTimestamp(Database.Period.START_DATE).toLocalDateTime(),
-                    endDate = row.getTimestamp(Database.Period.END_DATE).toLocalDateTime(),
-                    tenderEndDate = row.getTimestamp(Database.Period.TENDER_END_DATE)?.toLocalDateTime()
+                    endDate = row.getTimestamp(Database.Period.END_DATE).toLocalDateTime()
                 )
             }
             .asSuccess()
@@ -75,7 +72,6 @@ class CassandraPeriodRepository(private val session: Session) : PeriodRepository
                 setString(Database.Period.OWNER, period.owner)
                 setTimestamp(Database.Period.START_DATE, period.startDate.toCassandraTimestamp())
                 setTimestamp(Database.Period.END_DATE, period.endDate.toCassandraTimestamp())
-                setTimestamp(Database.Period.TENDER_END_DATE, period.tenderEndDate?.toCassandraTimestamp())
             }
             .tryExecute(session)
             .onFailure { return MaybeFail.fail(it.reason) }

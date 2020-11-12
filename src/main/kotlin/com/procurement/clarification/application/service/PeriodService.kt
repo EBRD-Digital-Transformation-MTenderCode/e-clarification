@@ -62,8 +62,7 @@ class PeriodService(
             ocid = ocid,
             owner = owner,
             startDate = startDate,
-            endDate = endDate,
-            tenderEndDate = null
+            endDate = endDate
         )
         periodRepository.save(period)
         return ResponseDto(data = Period(period.startDate, period.endDate))
@@ -97,8 +96,7 @@ class PeriodService(
             ocid = context.ocid,
             owner = context.owner,
             startDate = startDate,
-            endDate = endDate,
-            tenderEndDate = null
+            endDate = endDate
         )
 
         val result = CreatePeriodResult(
@@ -216,8 +214,7 @@ class PeriodService(
             ocid = params.ocid,
             owner = params.owner.toString(),
             startDate = tenderPeriod.startDate,
-            endDate = tenderPeriod.endDate.minusSeconds(periodShift),
-            tenderEndDate = null
+            endDate = tenderPeriod.endDate.minusSeconds(periodShift)
         )
 
         periodRepository.save(enquiryPeriod)

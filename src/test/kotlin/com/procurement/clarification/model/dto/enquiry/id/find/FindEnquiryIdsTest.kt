@@ -1,6 +1,6 @@
 package com.procurement.clarification.model.dto.enquiry.id.find
 
-import com.procurement.clarification.infrastructure.handler.enquiry.id.find.FindEnquiryIdsRequest
+import com.procurement.clarification.infrastructure.handler.v2.model.request.FindEnquiryIdsRequest
 import com.procurement.clarification.model.dto.AbstractDTOTestBase
 import org.junit.Test
 

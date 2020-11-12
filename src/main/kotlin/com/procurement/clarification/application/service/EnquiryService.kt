@@ -2,37 +2,169 @@ package com.procurement.clarification.application.service
 
 import com.procurement.clarification.application.model.dto.params.FindEnquiriesParams
 import com.procurement.clarification.application.model.dto.params.FindEnquiryIdsParams
-import com.procurement.clarification.application.model.dto.params.GetEnquiryByIdsParams
-import com.procurement.clarification.application.respository.EnquiryRepository
+import com.procurement.clarification.application.repository.enquiry.EnquiryRepository
+import com.procurement.clarification.application.repository.enquiry.model.EnquiryEntity
 import com.procurement.clarification.domain.fail.Fail
-import com.procurement.clarification.domain.fail.error.ValidationErrors
+import com.procurement.clarification.domain.model.Cpid
+import com.procurement.clarification.domain.model.Ocid
 import com.procurement.clarification.domain.model.enquiry.EnquiryId
 import com.procurement.clarification.domain.model.enums.Scale
 import com.procurement.clarification.domain.model.lot.LotId
-import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.domain.util.asFailure
-import com.procurement.clarification.domain.util.asSuccess
-import com.procurement.clarification.infrastructure.handler.enquiry.find.FindEnquiriesResult
-import com.procurement.clarification.infrastructure.handler.enquiry.get.GetEnquiryByIdsResult
+import com.procurement.clarification.exception.ErrorException
+import com.procurement.clarification.exception.ErrorType
+import com.procurement.clarification.infrastructure.api.v1.CommandMessage
+import com.procurement.clarification.infrastructure.api.v1.ResponseDto
+import com.procurement.clarification.infrastructure.api.v1.cpid
+import com.procurement.clarification.infrastructure.api.v1.ctxId
+import com.procurement.clarification.infrastructure.api.v1.ocid
+import com.procurement.clarification.infrastructure.api.v1.owner
+import com.procurement.clarification.infrastructure.api.v1.startDate
+import com.procurement.clarification.infrastructure.api.v1.token
+import com.procurement.clarification.infrastructure.handler.v1.model.request.AddAnswerRq
+import com.procurement.clarification.infrastructure.handler.v1.model.request.CreateEnquiryRq
+import com.procurement.clarification.infrastructure.handler.v1.model.request.OrganizationReferenceCreate
+import com.procurement.clarification.infrastructure.handler.v1.model.response.AddAnswerRs
+import com.procurement.clarification.infrastructure.handler.v1.model.response.CheckAnswerRs
+import com.procurement.clarification.infrastructure.handler.v1.model.response.CheckEnquiresRs
+import com.procurement.clarification.infrastructure.handler.v1.model.response.CreateEnquiryRs
+import com.procurement.clarification.infrastructure.handler.v2.model.response.FindEnquiriesResult
+import com.procurement.clarification.lib.functional.Result
+import com.procurement.clarification.lib.functional.asFailure
+import com.procurement.clarification.lib.functional.asSuccess
 import com.procurement.clarification.model.dto.ocds.Enquiry
+import com.procurement.clarification.model.dto.ocds.OrganizationReference
+import com.procurement.clarification.model.dto.ocds.Period
+import com.procurement.clarification.model.dto.ocds.Tender
+import com.procurement.clarification.utils.toJson
+import com.procurement.clarification.utils.toLocal
+import com.procurement.clarification.utils.toObject
 import com.procurement.clarification.utils.tryToObject
 import org.springframework.stereotype.Service
 
 interface EnquiryService {
-
-    fun findEnquiryIds(params: FindEnquiryIdsParams): Result<List<EnquiryId>, Fail>
-
-    fun getEnquiryByIds(params: GetEnquiryByIdsParams): Result<List<GetEnquiryByIdsResult>, Fail>
-
+    fun addAnswer(cm: CommandMessage): ResponseDto
+    fun checkAnswer(cm: CommandMessage): ResponseDto
+    fun checkEnquiries(cm: CommandMessage): ResponseDto
+    fun createEnquiry(cm: CommandMessage): ResponseDto
     fun findEnquiries(params: FindEnquiriesParams): Result<List<FindEnquiriesResult>, Fail>
+    fun findEnquiryIds(params: FindEnquiryIdsParams): Result<List<EnquiryId>, Fail>
 }
 
 @Service
-class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryService {
+class EnquiryServiceImpl(
+    private val generationService: GenerationService,
+    private val enquiryRepository: EnquiryRepository,
+    private val periodService: PeriodService
+) : EnquiryService {
+
+    override fun addAnswer(cm: CommandMessage): ResponseDto {
+        val cpid = cm.cpid
+        val ocid = cm.ocid
+        val token = cm.token
+        val owner = cm.owner
+        val enquiryId = cm.ctxId
+        val dateTime = cm.startDate
+        val dto = toObject(AddAnswerRq::class.java, cm.data)
+
+        val entity = enquiryRepository.findBy(cpid, ocid, token)
+            .onFailure { throw it.reason.exception }
+            ?: throw ErrorException(ErrorType.DATA_NOT_FOUND)
+
+        val periodEntity = periodService.getPeriodEntity(cpid, ocid)
+        if (periodEntity.owner != owner) throw ErrorException(ErrorType.INVALID_OWNER)
+        if (entity.isAnswered) throw ErrorException(ErrorType.ALREADY_HAS_ANSWER)
+        val enquiryDto = dto.enquiry
+        val enquiry = toObject(Enquiry::class.java, entity.jsonData)
+        if (enquiryId != enquiry.id) throw ErrorException(ErrorType.INVALID_ID)
+        if (enquiryDto.answer.isBlank()) throw ErrorException(ErrorType.INVALID_ANSWER)
+
+        val updatedEnquiry = enquiry.copy(
+            answer = enquiryDto.answer,
+            dateAnswered = dateTime
+        )
+        val updatedEntity = entity.copy(
+            isAnswered = true,
+            jsonData = toJson(updatedEnquiry)
+        )
+        enquiryRepository.save(updatedEntity)
+
+        return ResponseDto(data = AddAnswerRs(updatedEnquiry))
+    }
+
+    override fun checkAnswer(cm: CommandMessage): ResponseDto {
+        val cpid = cm.cpid
+        val ocid = cm.ocid
+        val token = cm.token
+        val owner = cm.owner
+        val dateTime = cm.context.startDate?.toLocal() ?: throw ErrorException(ErrorType.CONTEXT)
+        toObject(AddAnswerRq::class.java, cm.data)
+        val entities = enquiryRepository.findBy(cpid, ocid)
+            .onFailure { throw it.reason.exception }
+        val isAllAnswered = !entities.any { (it.token != token && !it.isAnswered) }
+        val periodEntity = periodService.getPeriodEntity(cpid, ocid)
+        if (periodEntity.owner != owner) throw ErrorException(ErrorType.INVALID_OWNER)
+        val endDate = periodEntity.endDate
+        val isEnquiryPeriodExpired = (dateTime >= endDate)
+        val setUnsuspended = isEnquiryPeriodExpired && isAllAnswered
+        return ResponseDto(data = CheckAnswerRs(setUnsuspended))
+    }
+
+    override fun checkEnquiries(cm: CommandMessage): ResponseDto {
+        val cpid = cm.cpid
+        val ocid = cm.ocid
+        val dateTime = cm.startDate
+        val enquiryPeriod = periodService.getPeriodEntity(cpid, ocid)
+        val startDate = enquiryPeriod.startDate
+        val endDate = enquiryPeriod.endDate
+        val isEnquiryPeriodExpired = (dateTime >= endDate)
+        val isAllAnswered = checkIsAllAnswered(cpid, ocid)
+        return ResponseDto(
+            data = CheckEnquiresRs(
+                isEnquiryPeriodExpired = isEnquiryPeriodExpired,
+                tender = Tender(Period(startDate, endDate)),
+                allAnswered = isAllAnswered
+            )
+        )
+    }
+
+    override fun createEnquiry(cm: CommandMessage): ResponseDto {
+        val cpid = cm.cpid
+        val ocid = cm.ocid
+        val dateTime = cm.startDate
+        val dto = toObject(CreateEnquiryRq::class.java, cm.data)
+
+        periodService.checkDateInPeriod(dateTime, cpid, ocid)
+        val periodEntity = periodService.getPeriodEntity(cpid, ocid)
+
+        val enquiryRequest = dto.enquiry
+        val owner = periodEntity.owner
+        val author = converterOrganizationReferenceCreateToOrganizationReference(enquiryRequest.author)
+        val enquiry = Enquiry(
+            id = generationService.generateEnquiryId().toString(),
+            date = dateTime,
+            author = author,
+            title = enquiryRequest.title,
+            description = enquiryRequest.description,
+            answer = null,
+            relatedItem = enquiryRequest.relatedItem,
+            relatedLot = enquiryRequest.relatedLot,
+            dateAnswered = null
+        )
+
+        val entity = EnquiryEntity(
+            cpid = cpid,
+            ocid = ocid,
+            token = generationService.generateToken(),
+            isAnswered = false,
+            jsonData = toJson(enquiry)
+        )
+        enquiryRepository.save(entity)
+        return ResponseDto(data = CreateEnquiryRs(entity.token.toString(), owner, enquiry))
+    }
 
     override fun findEnquiryIds(params: FindEnquiryIdsParams): Result<List<EnquiryId>, Fail> {
-        val enquiryEntities = enquiryRepository.findAllByCpidAndStage(cpid = params.cpid, stage = params.ocid.stage)
-            .orForwardFail { fail -> return fail }
+        val enquiryEntities = enquiryRepository.findBy(params.cpid, params.ocid)
+            .onFailure { return it }
 
         if (enquiryEntities.isEmpty())
             return emptyList<EnquiryId>().asSuccess()
@@ -47,40 +179,11 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
             .map { entity ->
                 entity.jsonData
                     .tryToObject(Enquiry::class.java)
-                    .doReturn { fail ->
-                        return Fail.Incident.DatabaseIncident(exception = fail.exception)
+                    .onFailure {
+                        return Fail.Incident.DatabaseIncident(exception = it.reason.exception)
                             .asFailure()
                     }
                     .let { it.id!! }
-            }
-            .asSuccess()
-    }
-
-    override fun getEnquiryByIds(params: GetEnquiryByIdsParams): Result<List<GetEnquiryByIdsResult>, Fail> {
-
-        val enquiryEntities = enquiryRepository.findAllByCpidAndStage(cpid = params.cpid, stage = params.ocid.stage)
-            .orForwardFail { fail -> return fail }
-
-        if (enquiryEntities.isEmpty())
-            return ValidationErrors.EnquiriesNotFoundOnGetEnquiryByIds(cpid = params.cpid, ocid = params.ocid)
-                .asFailure()
-
-        val enquiries = enquiryEntities.map { entity ->
-            entity.jsonData
-                .tryToObject(Enquiry::class.java)
-                .doReturn { fail ->
-                    return Fail.Incident.DatabaseIncident(exception = fail.exception)
-                        .asFailure()
-                }
-        }
-            .associateBy { it.id }
-
-        return params.enquiryIds
-            .map { id ->
-                enquiries[id]
-                    ?.convertToGetEnquiryByIdsResult()
-                    ?: return ValidationErrors.EnquiriesNotFoundByIdOnGetEnquiryByIds(id = id)
-                        .asFailure()
             }
             .asSuccess()
     }
@@ -89,8 +192,8 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
 
         val isAnswered = params.isAnswer
 
-        val enquiryEntities = enquiryRepository.findAllByCpidAndStage(cpid = params.cpid, stage = params.ocid.stage)
-            .orForwardFail { fail -> return fail }
+        val enquiryEntities = enquiryRepository.findBy( params.cpid, params.ocid)
+            .onFailure { return it }
 
         val filteredEnquiries = if (isAnswered != null) {
             enquiryEntities.filter { it.isAnswered == isAnswered }
@@ -102,8 +205,8 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
             .map { entity ->
                 entity.jsonData
                     .tryToObject(Enquiry::class.java)
-                    .doReturn { fail ->
-                        return Fail.Incident.DatabaseIncident(exception = fail.exception)
+                    .onFailure {
+                        return Fail.Incident.DatabaseIncident(exception = it.reason.exception)
                             .asFailure()
                     }
                     .convertToFindEnquiriesResult()
@@ -203,96 +306,22 @@ class EnquiryServiceImpl(val enquiryRepository: EnquiryRepository) : EnquiryServ
                 }
         )
 
-    private fun Enquiry.convertToGetEnquiryByIdsResult() =
-        GetEnquiryByIdsResult(
-            id = this.id!!,
-            date = this.date!!,
-            answer = this.answer,
-            dateAnswer = this.dateAnswered,
-            description = this.description,
-            title = this.title,
-            relatedLot = this.relatedLot
-                ?.let { LotId.fromString(it) },
-            author = this.author
-                .let { organizationReference ->
-                    GetEnquiryByIdsResult.Author(
-                        id = organizationReference.id!!,
-                        name = organizationReference.name,
-                        additionalIdentifiers = organizationReference.additionalIdentifiers
-                            ?.map { identifier ->
-                                GetEnquiryByIdsResult.Author.AdditionalIdentifier(
-                                    id = identifier.id,
-                                    legalName = identifier.legalName,
-                                    scheme = identifier.scheme,
-                                    uri = identifier.uri
-                                )
-                            },
-                        contactPoint = organizationReference.contactPoint
-                            .let { contactPoint ->
-                                GetEnquiryByIdsResult.Author.ContactPoint(
-                                    name = contactPoint.name,
-                                    email = contactPoint.email,
-                                    faxNumber = contactPoint.faxNumber,
-                                    telephone = contactPoint.telephone,
-                                    url = contactPoint.url
-                                )
-                            },
-                        details = organizationReference.details
-                            .let { details ->
-                                GetEnquiryByIdsResult.Author.Details(
-                                    scale = Scale.creator(name = details!!.scale)
-                                )
-                            },
-                        identifier = organizationReference.identifier
-                            .let { identifier ->
-                                GetEnquiryByIdsResult.Author.Identifier(
-                                    id = identifier.id,
-                                    scheme = identifier.scheme,
-                                    legalName = identifier.legalName,
-                                    uri = identifier.uri
-                                )
-                            },
-                        address = organizationReference.address
-                            .let { address ->
-                                GetEnquiryByIdsResult.Author.Address(
-                                    streetAddress = address.streetAddress,
-                                    postalCode = address.postalCode,
-                                    addressDetails = address.addressDetails
-                                        .let { addressDetails ->
-                                            GetEnquiryByIdsResult.Author.Address.AddressDetails(
-                                                country = addressDetails.country
-                                                    .let { country ->
-                                                        GetEnquiryByIdsResult.Author.Address.AddressDetails.Country(
-                                                            id = country.id,
-                                                            uri = country.uri!!,
-                                                            scheme = country.scheme!!,
-                                                            description = country.description!!
-                                                        )
-                                                    },
-                                                locality = addressDetails.locality
-                                                    .let { locality ->
-                                                        GetEnquiryByIdsResult.Author.Address.AddressDetails.Locality(
-                                                            id = locality.id,
-                                                            uri = locality.uri,
-                                                            scheme = locality.scheme,
-                                                            description = locality.description
-                                                        )
-                                                    },
-                                                region = addressDetails.region
-                                                    .let { region ->
-                                                        GetEnquiryByIdsResult.Author.Address.AddressDetails.Region(
-                                                            id = region.id,
-                                                            uri = region.uri!!,
-                                                            scheme = region.scheme!!,
-                                                            description = region.description!!
-                                                        )
-                                                    }
-                                            )
-                                        }
-                                )
-                            }
-                    )
-                }
+    private fun converterOrganizationReferenceCreateToOrganizationReference(author: OrganizationReferenceCreate): OrganizationReference {
+        return OrganizationReference(
+            name = author.name,
+            id = author.identifier.scheme + "-" + author.identifier.id,
+            identifier = author.identifier,
+            address = author.address,
+            additionalIdentifiers = author.additionalIdentifiers,
+            contactPoint = author.contactPoint,
+            details = author.details
         )
-}
+    }
 
+    private fun checkIsAllAnswered(cpid: Cpid, ocid: Ocid): Boolean {
+        val isAllAnswered = enquiryRepository.findBy(cpid, ocid)
+            .onFailure { throw it.reason.exception }
+            .count { !it.isAnswered }
+        return isAllAnswered == 0
+    }
+}

@@ -95,8 +95,7 @@ class PeriodServiceTest {
                 ocid = params.ocid,
                 owner = params.owner.toString(),
                 startDate = RECEIVED_START_DATE,
-                endDate = LocalDateTime.parse("2020-02-20T08:49:55Z", FORMATTER),
-                tenderEndDate = null
+                endDate = LocalDateTime.parse("2020-02-20T08:49:55Z", FORMATTER)
             )
             )
         }

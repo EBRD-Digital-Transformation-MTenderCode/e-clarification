@@ -1,6 +1,6 @@
 package com.procurement.clarification.domain.model.token
 
-import com.procurement.clarification.domain.util.Result
+import com.procurement.clarification.lib.functional.Result
 import java.util.*
 
 typealias Token = UUID

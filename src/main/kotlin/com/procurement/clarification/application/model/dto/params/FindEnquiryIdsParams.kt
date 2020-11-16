@@ -5,8 +5,8 @@ import com.procurement.clarification.application.model.parseOcid
 import com.procurement.clarification.domain.fail.error.DataErrors
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.Ocid
-import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.domain.util.asSuccess
+import com.procurement.clarification.lib.functional.Result
+import com.procurement.clarification.lib.functional.asSuccess
 
 class FindEnquiryIdsParams private constructor(
     val cpid: Cpid,
@@ -21,10 +21,10 @@ class FindEnquiryIdsParams private constructor(
         ): Result<FindEnquiryIdsParams, DataErrors> {
 
             val parsedCpid = parseCpid(value = cpid)
-                .orForwardFail { fail -> return fail }
+                .onFailure { return it }
 
             val parsedOcid = parseOcid(value = ocid)
-                .orForwardFail { fail -> return fail }
+                .onFailure { return it }
 
             return FindEnquiryIdsParams(cpid = parsedCpid, ocid = parsedOcid, isAnswer = isAnswer)
                 .asSuccess()

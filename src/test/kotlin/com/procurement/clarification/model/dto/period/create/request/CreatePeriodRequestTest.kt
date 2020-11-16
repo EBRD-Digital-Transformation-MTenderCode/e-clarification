@@ -1,6 +1,6 @@
 package com.procurement.clarification.model.dto.period.create.request
 
-import com.procurement.clarification.infrastructure.model.dto.period.create.request.CreatePeriodRequest
+import com.procurement.clarification.infrastructure.handler.v1.model.request.CreatePeriodRequest
 import com.procurement.clarification.model.dto.AbstractDTOTestBase
 import org.junit.Test
 

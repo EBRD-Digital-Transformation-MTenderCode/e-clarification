@@ -1,6 +1,6 @@
 package com.procurement.clarification
 
-import com.procurement.clarification.config.ApplicationConfig
+import com.procurement.clarification.infrastructure.configuration.ApplicationConfig
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 

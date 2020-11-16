@@ -12,8 +12,8 @@ import com.procurement.clarification.domain.model.Ocid
 import com.procurement.clarification.domain.model.Owner
 import com.procurement.clarification.domain.model.enums.OperationType
 import com.procurement.clarification.domain.model.enums.ProcurementMethod
-import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.domain.util.asSuccess
+import com.procurement.clarification.lib.functional.Result
+import com.procurement.clarification.lib.functional.asSuccess
 import java.time.LocalDateTime
 
 class CreateEnquiryPeriodParams private constructor(
@@ -67,20 +67,12 @@ class CreateEnquiryPeriodParams private constructor(
             country: String,
             operationType: String
         ): Result<CreateEnquiryPeriodParams, DataErrors> {
-            val parsedCpid = parseCpid(value = cpid)
-                .orForwardFail { fail -> return fail }
-
-            val parsedOcid = parseOcid(value = ocid)
-                .orForwardFail { fail -> return fail }
-
-            val parsedPmd = parsePmd(pmd, allowedPmd)
-                .orForwardFail { fail -> return fail }
-
-            val parsedOwner = parseOwner(owner)
-                .orForwardFail { fail -> return fail }
-
+            val parsedCpid = parseCpid(value = cpid).onFailure { return it }
+            val parsedOcid = parseOcid(value = ocid).onFailure { return it }
+            val parsedPmd = parsePmd(pmd, allowedPmd).onFailure { return it }
+            val parsedOwner = parseOwner(owner).onFailure { return it }
             val parsedOperationType = parseOperationType(operationType, allowedOperationType)
-                .orForwardFail { fail -> return fail }
+                .onFailure { return it }
 
             return CreateEnquiryPeriodParams(
                 cpid = parsedCpid,
@@ -108,10 +100,10 @@ class CreateEnquiryPeriodParams private constructor(
                     endDate: String
                 ): Result<TenderPeriod, DataErrors> {
                     val startDateParsed = parseDate(startDate, "startDate")
-                        .orForwardFail { fail -> return fail }
+                        .onFailure { return it }
 
                     val endDateParsed = parseDate(endDate, "endDate")
-                        .orForwardFail { fail -> return fail }
+                        .onFailure { return it }
 
                     return TenderPeriod(startDate = startDateParsed, endDate = endDateParsed).asSuccess()
                 }

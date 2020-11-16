@@ -1,25 +1,21 @@
 package com.procurement.clarification.domain.model
 
 import com.fasterxml.jackson.annotation.JsonValue
-import com.procurement.clarification.domain.model.country.CountryId
-import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.utils.toMilliseconds
-import java.time.LocalDateTime
 
-class Cpid private constructor(private val value: String) {
+class Cpid private constructor(val underlying: String) {
 
     override fun equals(other: Any?): Boolean {
         return if (this !== other)
             other is Cpid
-                && this.value == other.value
+                && this.underlying == other.underlying
         else
             true
     }
 
-    override fun hashCode(): Int = value.hashCode()
+    override fun hashCode(): Int = underlying.hashCode()
 
     @JsonValue
-    override fun toString(): String = value
+    override fun toString(): String = underlying
 
     companion object {
         private val regex = "^[a-z]{4}-[a-z0-9]{6}-[A-Z]{2}-[0-9]{13}\$".toRegex()
@@ -27,13 +23,6 @@ class Cpid private constructor(private val value: String) {
         val pattern: String
             get() = regex.pattern
 
-        fun tryCreateOrNull(value: String): Cpid? = if (value.matches(regex)) Cpid(value = value) else null
-
-        fun tryCreate(value: String): Result<Cpid, String> =
-            if (value.matches(regex)) Result.success(Cpid(value = value))
-            else Result.failure(pattern)
-
-        fun generate(prefix: String, country: CountryId, timestamp: LocalDateTime): Cpid =
-            Cpid("${prefix.toLowerCase()}-${country.toUpperCase()}-${timestamp.toMilliseconds()}")
+        fun tryCreateOrNull(value: String): Cpid? = if (value.matches(regex)) Cpid(underlying = value) else null
     }
 }

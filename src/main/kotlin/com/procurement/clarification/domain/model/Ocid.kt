@@ -4,25 +4,22 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.clarification.domain.EnumElementProvider.Companion.keysAsStrings
 import com.procurement.clarification.domain.model.enums.Stage
-import com.procurement.clarification.domain.util.Result
-import com.procurement.clarification.utils.toMilliseconds
 import java.io.Serializable
-import java.time.LocalDateTime
 
-class Ocid private constructor(private val value: String, val stage: Stage) : Serializable {
+class Ocid private constructor(val underlying: String, val stage: Stage) : Serializable {
 
     override fun equals(other: Any?): Boolean {
         return if (this !== other)
             other is Ocid
-                && this.value == other.value
+                && this.underlying == other.underlying
         else
             true
     }
 
-    override fun hashCode(): Int = value.hashCode()
+    override fun hashCode(): Int = underlying.hashCode()
 
     @JsonValue
-    override fun toString(): String = value
+    override fun toString(): String = underlying
 
     companion object {
         private const val STAGE_POSITION = 4
@@ -35,24 +32,13 @@ class Ocid private constructor(private val value: String, val stage: Stage) : Se
         val pattern: String
             get() = regex.pattern
 
-
         @JvmStatic
         @JsonCreator
         fun tryCreateOrNull(value: String): Ocid? =
             if (value.matches(regex)) {
                 val stage = Stage.orNull(value.split("-")[STAGE_POSITION])!!
-                Ocid(value = value, stage = stage)
+                Ocid(underlying = value, stage = stage)
             } else
                 null
-
-        fun tryCreate(value: String): Result<Ocid, String> =
-            if (value.matches(regex)) {
-                val stage = Stage.orNull(value.split("-")[STAGE_POSITION])!!
-                Result.success(Ocid(value = value, stage = stage))
-            } else
-                Result.failure(pattern)
-
-        fun generate(cpid: Cpid, stage: Stage, timestamp: LocalDateTime): Ocid =
-            Ocid("$cpid-$stage-${timestamp.toMilliseconds()}", stage)
     }
 }

@@ -45,14 +45,6 @@ class RulesService(private val ruleRepository: RuleRepository) {
             ?: throw ErrorException(ErrorType.INTERVAL_RULES_NOT_FOUND)
     }
 
-//    fun getPeriodShift(country: String, pmd: ProcurementMethod): Duration {
-//        return ruleRepository.find(country, pmd, PARAMETER_PERIOD_SHIFT)
-//            .onFailure { throw it.reason.exception }
-//            ?.toLongOrNull()
-//            ?.let { Duration.ofSeconds(it) }
-//            ?: throw ErrorException(ErrorType.INTERVAL_RULES_NOT_FOUND)
-//    }
-
     fun getPeriodShift(country: String, pmd: ProcurementMethod): Result<Duration?, Fail.Incident.Database> =
         ruleRepository.find(country, pmd, PARAMETER_PERIOD_SHIFT)
             .onFailure { return it }

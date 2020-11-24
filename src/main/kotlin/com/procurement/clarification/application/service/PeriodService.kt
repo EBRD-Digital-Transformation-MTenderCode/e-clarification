@@ -91,7 +91,10 @@ class PeriodService(
         // FR.COM-8.1.2
         val shift = rulesService.getPeriodShift(country = context.country, pmd = context.pmd)
             .onFailure { throw it.reason.exception }
-            ?: throw ErrorException(ErrorType.INTERVAL_RULES_NOT_FOUND)
+            ?: throw ErrorException(
+                error = ErrorType.INTERVAL_RULES_NOT_FOUND,
+                message = "Cannot found rule by country '${context.country}' and pmd '${context.pmd}'."
+            )
 
         val endDate = request.period.endDate.minus(shift)
 

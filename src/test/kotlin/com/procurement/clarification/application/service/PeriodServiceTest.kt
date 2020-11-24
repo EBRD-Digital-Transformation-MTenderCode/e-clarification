@@ -6,14 +6,15 @@ import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.clarification.application.model.dto.params.CreateEnquiryPeriodParams
 import com.procurement.clarification.application.repository.period.PeriodRepository
+import com.procurement.clarification.application.repository.period.model.PeriodEntity
 import com.procurement.clarification.domain.extension.format
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.Ocid
 import com.procurement.clarification.domain.model.enums.OperationType
 import com.procurement.clarification.domain.model.enums.ProcurementMethod
-import com.procurement.clarification.lib.functional.MaybeFail
 import com.procurement.clarification.infrastructure.handler.v2.model.response.CreateEnquiryPeriodResult
-import com.procurement.clarification.application.repository.period.model.PeriodEntity
+import com.procurement.clarification.lib.functional.MaybeFail
+import com.procurement.clarification.lib.functional.asSuccess
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -60,7 +61,7 @@ class PeriodServiceTest {
             val params = getParams()
 
             whenever(rulesService.getPeriodShift(country = params.country, pmd = params.pmd))
-                .thenReturn(PERIOD_SHIFT)
+                .thenReturn(PERIOD_SHIFT.asSuccess())
 
             whenever(periodRepository.save(any()))
                 .thenReturn(MaybeFail.none())
@@ -83,7 +84,7 @@ class PeriodServiceTest {
             val params = getParams()
 
             whenever(rulesService.getPeriodShift(country = params.country, pmd = params.pmd))
-                .thenReturn(PERIOD_SHIFT)
+                .thenReturn(PERIOD_SHIFT.asSuccess())
 
             whenever(periodRepository.save(any()))
                 .thenReturn(MaybeFail.none())

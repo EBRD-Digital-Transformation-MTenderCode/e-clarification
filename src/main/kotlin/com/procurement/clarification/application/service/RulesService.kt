@@ -1,9 +1,12 @@
 package com.procurement.clarification.application.service
 
 import com.procurement.clarification.application.repository.rule.RuleRepository
+import com.procurement.clarification.domain.fail.Fail
 import com.procurement.clarification.domain.model.enums.ProcurementMethod
 import com.procurement.clarification.exception.ErrorException
 import com.procurement.clarification.exception.ErrorType
+import com.procurement.clarification.lib.functional.Result
+import com.procurement.clarification.lib.functional.asSuccess
 import org.springframework.stereotype.Service
 import java.time.Duration
 
@@ -42,13 +45,12 @@ class RulesService(private val ruleRepository: RuleRepository) {
             ?: throw ErrorException(ErrorType.INTERVAL_RULES_NOT_FOUND)
     }
 
-    fun getPeriodShift(country: String, pmd: ProcurementMethod): Duration {
-        return ruleRepository.find(country, pmd, PARAMETER_PERIOD_SHIFT)
-            .onFailure { throw it.reason.exception }
+    fun getPeriodShift(country: String, pmd: ProcurementMethod): Result<Duration?, Fail.Incident.Database> =
+        ruleRepository.find(country, pmd, PARAMETER_PERIOD_SHIFT)
+            .onFailure { return it }
             ?.toLongOrNull()
             ?.let { Duration.ofSeconds(it) }
-            ?: throw ErrorException(ErrorType.INTERVAL_RULES_NOT_FOUND)
-    }
+            .asSuccess()
 
     companion object {
         private const val PARAMETER_INTERVAL = "interval"

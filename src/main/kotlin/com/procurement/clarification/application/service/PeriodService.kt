@@ -7,6 +7,7 @@ import com.procurement.clarification.application.model.dto.period.create.CreateP
 import com.procurement.clarification.application.repository.period.PeriodRepository
 import com.procurement.clarification.application.repository.period.model.PeriodEntity
 import com.procurement.clarification.domain.fail.Fail
+import com.procurement.clarification.domain.fail.error.GeneralValidationErrors
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.Ocid
 import com.procurement.clarification.domain.model.enums.ProcurementMethod
@@ -89,6 +90,12 @@ class PeriodService(
 
         // FR.COM-8.1.2
         val shift = rulesService.getPeriodShift(country = context.country, pmd = context.pmd)
+            .onFailure { throw it.reason.exception }
+            ?: throw ErrorException(
+                error = ErrorType.INTERVAL_RULES_NOT_FOUND,
+                message = "Cannot found rule by country '${context.country}' and pmd '${context.pmd}'."
+            )
+
         val endDate = request.period.endDate.minus(shift)
 
         val periodEntity = PeriodEntity(
@@ -207,14 +214,22 @@ class PeriodService(
     }
 
     fun createEnquiryPeriod(params: CreateEnquiryPeriodParams): Result<CreateEnquiryPeriodResult, Fail> {
-        val periodShift = rulesService.getPeriodShift(country = params.country, pmd = params.pmd).seconds
+        val periodShift = rulesService.getPeriodShift(country = params.country, pmd = params.pmd)
+            .onFailure { return it }
+            ?: return Result.failure(
+                GeneralValidationErrors.EntityNotFound(
+                    entityName = "rule",
+                    searchParams = mapOf("country" to params.country, "pmd" to params.pmd)
+                )
+            )
+
         val tenderPeriod = params.tender.tenderPeriod
         val enquiryPeriod = PeriodEntity(
             cpid = params.cpid,
             ocid = params.ocid,
             owner = params.owner.toString(),
             startDate = tenderPeriod.startDate,
-            endDate = tenderPeriod.endDate.minusSeconds(periodShift)
+            endDate = tenderPeriod.endDate.minus(periodShift)
         )
 
         periodRepository.save(enquiryPeriod)

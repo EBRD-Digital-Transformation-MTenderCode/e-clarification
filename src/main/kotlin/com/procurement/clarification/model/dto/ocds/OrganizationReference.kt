@@ -22,7 +22,7 @@ data class OrganizationReference @JsonCreator constructor(
         val address: Address,
 
         @field:Valid
-        val additionalIdentifiers: Set<Identifier>?,
+        val additionalIdentifiers: List<Identifier>?,
 
         @field:Valid
         @field:NotNull

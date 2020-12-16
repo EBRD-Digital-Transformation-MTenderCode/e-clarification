@@ -14,10 +14,12 @@ import com.procurement.clarification.exception.ErrorException
 import com.procurement.clarification.exception.ErrorType
 import com.procurement.clarification.infrastructure.api.v1.CommandMessage
 import com.procurement.clarification.infrastructure.api.v1.ResponseDto
+import com.procurement.clarification.infrastructure.api.v1.country
 import com.procurement.clarification.infrastructure.api.v1.cpid
 import com.procurement.clarification.infrastructure.api.v1.ctxId
 import com.procurement.clarification.infrastructure.api.v1.ocid
 import com.procurement.clarification.infrastructure.api.v1.owner
+import com.procurement.clarification.infrastructure.api.v1.pmd
 import com.procurement.clarification.infrastructure.api.v1.startDate
 import com.procurement.clarification.infrastructure.api.v1.token
 import com.procurement.clarification.infrastructure.handler.v1.model.request.AddAnswerRq
@@ -131,9 +133,12 @@ class EnquiryServiceImpl(
         val cpid = cm.cpid
         val ocid = cm.ocid
         val dateTime = cm.startDate
+        val country = cm.country
+        val pmd = cm.pmd
+
         val dto = toObject(CreateEnquiryRq::class.java, cm.data)
 
-        periodService.checkDateInPeriod(dateTime, cpid, ocid)
+        periodService.checkDateInPeriod(dateTime, cpid, ocid, country, pmd)
         val periodEntity = periodService.getPeriodEntity(cpid, ocid)
 
         val enquiryRequest = dto.enquiry

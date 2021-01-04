@@ -189,13 +189,19 @@ class PeriodService(
         return ResponseDto(null)
     }
 
-    fun checkDateInPeriod(localDateTime: LocalDateTime, cpid: Cpid, ocid: Ocid) {
+    fun checkDateInPeriod(
+        localDateTime: LocalDateTime,
+        cpid: Cpid,
+        ocid: Ocid,
+        country: String,
+        pmd: ProcurementMethod
+    ) {
         val periodEntity = getPeriodEntity(cpid, ocid)
-        val localDateTimeAfter = localDateTime.isAfter(periodEntity.startDate)
-            || localDateTime == periodEntity.startDate
-        val localDateTimeBefore = localDateTime.isBefore(periodEntity.endDate)
-            || localDateTime == periodEntity.endDate
-        if (!localDateTimeBefore || !localDateTimeAfter) throw ErrorException(ErrorType.INVALID_DATE)
+        val periodShift = rulesService.getShiftPeriodCreateEnquiries(country, pmd)
+        val endDateWithShift = periodEntity.endDate.minusSeconds(periodShift.seconds)
+
+        if (endDateWithShift.isBefore(localDateTime))
+            throw ErrorException(ErrorType.INVALID_DATE)
     }
 
     fun getPeriodEntity(cpid: Cpid, ocid: Ocid): PeriodEntity = periodRepository.find(cpid, ocid)

@@ -21,14 +21,6 @@ class RulesService(private val ruleRepository: RuleRepository) {
             ?: throw ErrorException(ErrorType.INTERVAL_RULES_NOT_FOUND)
     }
 
-    fun getOffset(country: String, pmd: ProcurementMethod): Duration {
-        return ruleRepository.find(country, pmd, PARAMETER_OFFSET)
-            .onFailure { throw it.reason.exception }
-            ?.toLongOrNull()
-            ?.let { Duration.ofSeconds(it) }
-            ?: throw ErrorException(ErrorType.OFFSET_RULES_NOT_FOUND)
-    }
-
     fun getOffsetExtended(country: String, pmd: ProcurementMethod): Duration {
         return ruleRepository.find(country, pmd, PARAMETER_OFFSET_EXTENDED)
             .onFailure { throw it.reason.exception }
@@ -45,6 +37,14 @@ class RulesService(private val ruleRepository: RuleRepository) {
             ?: throw ErrorException(ErrorType.INTERVAL_RULES_NOT_FOUND)
     }
 
+    fun getShiftPeriodCreateEnquiries(country: String, pmd: ProcurementMethod): Duration {
+        return ruleRepository.find(country, pmd, SHIFT_PERIOD_CREATE_ENQUIRIES)
+            .onFailure { throw it.reason.exception }
+            ?.toLongOrNull()
+            ?.let { Duration.ofSeconds(it) }
+            ?: throw ErrorException(ErrorType.SHIFT_PERIOD_CREATE_ENQUIRIES_RULES_NOT_FOUND)
+    }
+
     fun getPeriodShift(country: String, pmd: ProcurementMethod): Result<Duration?, Fail.Incident.Database> =
         ruleRepository.find(country, pmd, PARAMETER_PERIOD_SHIFT)
             .onFailure { return it }
@@ -55,8 +55,8 @@ class RulesService(private val ruleRepository: RuleRepository) {
     companion object {
         private const val PARAMETER_INTERVAL = "interval"
         private const val PARAMETER_INTERVAL_BEFORE = "interval_before"
-        private const val PARAMETER_OFFSET = "offset"
         private const val PARAMETER_OFFSET_EXTENDED = "offsetExtended"
         private const val PARAMETER_PERIOD_SHIFT = "period_shift"
+        private const val SHIFT_PERIOD_CREATE_ENQUIRIES = "shiftPeriodCreateEnquiries"
     }
 }

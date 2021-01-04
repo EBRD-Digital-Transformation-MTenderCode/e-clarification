@@ -30,6 +30,7 @@ import com.procurement.clarification.infrastructure.handler.v1.model.response.Ch
 import com.procurement.clarification.infrastructure.handler.v1.model.response.CheckEnquiresRs
 import com.procurement.clarification.infrastructure.handler.v1.model.response.CreateEnquiryRs
 import com.procurement.clarification.infrastructure.handler.v2.model.response.FindEnquiriesResult
+import com.procurement.clarification.lib.errorIfBlank
 import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.lib.functional.asFailure
 import com.procurement.clarification.lib.functional.asSuccess
@@ -137,6 +138,7 @@ class EnquiryServiceImpl(
         val pmd = cm.pmd
 
         val dto = toObject(CreateEnquiryRq::class.java, cm.data)
+        dto.validateTextAttributes()
 
         periodService.checkDateInPeriod(dateTime, cpid, ocid, country, pmd)
         val periodEntity = periodService.getPeriodEntity(cpid, ocid)
@@ -217,6 +219,63 @@ class EnquiryServiceImpl(
                     .convertToFindEnquiriesResult()
             }
             .asSuccess()
+    }
+
+    private fun CreateEnquiryRq.validateTextAttributes() {
+        enquiry.apply {
+            title.checkForBlank("enquiry.title")
+            description.checkForBlank("enquiry.description")
+            relatedItem.checkForBlank("enquiry.relatedItem")
+            relatedLot.checkForBlank("enquiry.relatedLot")
+            author.apply {
+                name.checkForBlank("enquiry.author.name")
+
+                identifier.apply {
+                    scheme.checkForBlank("enquiry.author.identifier.scheme")
+                    id.checkForBlank("enquiry.author.identifier.id")
+                    legalName.checkForBlank("enquiry.author.identifier.legalName")
+                    uri.checkForBlank("enquiry.author.identifier.uri")
+                }
+
+                address.apply {
+                    streetAddress.checkForBlank("enquiry.author.address.streetAddress")
+                    postalCode.checkForBlank("enquiry.author.address.postalCode")
+
+                    addressDetails.apply {
+                        locality.scheme.checkForBlank("enquiry.author.address.addressDetails.locality.scheme")
+                        locality.id.checkForBlank("enquiry.author.address.addressDetails.locality.id")
+                        locality.description.checkForBlank("enquiry.author.address.addressDetails.locality.description")
+                        locality.uri.checkForBlank("enquiry.author.address.addressDetails.locality.uri")
+                    }
+                }
+
+                additionalIdentifiers?.forEachIndexed { additionalIdentifierIdx, additionalIdentifier ->
+                    additionalIdentifier.scheme.checkForBlank("enquiry.author.additionalIdentifiers[$additionalIdentifierIdx].scheme")
+                    additionalIdentifier.id.checkForBlank("enquiry.author.additionalIdentifiers[$additionalIdentifierIdx].id")
+                    additionalIdentifier.legalName.checkForBlank("enquiry.author.additionalIdentifiers[$additionalIdentifierIdx].legalName")
+                    additionalIdentifier.uri.checkForBlank("enquiry.author.additionalIdentifiers[$additionalIdentifierIdx].uri")
+                }
+
+                contactPoint.apply {
+                    name.checkForBlank("enquiry.author.contactPoint.name")
+                    email.checkForBlank("enquiry.author.contactPoint.email")
+                    telephone.checkForBlank("enquiry.author.contactPoint.telephone")
+                    faxNumber.checkForBlank("enquiry.author.contactPoint.faxNumber")
+                    url.checkForBlank("enquiry.author.contactPoint.url")
+                }
+
+                details.apply {
+                    scale.checkForBlank("tenderer.details.scale")
+                }
+            }
+        }
+    }
+
+    private fun String?.checkForBlank(name: String) = this.errorIfBlank {
+        ErrorException(
+            error = ErrorType.INCORRECT_VALUE_ATTRIBUTE,
+            message = "The attribute '$name' is empty or blank."
+        )
     }
 
     private fun Enquiry.convertToFindEnquiriesResult() =

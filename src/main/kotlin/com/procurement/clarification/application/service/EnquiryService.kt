@@ -151,7 +151,7 @@ class EnquiryServiceImpl(
         currentlyAnsweredEnquiry: Enquiry
     ): Boolean {
         val otherEnquiries = entitiesByEnquires.minus(currentlyAnsweredEnquiry)
-        val allAnswered = otherEnquiries.values.any { !it.isAnswered }
+        val allAnswered = otherEnquiries.values.none { !it.isAnswered }
         return allAnswered
     }
 
@@ -185,7 +185,6 @@ class EnquiryServiceImpl(
             cpid = cm.cpid,
             ocid = cm.ocid,
             token = cm.token,
-            owner = cm.owner,
             startDate = cm.startDate,
             enquiryId = cm.ctxId
         )

@@ -9,7 +9,6 @@ class CheckAnswerContext(
     val cpid: Cpid,
     val ocid: Ocid,
     val token: Token,
-    val owner: String,
     val startDate: LocalDateTime,
     val enquiryId: String
 )

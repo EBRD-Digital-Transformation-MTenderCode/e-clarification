@@ -9,6 +9,7 @@ import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.Ocid
 import com.procurement.clarification.domain.model.enquiry.EnquiryId
 import com.procurement.clarification.domain.model.enums.Scale
+import com.procurement.clarification.domain.model.enums.Stage
 import com.procurement.clarification.domain.model.lot.LotId
 import com.procurement.clarification.exception.ErrorException
 import com.procurement.clarification.exception.ErrorType
@@ -20,11 +21,15 @@ import com.procurement.clarification.infrastructure.api.v1.ctxId
 import com.procurement.clarification.infrastructure.api.v1.ocid
 import com.procurement.clarification.infrastructure.api.v1.owner
 import com.procurement.clarification.infrastructure.api.v1.pmd
+import com.procurement.clarification.infrastructure.api.v1.stage
 import com.procurement.clarification.infrastructure.api.v1.startDate
 import com.procurement.clarification.infrastructure.api.v1.token
 import com.procurement.clarification.infrastructure.handler.v1.model.request.AddAnswerRq
 import com.procurement.clarification.infrastructure.handler.v1.model.request.CreateEnquiryRq
 import com.procurement.clarification.infrastructure.handler.v1.model.request.OrganizationReferenceCreate
+import com.procurement.clarification.infrastructure.handler.v1.model.request.answer.check.CheckAnswerContext
+import com.procurement.clarification.infrastructure.handler.v1.model.request.answer.check.CheckAnswerPreQualificationPeriodRequest
+import com.procurement.clarification.infrastructure.handler.v1.model.request.answer.check.CheckAnswerTenderPeriodRequest
 import com.procurement.clarification.infrastructure.handler.v1.model.response.AddAnswerRs
 import com.procurement.clarification.infrastructure.handler.v1.model.response.CheckAnswerRs
 import com.procurement.clarification.infrastructure.handler.v1.model.response.CheckEnquiresRs
@@ -39,7 +44,6 @@ import com.procurement.clarification.model.dto.ocds.OrganizationReference
 import com.procurement.clarification.model.dto.ocds.Period
 import com.procurement.clarification.model.dto.ocds.Tender
 import com.procurement.clarification.utils.toJson
-import com.procurement.clarification.utils.toLocal
 import com.procurement.clarification.utils.toObject
 import com.procurement.clarification.utils.tryToObject
 import org.springframework.stereotype.Service
@@ -95,22 +99,95 @@ class EnquiryServiceImpl(
     }
 
     override fun checkAnswer(cm: CommandMessage): ResponseDto {
-        val cpid = cm.cpid
-        val ocid = cm.ocid
-        val token = cm.token
-        val owner = cm.owner
-        val dateTime = cm.context.startDate?.toLocal() ?: throw ErrorException(ErrorType.CONTEXT)
-        toObject(AddAnswerRq::class.java, cm.data)
-        val entities = enquiryRepository.findBy(cpid, ocid)
+        val context = getCheckAnswerContext(cm)
+        val entities = enquiryRepository.findBy(context.cpid, context.ocid)
             .onFailure { throw it.reason.exception }
-        val isAllAnswered = !entities.any { (it.token != token && !it.isAnswered) }
-        val periodEntity = periodService.getPeriodEntity(cpid, ocid)
-        if (periodEntity.owner != owner) throw ErrorException(ErrorType.INVALID_OWNER)
-        val endDate = periodEntity.endDate
-        val isEnquiryPeriodExpired = (dateTime >= endDate)
-        val setUnsuspended = isEnquiryPeriodExpired && isAllAnswered
-        return ResponseDto(data = CheckAnswerRs(setUnsuspended))
+        val entitiesByEnquires = getEntitiesByEnquiries(entities)
+        val currentlyAnsweredEnquiry = entitiesByEnquires.keys.firstOrNull { it.id == context.enquiryId }
+            ?: throw ErrorException(ErrorType.DATA_NOT_FOUND)
+        val currentlyAnsweredEntity = entitiesByEnquires.getValue(currentlyAnsweredEnquiry)
+
+        checkToken(currentlyAnsweredEntity, context)
+        checkIsAnswered(currentlyAnsweredEntity, context)
+
+        if (requestDatePrecedesOrEqualsEndDate(cm, context))
+            return ResponseDto(data = CheckAnswerRs(setUnsuspended = false))
+
+        return if (allEnquiriesAnswered(entitiesByEnquires, currentlyAnsweredEnquiry))
+            ResponseDto(data = CheckAnswerRs(setUnsuspended = true))
+        else ResponseDto(data = CheckAnswerRs(setUnsuspended = false))
     }
+
+    private fun getEntitiesByEnquiries(entities: List<EnquiryEntity>) =
+        entities.associateBy(
+            keySelector = { entity ->
+                entity.jsonData
+                    .tryToObject(Enquiry::class.java)
+                    .onFailure { throw it.reason.exception }
+            },
+            valueTransform = { it })
+
+    private fun checkIsAnswered(
+        currentlyAnsweredEntity: EnquiryEntity,
+        context: CheckAnswerContext
+    ) {
+        if (currentlyAnsweredEntity.isAnswered)
+            throw ErrorException(
+                ErrorType.ALREADY_HAS_ANSWER,
+                "Stored enquiry by cpid '${context.cpid}', ocid '${context.ocid}' and id '${context.enquiryId}'."
+            )
+    }
+
+    private fun checkToken(
+        currentlyAnsweredEntity: EnquiryEntity,
+        context: CheckAnswerContext
+    ) {
+        if (currentlyAnsweredEntity.token != context.token)
+            throw ErrorException(ErrorType.INVALID_TOKEN, "Stored token does not match received one.")
+    }
+
+    private fun allEnquiriesAnswered(
+        entitiesByEnquires: Map<Enquiry, EnquiryEntity>,
+        currentlyAnsweredEnquiry: Enquiry
+    ): Boolean {
+        val otherEnquiries = entitiesByEnquires.minus(currentlyAnsweredEnquiry)
+        val allAnswered = otherEnquiries.values.none { !it.isAnswered }
+        return allAnswered
+    }
+
+    private fun requestDatePrecedesOrEqualsEndDate(
+        cm: CommandMessage,
+        context: CheckAnswerContext
+    ): Boolean {
+        val endDate = when (cm.stage) {
+            Stage.EV -> periodService.getPeriodEntity(context.cpid, context.ocid).endDate
+            Stage.TP,
+            Stage.FE -> {
+                toObject(CheckAnswerPreQualificationPeriodRequest::class.java, cm.data).preQualification.period.endDate
+            }
+            Stage.PC -> {
+                toObject(CheckAnswerTenderPeriodRequest::class.java, cm.data).tender.tenderPeriod.endDate
+            }
+            Stage.AC,
+            Stage.EI,
+            Stage.FS,
+            Stage.NP,
+            Stage.PN -> throw ErrorException(ErrorType.INVALID_STAGE)
+        }
+
+        if (!context.startDate.isAfter(endDate))
+            return true
+        return false
+    }
+
+    private fun getCheckAnswerContext(cm: CommandMessage) =
+        CheckAnswerContext(
+            cpid = cm.cpid,
+            ocid = cm.ocid,
+            token = cm.token,
+            startDate = cm.startDate,
+            enquiryId = cm.ctxId
+        )
 
     override fun checkEnquiries(cm: CommandMessage): ResponseDto {
         val cpid = cm.cpid

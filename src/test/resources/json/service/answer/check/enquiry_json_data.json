@@ -1,0 +1,56 @@
+{
+  "id": "a63155e0-0320-11eb-b8f6-2d3c13365ab3",
+  "date": "2020-09-30T13:27:12Z",
+  "author": {
+    "name": "Nastya",
+    "id": "MD-IDNO-64566",
+    "identifier": {
+      "scheme": "MD-IDNO",
+      "id": "64566",
+      "legalName": "Markova"
+    },
+    "address": {
+      "streetAddress": "Gorkogo",
+      "addressDetails": {
+        "country": {
+          "scheme": "iso-alpha2",
+          "id": "MD",
+          "description": "Moldova, Republica",
+          "uri": "https://www.iso.org"
+        },
+        "region": {
+          "scheme": "CUATM",
+          "id": "3400000",
+          "description": "Donduşeni",
+          "uri": "http://statistica.md"
+        },
+        "locality": {
+          "scheme": "CUATM",
+          "id": "3421000",
+          "description": "s.Pivniceni",
+          "uri": "http://statistica.md"
+        }
+      }
+    },
+    "additionalIdentifiers": [
+      {
+        "scheme": "IDNO",
+        "id": "74499",
+        "legalName": "Anastasiia"
+      }
+    ],
+    "contactPoint": {
+      "name": "Anastasiia",
+      "email": "nanamarkova@gmail.com",
+      "telephone": "+380635330195"
+    },
+    "details": {
+      "scale": "micro"
+    }
+  },
+  "title": "WHAT?",
+  "description": "???",
+  "dateAnswered": "2020-09-30T13:30:36Z",
+  "relatedLot": "9c103682-6751-4d55-97fe-edaed1082193",
+  "answer": "chto"
+}

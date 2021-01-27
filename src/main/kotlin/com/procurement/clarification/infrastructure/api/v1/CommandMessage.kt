@@ -6,6 +6,7 @@ import com.procurement.clarification.domain.extension.parseLocalDateTime
 import com.procurement.clarification.domain.model.Cpid
 import com.procurement.clarification.domain.model.Ocid
 import com.procurement.clarification.domain.model.enums.ProcurementMethod
+import com.procurement.clarification.domain.model.enums.Stage
 import com.procurement.clarification.exception.ErrorException
 import com.procurement.clarification.exception.ErrorType
 import com.procurement.clarification.infrastructure.api.ApiVersion
@@ -105,3 +106,8 @@ val CommandMessage.startDate: LocalDateTime
 val CommandMessage.ctxId: String
     get() = this.context.id
         ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'id' attribute in context.")
+
+val CommandMessage.stage: Stage
+    get() = this.context.stage
+        ?.let { Stage.creator(it) }
+        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'stage' attribute in context.")

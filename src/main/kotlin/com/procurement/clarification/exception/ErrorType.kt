@@ -16,5 +16,8 @@ enum class ErrorType constructor(val code: String, val message: String) {
     INVALID_FORMAT_OF_ATTRIBUTE("20.02", "Invalid attribute format."),
     INVALID_FORMAT_TOKEN("20.03", "Invalid format token."),
     SHIFT_PERIOD_CREATE_ENQUIRIES_RULES_NOT_FOUND("20.04", "ShiftPeriodCreateEnquiries rules not found."),
-    INCORRECT_VALUE_ATTRIBUTE("20.04", "Incorrect an attribute value.");
+    INCORRECT_VALUE_ATTRIBUTE("20.04", "Incorrect an attribute value."),
+    INVALID_STAGE("20.05", "Invalid stage."),
+    INVALID_TOKEN("20.06", "Invalid token.")
+    ;
 }

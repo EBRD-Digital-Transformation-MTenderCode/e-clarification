@@ -39,9 +39,14 @@ import com.procurement.clarification.lib.errorIfBlank
 import com.procurement.clarification.lib.functional.Result
 import com.procurement.clarification.lib.functional.asFailure
 import com.procurement.clarification.lib.functional.asSuccess
+import com.procurement.clarification.model.dto.ocds.Address
+import com.procurement.clarification.model.dto.ocds.AddressDetails
+import com.procurement.clarification.model.dto.ocds.CountryDetails
 import com.procurement.clarification.model.dto.ocds.Enquiry
+import com.procurement.clarification.model.dto.ocds.LocalityDetails
 import com.procurement.clarification.model.dto.ocds.OrganizationReference
 import com.procurement.clarification.model.dto.ocds.Period
+import com.procurement.clarification.model.dto.ocds.RegionDetails
 import com.procurement.clarification.model.dto.ocds.Tender
 import com.procurement.clarification.utils.toJson
 import com.procurement.clarification.utils.toObject
@@ -452,7 +457,40 @@ class EnquiryServiceImpl(
             name = author.name,
             id = author.identifier.scheme + "-" + author.identifier.id,
             identifier = author.identifier,
-            address = author.address,
+            address = author.address.let { address ->
+                Address(
+                    streetAddress = address.streetAddress,
+                    postalCode = address.postalCode,
+                    addressDetails = address.addressDetails.let { addressDetails ->
+                        AddressDetails(
+                            country = addressDetails.country.let { country ->
+                                CountryDetails(
+                                    id = country.id,
+                                    scheme = country.scheme,
+                                    description = country.description,
+                                    uri = country.uri
+                                )
+                            },
+                            region = addressDetails.region.let { region ->
+                                RegionDetails(
+                                    id = region.id,
+                                    uri = region.uri,
+                                    description = region.description,
+                                    scheme = region.scheme
+                                )
+                            },
+                            locality = addressDetails.locality.let { locality ->
+                                LocalityDetails(
+                                    id = locality.id,
+                                    scheme = locality.scheme,
+                                    description = locality.description,
+                                    uri = locality.uri
+                                )
+                            }
+                        )
+                    }
+                )
+            },
             additionalIdentifiers = author.additionalIdentifiers,
             contactPoint = author.contactPoint,
             details = author.details

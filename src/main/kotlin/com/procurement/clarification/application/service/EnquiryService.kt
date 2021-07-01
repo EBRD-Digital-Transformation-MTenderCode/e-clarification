@@ -177,7 +177,8 @@ class EnquiryServiceImpl(
             Stage.EI,
             Stage.FS,
             Stage.NP,
-            Stage.PN -> throw ErrorException(ErrorType.INVALID_STAGE)
+            Stage.PN,
+            Stage.PO -> throw ErrorException(ErrorType.INVALID_STAGE)
         }
 
         if (!context.startDate.isAfter(endDate))
